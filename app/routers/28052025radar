@@ -1,0 +1,161 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+from uuid import UUID
+from app import database, models
+from dotenv import load_dotenv
+import matplotlib.pyplot as plt
+import io
+from fastapi.responses import StreamingResponse
+import numpy as np
+import openai
+import os
+
+load_dotenv()
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+model = os.getenv("OPENAI_MODEL", "gpt-4")
+
+
+router = APIRouter()
+
+
+
+@router.get("/assessment/{session_id}/radar")
+def radar_data(session_id: UUID, db: Session = Depends(database.SessionLocal)):
+    results = (
+        db.query(
+            models.AssessmentResult.process,
+            func.avg(models.AssessmentResult.score).label("avg_score")
+        )
+        .filter(models.AssessmentResult.session_id == session_id)
+        .group_by(models.AssessmentResult.process)
+        .all()
+    )
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No results found for this session")
+
+    radar_output = []
+    for process, avg_score in results:
+        status = "GOOD" if avg_score >= 3 else "ALERT"
+        radar_output.append({
+            "process": process,
+            "avg_score": round(avg_score, 2),
+            "status": status
+        })
+
+    return {
+        "benchmarks": 4,
+        "ratings": radar_output
+    }
+
+@router.get("/assessment/{session_id}/ai-suggestions")
+def ai_suggestions(session_id: UUID, db: Session = Depends(database.SessionLocal)):
+    results = (
+        db.query(
+            models.AssessmentResult.process,
+            models.AssessmentResult.category,
+            models.AssessmentResult.dimension,
+            models.AssessmentResult.score,
+            models.AssessmentResult.note
+        )
+        .filter(models.AssessmentResult.session_id == session_id)
+        .order_by(models.AssessmentResult.process, models.AssessmentResult.category)
+        .all()
+    )
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No assessment results found")
+
+    critical_areas = [
+        {
+            "process": r.process,
+            "category": r.category,
+            "dimension": r.dimension,
+            "score": r.score,
+            "note": r.note
+        }
+        for r in results if r.score < 3
+    ]
+
+    if not critical_areas:
+        return {"message": "Nessuna area critica rilevata. Tutti i punteggi sono accettabili."}
+
+    # 🧠 Prompt building
+    prompt = """Sei un assistente esperto in trasformazione digitale per aziende manifatturiere.
+Analizza i seguenti punti critici emersi da un assessment. Fornisci suggerimenti concreti, pratici e compatibili con aziende PMI italiane.
+
+Punti critici:
+"""
+    for item in critical_areas:
+        prompt += f"\n- [{item['process']}] {item['category']} > {item['dimension']} (score: {item['score']})\n"
+        if item['note']:
+            prompt += f"  Nota: {item['note']}\n"
+
+    prompt += """
+
+Per ciascun punto, suggerisci:
+- Azioni immediate
+- Investimenti minimi richiesti
+- Benefici attesi
+- KPI da monitorare
+"""
+
+    try:
+        response = openai.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "Sei un esperto di trasformazione digitale per aziende manifatturiere."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return {
+            "critical_count": len(critical_areas),
+            "suggestions": response.choices[0].message.content
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/assessment/{session_id}/radar-image")
+def radar_image(session_id: UUID, db: Session = Depends(database.SessionLocal)):
+    results = (
+        db.query(
+            models.AssessmentResult.process,
+            func.avg(models.AssessmentResult.score).label("avg_score")
+        )
+        .filter(models.AssessmentResult.session_id == session_id)
+        .group_by(models.AssessmentResult.process)
+        .all()
+    )
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No results found for this session")
+
+    labels = [r[0] for r in results]
+    values = [r[1] for r in results]
+
+    # Chiudo il cerchio per il radar chart
+    labels += [labels[0]]
+    values += [values[0]]
+
+    angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
+    angles += angles[:1]
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    ax.plot(angles, values, linewidth=2, linestyle='solid')
+    ax.fill(angles, values, alpha=0.25)
+    ax.set_yticks([1, 2, 3, 4, 5])
+    ax.set_yticklabels(['1', '2', '3', '4', '5'])
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    ax.set_title("Digital Assessment Radar")
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+
+    return StreamingResponse(buf, media_type="image/png")
+

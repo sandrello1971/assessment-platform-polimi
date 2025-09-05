@@ -1,0 +1,89 @@
+from fastapi import FastAPI, APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from uuid import UUID
+from typing import List, Optional
+
+from app.database import get_db
+from app import auth, schemas, models
+from app.routers import radar
+
+# ✅ Init FastAPI app
+app = FastAPI()
+
+# ✅ Middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ✅ Router con prefisso /api
+api_router = APIRouter(prefix="/api")
+
+# 🔐 Login
+@api_router.post("/login", response_model=schemas.Token)
+def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+    user = auth.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    token = auth.create_access_token(data={"sub": user.email})
+    return {"access_token": token, "token_type": "bearer"}
+
+# 🔐 Info utente corrente
+@api_router.get("/me", response_model=schemas.User)
+def get_me(current_user: models.LocalUser = Depends(auth.get_current_user)):
+    return current_user
+
+# 📥 Crea sessione di assessment
+@api_router.post("/assessment/session", response_model=schemas.AssessmentSessionOut)
+def create_session(data: schemas.AssessmentSessionCreate, db: Session = Depends(get_db)):
+    obj = models.AssessmentSession(**data.dict())
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+# 📋 Lista sessioni
+@api_router.get("/assessment/sessions", response_model=List[schemas.AssessmentSessionOut])
+def list_sessions(user_id: Optional[str] = None, company_id: Optional[int] = None, db: Session = Depends(get_db)):
+    q = db.query(models.AssessmentSession)
+    if user_id:
+        q = q.filter(models.AssessmentSession.user_id == user_id)
+    if company_id:
+        q = q.filter(models.AssessmentSession.company_id == company_id)
+    return q.order_by(models.AssessmentSession.created_at.desc()).all()
+
+# 📤 Invia risultati sessione
+@api_router.post("/assessment/{session_id}/submit", response_model=dict)
+def submit(session_id: UUID, results: List[schemas.AssessmentResultCreate], db: Session = Depends(get_db)):
+    for r in results:
+        db.add(models.AssessmentResult(session_id=session_id, **r.dict()))
+    db.commit()
+    return {"status": "submitted", "count": len(results)}
+
+# 📊 Visualizza risultati sessione
+@api_router.get("/assessment/{session_id}/results", response_model=List[schemas.AssessmentResultOut])
+def results(session_id: UUID, db: Session = Depends(get_db)):
+    return db.query(models.AssessmentResult).filter(models.AssessmentResult.session_id == session_id).all()
+
+# 🏢 Lista aziende
+@api_router.get("/companies", response_model=List[schemas.CompanyOut])
+def get_companies(db: Session = Depends(get_db)):
+    return db.query(models.Company).all()
+
+# 🏢 Crea azienda
+@api_router.post("/companies", response_model=schemas.CompanyOut)
+def create_company(data: schemas.CompanyCreate, db: Session = Depends(get_db)):
+    obj = models.Company(**data.dict())
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+# ✅ Registra i router
+app.include_router(api_router)
+app.include_router(radar.router, prefix="/api")

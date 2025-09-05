@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+python-jose
+passlib[bcrypt]
+python-multipart
+matplotlib
+sqlalchemy>=1.4
+openai
+psycopg2-binary==2.9.9
+reportlab==4.0.7

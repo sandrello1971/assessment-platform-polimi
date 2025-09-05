@@ -1,0 +1,1556 @@
+[
+  {
+    "process": "MKTG",
+    "description": "Processi di Marketing e Gestione Clienti",
+    "activities": [
+      {
+        "name": "attività di marketing",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "ADMINISTRATION",
+    "description": "Amministrazione e Gestione Aziendale",
+    "activities": [
+      {
+        "name": "gestione (specificare se interna / esterna)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "controllo di gestione",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "analisi finanziaria",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "pianificazione strategica",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione dei pagamenti digitali",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "firma elettronica su contrattualistica",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "utilizzo sistematico dei siti istituzionali con accesso tramite SPID /CieID",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  }
+] di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione dei dati (conformità GDPR)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione dei dati (sicurezza accessi, antivirus, on-premise/cloud)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "CUSTOMER CARE",
+    "description": "Gestione e Cura del Cliente",
+    "activities": [
+      {
+        "name": "gestione del cliente dopo il primo contatto",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione del cliente a seguito della firma del contratto",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione del cliente durante il viaggio",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "intervista del cliente dopo il viaggio",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "contatto periodico con i clienti per l'invio di nuove offerte profilate",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "DIGITAL MARKETING",
+    "description": "Marketing Digitale e Comunicazione Online",
+    "activities": [
+      {
+        "name": "Digital Advertising (Brand Protection - Generic Keywords)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Analisi dei visitatori attraverso Google Analytics",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Dashboard riepilogative Es PowerBI",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Analisi dei flussi di comportamento degli utenti",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Advertising Locali per catturare prospect locali",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Attività di retargeting",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Analisi Search Console",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Piano Strategico e Tattico SEO",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Social Organici ed Advertising",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Campagne Domestiche-Nazionali, Internazionali",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Attività di Awareness tramite Display Programmatic",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Attività PR + Referral SEO",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Online purchase",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "Sicurezza accessi piattaforme Meta generiche (Business Manager di Facebook-Instagram)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione customer satisfaction",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "promozione tramite website",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "promozione tramite social media",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "promozione tramite app",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "DESIGN & ENGINEERING",
+    "description": "Progettazione e Sviluppo Prodotti/Servizi",
+    "activities": [
+      {
+        "name": "scouting della disponibilità dell'offerta",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione accordi con strutture / associazioni / privati",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione rischi: assicurative",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione rischi: legale",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione rischi: cyber",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "EXECUTION",
+    "description": "Esecuzione e Delivery Servizi",
+    "activities": [
+      {
+        "name": "accoglienza",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "registrazione",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "profilazione",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione della richiesta",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "ricerca/costruzione dell'esperienza",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "preventivo",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "acquisto",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "delivery (vs strutture / tour operators)",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      }
+    ]
+  },
+  {
+    "process": "QUALITY MANAGEMENT",
+    "description": "Gestione Qualità e Processi",
+    "activities": [
+      {
+        "name": "pianificazione delle attività",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione di best practices, procedure, flusso dei processi interni",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione della documentazione",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione delle azioni di miglioramento",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "gestione delle azioni correttive",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "contacts / leadings",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "profilazione",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "analisi domanda / offerta",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "benchmarking",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo sono standardizzati e integrati?": null,
+            "Quanto il processo è automatizzato?": null,
+            "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?": null
+          },
+          "Organization": {
+            "Qual è il livello di consapevolezza sulle responsabilità del processo?": null,
+            "Qual è il livello di collaborazione tra i processi?": null
+          }
+        }
+      },
+      {
+        "name": "tracking degli ordini / prenotazioni",
+        "categories": {
+          "Governance": {
+            "Presenza di Best Practices / Procedure / Metodi": null,
+            "Livello di standadizzazione del processo": null,
+            "L'informazione è tracciata e usata all'interno del processo?": null,
+            "Livello di integrazione con gli altri processi": null,
+            "Ottimizzazione del processo dal punto di vista operativo": null
+          },
+          "Monitoring & Control": {
+            "Quanto il processo tende verso il miglioramento continuo?": null,
+            "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?": null,
+            "Qual è il livello di feed-back sulle performance utilizzato per le analisi?": null,
+            "Quanto le decisioni sono guidate e supportate dai feed-back?": null
+          },
+          "Technology": {
+            "Quanto i sistemi di supporto al processo[]
