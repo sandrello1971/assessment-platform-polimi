@@ -11,3 +11,4 @@ sqlalchemy>=1.4
 openai
 psycopg2-binary==2.9.9
 reportlab==4.0.7
+pandas==2.0.3

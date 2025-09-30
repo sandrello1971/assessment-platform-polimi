@@ -61,3 +61,11 @@ venv/
 .env*
 *.backup*
 backup-*
+
+# Temporary scripts
+create_tables.py
+
+# Excel files
+*.xlsx
+*.xls
+*.bkup
