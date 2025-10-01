@@ -7,7 +7,7 @@ from app.routers import pdf
 
 from app.database import get_db
 from app import schemas, models
-from app.routers import radar
+from app.routers import radar, admin
 
 # ✅ Init FastAPI app
 app = FastAPI()
@@ -137,3 +137,4 @@ def delete_assessment(session_id: UUID, db: Session = Depends(get_db)):
 app.include_router(api_router)
 app.include_router(radar.router, prefix="/api")
 app.include_router(pdf.router, prefix="/api", tags=["pdf"])
+app.include_router(admin.router, prefix="/api/admin", tags=["admin"])

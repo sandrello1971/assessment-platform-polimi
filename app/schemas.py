@@ -53,6 +53,7 @@ class AssessmentSessionCreate(BaseModel):
     dimensione: Optional[str] = None
     referente: Optional[str] = None
     email: Optional[str] = None
+    model_name: Optional[str] = 'i40_assessment_fto'
     risposte_json: Optional[str] = None
     punteggi_json: Optional[str] = None
     raccomandazioni: Optional[str] = None

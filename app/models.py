@@ -26,6 +26,7 @@ class AssessmentSession(Base):
     dimensione = Column(Text, nullable=True)
     referente = Column(Text, nullable=True)
     email = Column(Text, nullable=True)
+    model_name = Column(Text, nullable=True, default='i40_assessment_fto')  # Nome del modello JSON usato
     risposte_json = Column(Text, nullable=True)
     punteggi_json = Column(Text, nullable=True)
     raccomandazioni = Column(Text, nullable=True)

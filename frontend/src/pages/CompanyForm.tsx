@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,6 +10,7 @@ interface CompanyData {
   email: string;
   user_id?: string;
   company_id?: number;
+  model_name?: string;
 }
 
 const CompanyForm = () => {
@@ -27,6 +28,13 @@ const CompanyForm = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [models, setModels] = useState<Array<{name: string; filename: string; is_default: boolean}>>([]);
+
+  useEffect(() => {
+    axios.get('/api/admin/list-models')
+      .then(res => setModels(res.data.models))
+      .catch(err => console.error('Errore caricamento modelli:', err));
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -55,7 +63,8 @@ const CompanyForm = () => {
         referente: formData.referente,
         email: formData.email,
         user_id: formData.user_id || undefined,
-        company_id: formData.company_id || undefined
+        company_id: formData.company_id || undefined,
+        model_name: formData.model_name || 'i40_assessment_fto'
       });
       
       const sessionId = response.data.id;
@@ -236,6 +245,31 @@ const CompanyForm = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Selezione Modello */}
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-3">
+                      Modello di Assessment
+                    </label>
+                    <div className="relative">
+                      <select
+                        name="model_name"
+                        value={formData.model_name || "i40_assessment_fto"}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                      >
+                        {models.map((model) => (
+                          <option key={model.name} value={model.name}>
+                            {model.name} {model.is_default ? "(Default)" : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                        <span className="text-gray-400">📋</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">Seleziona il modello di valutazione</p>
                   </div>
                 </div>
 
