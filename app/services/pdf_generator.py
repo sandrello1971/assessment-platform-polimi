@@ -1,4 +1,9 @@
 from reportlab.lib import colors
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -43,6 +48,31 @@ class PDFReportGenerator:
             fontName='Helvetica-Bold'
         ))
 
+
+    def create_radar_chart(self, process_name: str, categories: Dict) -> BytesIO:
+        """Genera un radar chart per un processo e ritorna come BytesIO"""
+        labels = list(categories.keys())
+        values = [cat['average'] for cat in categories.values()]
+        
+        num_vars = len(labels)
+        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+        values += values[:1]
+        angles += angles[:1]
+        
+        fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection='polar'))
+        ax.plot(angles, values, 'o-', linewidth=2, color='#3b82f6')
+        ax.fill(angles, values, alpha=0.25, color='#3b82f6')
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(labels, size=8)
+        ax.set_ylim(0, 5)
+        ax.set_title(f'{process_name}', size=12, weight='bold', pad=20)
+        ax.grid(True)
+        
+        buf = BytesIO()
+        plt.savefig(buf, format='png', dpi=150, bbox_inches='tight')
+        plt.close()
+        buf.seek(0)
+        return buf
     def generate_assessment_report(self, session_data: Dict, results_data: List[Dict], 
                                  stats_data: Dict) -> bytes:
         """Genera il report PDF completo"""
@@ -241,6 +271,33 @@ class PDFReportGenerator:
         
         # Filtra risultati per questo processo
         process_results = [r for r in results_data if r['process'] == process_name]
+        
+        # Genera Radar Chart per categorie
+        if process_results:
+            category_averages = {}
+            for result in process_results:
+                if not result.get('is_not_applicable'):
+                    cat = result['category']
+                    if cat not in category_averages:
+                        category_averages[cat] = []
+                    category_averages[cat].append(result['score'])
+            
+            category_data = {}
+            for cat, scores in category_averages.items():
+                if scores:
+                    category_data[cat] = {'average': sum(scores) / len(scores)}
+            
+            if len(category_data) >= 3:
+                try:
+                    from reportlab.platypus import Image
+                    radar_buf = self.create_radar_chart(process_name, category_data)
+                    img = Image(radar_buf, width=4*inch, height=4*inch)
+                    elements.append(Spacer(1, 20))
+                    elements.append(img)
+                    elements.append(Spacer(1, 20))
+                except Exception as e:
+                    print(f"Errore generazione radar chart per {process_name}: {e}")
+        
         
         if process_results:
             detail_data = [['Categoria', 'Dimensione', 'Punteggio', 'Note']]
