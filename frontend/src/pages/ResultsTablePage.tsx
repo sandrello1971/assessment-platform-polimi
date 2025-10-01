@@ -26,13 +26,26 @@ interface ProcessResults {
   };
 }
 
-interface ActivitySummary {
+// interface ActivitySummary {
+//   process: string;
+//   activity: string;
+//   category: string;
+//   average: number;
+//   note: string;
+// }
+
+interface CriticalPoint {
   process: string;
-  activity: string;
-  category: string;
-  average: number;
-  note: string;
+  subprocess: string;
+  governance: number | null;
+  monitoring_control: number | null;
+  technology: number | null;
+  organization: number | null;
+  process_rating: number | null;
+  notes: string;
+  is_critical: boolean;
 }
+
 
 const ResultsTablePage = () => {
   const { id } = useParams();
@@ -51,6 +64,94 @@ const ResultsTablePage = () => {
         setLoading(false);
       });
   }, [id]);
+
+  
+  const calculateCriticalPoints = (): CriticalPoint[] => {
+    const criticalPoints: CriticalPoint[] = [];
+    
+    Object.entries(processResults).forEach(([process, categories]) => {
+      const activitiesMap: {
+        [activity: string]: {
+          dimensions: { [dim: string]: number[] };
+          notes: string[];
+        }
+      } = {};
+      
+      Object.entries(categories).forEach(([category, activities]) => {
+        Object.entries(activities).forEach(([activity, dimensions]) => {
+          if (!activitiesMap[activity]) {
+            activitiesMap[activity] = {
+              dimensions: {
+                'Governance': [],
+                'Monitoring & Control': [],
+                'Technology': [],
+                'Organization': []
+              },
+              notes: []
+            };
+          }
+          
+          Object.entries(dimensions).forEach(([_dim, data]) => {
+            if (!data.is_not_applicable && activitiesMap[activity].dimensions[category]) {
+              activitiesMap[activity].dimensions[category].push(data.score);
+            }
+            if (data.note) {
+              activitiesMap[activity].notes.push(data.note);
+            }
+          });
+        });
+      });
+      
+      Object.entries(activitiesMap).forEach(([activity, data]) => {
+        const dimAverages: { [key: string]: number | null } = {};
+        
+        Object.entries(data.dimensions).forEach(([dimName, scores]) => {
+          dimAverages[dimName] = scores.length > 0
+            ? scores.reduce((a, b) => a + b, 0) / scores.length
+            : null;
+        });
+        
+        const validAvgs = Object.values(dimAverages).filter(v => v !== null) as number[];
+        const processRating = validAvgs.length > 0
+          ? validAvgs.reduce((a, b) => a + b, 0) / validAvgs.length
+          : null;
+        
+        const isCritical = validAvgs.some(v => v <= 1.5);
+        
+        criticalPoints.push({
+          process,
+          subprocess: activity,
+          governance: dimAverages['Governance'],
+          monitoring_control: dimAverages['Monitoring & Control'],
+          technology: dimAverages['Technology'],
+          organization: dimAverages['Organization'],
+          process_rating: processRating,
+          notes: data.notes.join('; '),
+          is_critical: isCritical
+        });
+      });
+    });
+    
+    return criticalPoints.sort((a, b) => {
+      if (a.is_critical !== b.is_critical) return a.is_critical ? -1 : 1;
+      return (a.process_rating || 5) - (b.process_rating || 5);
+    });
+  };
+
+  const getScoreIcon = (score: number | null) => {
+    if (score === null) return <span className="text-gray-400">N/A</span>;
+    
+    if (score <= 1.0) {
+      return <span className="text-red-600 text-xl">❌</span>;
+    } else if (score <= 2.0) {
+      return <span className="text-orange-500 text-xl">⭕</span>;
+    } else if (score <= 3.0) {
+      return <span className="text-yellow-500 text-xl">⚠️</span>;
+    } else {
+      return <span className="text-green-600 text-xl">✅</span>;
+    }
+  };
+
 
   const calculateProcessAverages = () => {
     const averages: { [process: string]: { [category: string]: number } } = {};
@@ -153,29 +254,29 @@ const ResultsTablePage = () => {
     return count > 0 ? total / count : null;
   };
 
-  const getAllActivitiesSummary = (): ActivitySummary[] => {
-    const summaries: ActivitySummary[] = [];
-    
-    Object.entries(processResults).forEach(([process, categories]) => {
-      Object.entries(categories).forEach(([category, activities]) => {
-        Object.entries(activities).forEach(([activity, dimensions]) => {
-          const avg = calculateRowAverage(dimensions);
-          if (avg !== null) {
-            const firstDim = Object.values(dimensions)[0];
-            summaries.push({
-              process,
-              activity,
-              category,
-              average: avg,
-              note: firstDim?.note || ''
-            });
-          }
-        });
-      });
-    });
-    
-    return summaries;
-  };
+  //   const getAllActivitiesSummary = (): ActivitySummary[] => {
+  //     const summaries: ActivitySummary[] = [];
+  //     
+  //     Object.entries(processResults).forEach(([process, categories]) => {
+  //       Object.entries(categories).forEach(([category, activities]) => {
+  //         Object.entries(activities).forEach(([activity, dimensions]) => {
+  //           const avg = calculateRowAverage(dimensions);
+  //           if (avg !== null) {
+  //             const firstDim = Object.values(dimensions)[0];
+  //             summaries.push({
+  //               process,
+  //               activity,
+  //               category,
+  //               average: avg,
+  //               note: firstDim?.note || ''
+  //             });
+  //           }
+  //         });
+  //       });
+  //     });
+  //     
+  //     return summaries;
+  //   };
 
   const organizeResults = (data: Result[]) => {
     const organized: ProcessResults = {};
@@ -204,11 +305,12 @@ const ResultsTablePage = () => {
 
   const processAverages = calculateProcessAverages();
   const finalRate = calculateFinalRate();
-  const allActivities = getAllActivitiesSummary();
+  //   const allActivities = getAllActivitiesSummary();
+  const criticalPointsData = calculateCriticalPoints();
   
-  const puntiForza = allActivities.filter(a => a.average >= 3.00).sort((a, b) => b.average - a.average);
-  const puntiDebolezza = allActivities.filter(a => a.average < 2.00 && a.average >= 1.00).sort((a, b) => a.average - b.average);
-  const puntiCritici = allActivities.filter(a => a.average < 1.00).sort((a, b) => a.average - b.average);
+  //   const puntiForza = allActivities.filter(a => a.average >= 3.00).sort((a, b) => b.average - a.average);
+  //   const puntiDebolezza = allActivities.filter(a => a.average < 2.00 && a.average >= 1.00).sort((a, b) => a.average - b.average);
+  //   const puntiCritici = allActivities.filter(a => a.average < 1.00).sort((a, b) => a.average - b.average);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -460,113 +562,253 @@ const ResultsTablePage = () => {
 
         {/* Tabelle Riassuntive */}
         <div className="mt-12 space-y-8">
-          {/* Punti di Forza */}
-          {puntiForza.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-green-500 text-white px-4 py-2 rounded-lg">
-                  <span className="font-bold">≥ 3.00</span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800">PUNTI DI FORZA</h3>
+          {/* Punti di Forza - Tabella Completa Stile Excel */}
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-green-600 text-white px-4 py-2 rounded-lg">
+                <span className="font-bold">&gt;= 3.00</span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
-                  <thead>
-                    <tr className="bg-green-500">
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
-                      <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Media</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {puntiForza.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.process}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.activity}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-center">
-                          <span className="font-bold text-green-700">{item.average.toFixed(2)}</span>
-                        </td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-600">{item.note || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <h3 className="text-2xl font-bold text-gray-800">PUNTI DI FORZA - Dettaglio 4 Dimensioni</h3>
             </div>
-          )}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="bg-green-600">
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Governance</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Monitoring & Control</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Technology</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Organization</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold bg-amber-100">PROCESS RATING</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {criticalPointsData.filter(p => (p.process_rating || 0) >= 3.0).map((point, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50 bg-green-50">
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800 font-semibold">{point.process}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800">{point.subprocess}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.governance)}
+                          <span className="font-mono font-bold">
+                            {point.governance !== null ? point.governance.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.monitoring_control)}
+                          <span className="font-mono font-bold">
+                            {point.monitoring_control !== null ? point.monitoring_control.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.technology)}
+                          <span className="font-mono font-bold">
+                            {point.technology !== null ? point.technology.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.organization)}
+                          <span className="font-mono font-bold">
+                            {point.organization !== null ? point.organization.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center bg-amber-50">
+                        <span className="font-bold text-lg text-green-700">
+                          {point.process_rating !== null ? point.process_rating.toFixed(2) : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-600 text-xs max-w-md">
+                        {point.notes || '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-          {/* Punti di Debolezza */}
-          {puntiDebolezza.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg">
-                  <span className="font-bold">&lt; 2.00</span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800">PUNTI DI DEBOLEZZA</h3>
+          {/* Punti di Debolezza - Tabella Completa Stile Excel */}
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg">
+                <span className="font-bold">2.00 - 2.99</span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
-                  <thead>
-                    <tr className="bg-yellow-500">
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
-                      <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Media</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {puntiDebolezza.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.process}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.activity}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-center">
-                          <span className="font-bold text-yellow-700">{item.average.toFixed(2)}</span>
-                        </td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-600">{item.note || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <h3 className="text-2xl font-bold text-gray-800">PUNTI DI DEBOLEZZA - Dettaglio 4 Dimensioni</h3>
             </div>
-          )}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="bg-yellow-500">
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Governance</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Monitoring & Control</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Technology</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Organization</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold bg-amber-100">PROCESS RATING</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {criticalPointsData.filter(p => {
+                    const rating = p.process_rating || 0;
+                    return rating >= 2.0 && rating < 3.0;
+                  }).map((point, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50 bg-yellow-50">
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800 font-semibold">{point.process}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800">{point.subprocess}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.governance)}
+                          <span className="font-mono font-bold">
+                            {point.governance !== null ? point.governance.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.monitoring_control)}
+                          <span className="font-mono font-bold">
+                            {point.monitoring_control !== null ? point.monitoring_control.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.technology)}
+                          <span className="font-mono font-bold">
+                            {point.technology !== null ? point.technology.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.organization)}
+                          <span className="font-mono font-bold">
+                            {point.organization !== null ? point.organization.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center bg-amber-50">
+                        <span className="font-bold text-lg text-yellow-700">
+                          {point.process_rating !== null ? point.process_rating.toFixed(2) : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-600 text-xs max-w-md">
+                        {point.notes || '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-          {/* Punti Critici */}
-          {puntiCritici.length > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-red-500 text-white px-4 py-2 rounded-lg">
-                  <span className="font-bold">≤ 1.00</span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800">PUNTI CRITICI</h3>
+          {/* Punti Critici - Tabella Completa Stile Excel */}
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-red-600 text-white px-4 py-2 rounded-lg">
+                <span className="font-bold">ANALISI COMPLETA</span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
-                  <thead>
-                    <tr className="bg-red-500">
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
-                      <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Media</th>
-                      <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
+              <h3 className="text-2xl font-bold text-gray-800">PUNTI CRITICI - Dettaglio 4 Dimensioni</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="bg-red-600">
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Processo</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Sottoprocesso</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Governance</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Monitoring & Control</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Technology</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold">Organization</th>
+                    <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold bg-amber-100">PROCESS RATING</th>
+                    <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {criticalPointsData.map((point, idx) => (
+                    <tr key={idx} className={`hover:bg-gray-50 ${point.is_critical ? 'bg-red-50' : ''}`}>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800 font-semibold">{point.process}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-800">{point.subprocess}</td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.governance)}
+                          <span className="font-mono font-bold">
+                            {point.governance !== null ? point.governance.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.monitoring_control)}
+                          <span className="font-mono font-bold">
+                            {point.monitoring_control !== null ? point.monitoring_control.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.technology)}
+                          <span className="font-mono font-bold">
+                            {point.technology !== null ? point.technology.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {getScoreIcon(point.organization)}
+                          <span className="font-mono font-bold">
+                            {point.organization !== null ? point.organization.toFixed(2) : 'N/A'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-center bg-amber-50">
+                        <span className="font-bold text-lg text-amber-700">
+                          {point.process_rating !== null ? point.process_rating.toFixed(2) : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-3 py-2 text-gray-600 text-xs max-w-md">
+                        {point.notes || '-'}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {puntiCritici.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.process}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-800">{item.activity}</td>
-                        <td className="border border-gray-300 px-3 py-2 text-center">
-                          <span className="font-bold text-red-700">{item.average.toFixed(2)}</span>
-                        </td>
-                        <td className="border border-gray-300 px-3 py-2 text-gray-600">{item.note || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Legenda */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h4 className="font-bold text-gray-800 mb-3">📖 Legenda Icone:</h4>
+              <div className="grid grid-cols-4 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-red-600 text-xl">❌</span>
+                  <span className="text-gray-700">&lt;= 1.0 (Critico)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-orange-500 text-xl">⭕</span>
+                  <span className="text-gray-700">1.0 - 2.0 (Basso)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-500 text-xl">⚠️</span>
+                  <span className="text-gray-700">2.0 - 3.0 (Medio)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-600 text-xl">✅</span>
+                  <span className="text-gray-700">&gt; 3.0 (Buono)</span>
+                </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
