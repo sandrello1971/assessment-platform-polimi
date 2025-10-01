@@ -173,12 +173,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-y-auto">
-
-      <div className="relative px-0 py-12">
+      <div className="absolute inset-0 overflow-y-auto"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-8 py-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
+          <div>
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
               Dashboard Assessment
             </h1>
@@ -189,7 +189,7 @@ const Dashboard = () => {
           
           <button
             onClick={() => navigate('/company-form')}
-            className="group bg-gradient-to-r bg-blue-500 text-gray-800 px-8 py-4 rounded-2xl hover:bg-blue-600 transition-all duration-300 font-bold flex items-center shadow-2xl border border-white/30 hover:scale-105 hover:shadow-blue-500/25"
+            className="group bg-blue-500 text-white px-8 py-4 rounded-2xl hover:bg-blue-600 transition-all duration-300 font-bold flex items-center shadow-2xl"
           >
             <span className="mr-3 text-2xl group-hover:rotate-12 transition-transform duration-300">➕</span>
             Nuovo Assessment
