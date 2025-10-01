@@ -39,7 +39,7 @@ const TestTableFormByCategory = () => {
     const loadData = async () => {
       try {
         // Carica il model_name dalla sessione
-        const sessionRes = await axios.get(`/api/assessment/session/${id}`);
+        const sessionRes = await axios.get(`/api/assessment/session/${sessionId}`);
         const modelName = sessionRes.data.model_name || 'i40_assessment_fto';
         console.log('Loading model:', modelName);
         
