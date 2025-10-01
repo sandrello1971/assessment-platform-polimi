@@ -176,7 +176,7 @@ const Dashboard = () => {
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-y-auto">
 
-      <div className="relative max-w-7xl mx-auto px-0 py-12">
+      <div className="relative px-0 py-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
