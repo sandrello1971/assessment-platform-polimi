@@ -51,7 +51,7 @@ def get_session(session_id: UUID, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Session not found")
     return session
 
-# 📤 Invia risultati sessione
+# 📤 Invia risultati sessione - CON UPSERT
 @api_router.post("/assessment/{session_id}/submit", response_model=dict)
 def submit(session_id: UUID, results: List[schemas.AssessmentResultCreate], db: Session = Depends(get_db)):
     # Verifica che la sessione esista
@@ -59,17 +59,39 @@ def submit(session_id: UUID, results: List[schemas.AssessmentResultCreate], db: 
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
+    updated = 0
+    created = 0
+    
     for r in results:
-        db.add(models.AssessmentResult(session_id=session_id, **r.dict()))
+        # Cerca se esiste già un risultato per questa combinazione
+        existing = db.query(models.AssessmentResult).filter(
+            models.AssessmentResult.session_id == session_id,
+            models.AssessmentResult.process == r.process,
+            models.AssessmentResult.activity == r.activity,
+            models.AssessmentResult.category == r.category,
+            models.AssessmentResult.dimension == r.dimension
+        ).first()
+        
+        if existing:
+            # UPDATE
+            existing.score = r.score
+            existing.note = r.note
+            existing.is_not_applicable = r.is_not_applicable
+            updated += 1
+        else:
+            # INSERT
+            db.add(models.AssessmentResult(session_id=session_id, **r.dict()))
+            created += 1
+    
     db.commit()
-    return {"status": "submitted", "count": len(results)}
+    return {"status": "submitted", "created": created, "updated": updated, "total": len(results)}
 
 # 📊 Visualizza risultati sessione
 @api_router.get("/assessment/{session_id}/results", response_model=List[schemas.AssessmentResultOut])
 def results(session_id: UUID, db: Session = Depends(get_db)):
     return db.query(models.AssessmentResult).filter(models.AssessmentResult.session_id == session_id).all()
 
-# 🗑️ Cancella assessment completo (sessione + risultati) - SPOSTATO QUI!
+# 🗑️ Cancella assessment completo (sessione + risultati)
 @api_router.delete("/assessment/{session_id}")
 def delete_assessment(session_id: UUID, db: Session = Depends(get_db)):
     """Cancella completamente un assessment: sessione + tutti i risultati"""
@@ -111,7 +133,7 @@ def delete_assessment(session_id: UUID, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Errore cancellazione: {str(e)}")
 
-# ✅ Registra i router (DOPO aver definito tutti gli endpoint!)
+# ✅ Registra i router
 app.include_router(api_router)
 app.include_router(radar.router, prefix="/api")
 app.include_router(pdf.router, prefix="/api", tags=["pdf"])

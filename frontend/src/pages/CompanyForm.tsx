@@ -87,7 +87,7 @@ const CompanyForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -102,25 +102,25 @@ const CompanyForm = () => {
             <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
               Nuovo Assessment
             </h1>
-            <p className="text-white/70 text-xl">
+            <p className="text-gray-800/70 text-xl">
               Inizia il tuo viaggio verso la digitalizzazione 4.0
             </p>
           </div>
 
           {/* Main Form Card */}
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             {/* Card Header */}
-            <div className="bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 px-8 py-8 text-white relative overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 px-8 py-8 text-gray-800 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-purple-600/30"></div>
               <div className="absolute top-0 left-0 w-40 h-40 bg-white/5 rounded-full -ml-20 -mt-20"></div>
               <div className="relative z-10 text-center">
-                <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-4xl">🏢</span>
                 </div>
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-2">
                   Dati Azienda
                 </h2>
-                <p className="text-white/80">Inserisci le informazioni della tua azienda per iniziare</p>
+                <p className="text-gray-800/80">Inserisci le informazioni della tua azienda per iniziare</p>
               </div>
             </div>
 
@@ -139,7 +139,7 @@ const CompanyForm = () => {
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Dati Principali */}
                 <div className="space-y-6">
-                  <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                     <span className="text-2xl mr-3">📝</span>
                     Informazioni Principali
                   </h3>
@@ -147,7 +147,7 @@ const CompanyForm = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Nome Azienda */}
                     <div className="md:col-span-2">
-                      <label className="block text-white/80 font-medium mb-3">
+                      <label className="block text-gray-800/80 font-medium mb-3">
                         Nome Azienda *
                       </label>
                       <div className="relative">
@@ -156,19 +156,19 @@ const CompanyForm = () => {
                           name="azienda_nome"
                           value={formData.azienda_nome}
                           onChange={handleInputChange}
-                          className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full bg-gray-50 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           placeholder="Inserisci il nome dell'azienda"
                           required
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <span className="text-white/30">🏢</span>
+                          <span className="text-gray-800/30">🏢</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Settore */}
                     <div>
-                      <label className="block text-white/80 font-medium mb-3">
+                      <label className="block text-gray-800/80 font-medium mb-3">
                         Settore
                       </label>
                       <div className="relative">
@@ -176,29 +176,29 @@ const CompanyForm = () => {
                           name="settore"
                           value={formData.settore}
                           onChange={handleInputChange}
-                          className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none"
+                          className="w-full bg-gray-50 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none"
                         >
-                          <option value="" className="bg-slate-800 text-white">Seleziona settore</option>
-                          <option value="Manifatturiero" className="bg-slate-800 text-white">Manifatturiero</option>
-                          <option value="Automotive" className="bg-slate-800 text-white">Automotive</option>
-                          <option value="Alimentare" className="bg-slate-800 text-white">Alimentare</option>
-                          <option value="Tessile" className="bg-slate-800 text-white">Tessile</option>
-                          <option value="Chimico" className="bg-slate-800 text-white">Chimico</option>
-                          <option value="Farmaceutico" className="bg-slate-800 text-white">Farmaceutico</option>
-                          <option value="Elettronico" className="bg-slate-800 text-white">Elettronico</option>
-                          <option value="Metalmeccanico" className="bg-slate-800 text-white">Metalmeccanico</option>
-                          <option value="Turismo" className="bg-slate-800 text-white">Turismo</option>
-                          <option value="Altro" className="bg-slate-800 text-white">Altro</option>
+                          <option value="" className="bg-slate-800 text-gray-800">Seleziona settore</option>
+                          <option value="Manifatturiero" className="bg-slate-800 text-gray-800">Manifatturiero</option>
+                          <option value="Automotive" className="bg-slate-800 text-gray-800">Automotive</option>
+                          <option value="Alimentare" className="bg-slate-800 text-gray-800">Alimentare</option>
+                          <option value="Tessile" className="bg-slate-800 text-gray-800">Tessile</option>
+                          <option value="Chimico" className="bg-slate-800 text-gray-800">Chimico</option>
+                          <option value="Farmaceutico" className="bg-slate-800 text-gray-800">Farmaceutico</option>
+                          <option value="Elettronico" className="bg-slate-800 text-gray-800">Elettronico</option>
+                          <option value="Metalmeccanico" className="bg-slate-800 text-gray-800">Metalmeccanico</option>
+                          <option value="Turismo" className="bg-slate-800 text-gray-800">Turismo</option>
+                          <option value="Altro" className="bg-slate-800 text-gray-800">Altro</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                          <span className="text-white/50">▼</span>
+                          <span className="text-gray-800/50">▼</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Dimensione */}
                     <div>
-                      <label className="block text-white/80 font-medium mb-3">
+                      <label className="block text-gray-800/80 font-medium mb-3">
                         Dimensione Azienda
                       </label>
                       <div className="relative">
@@ -206,23 +206,23 @@ const CompanyForm = () => {
                           name="dimensione"
                           value={formData.dimensione}
                           onChange={handleInputChange}
-                          className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none"
+                          className="w-full bg-gray-50 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none"
                         >
-                          <option value="" className="bg-slate-800 text-white">Seleziona dimensione</option>
-                          <option value="Micro (1-9 dipendenti)" className="bg-slate-800 text-white">Micro (1-9 dipendenti)</option>
-                          <option value="Piccola (10-49 dipendenti)" className="bg-slate-800 text-white">Piccola (10-49 dipendenti)</option>
-                          <option value="Media (50-249 dipendenti)" className="bg-slate-800 text-white">Media (50-249 dipendenti)</option>
-                          <option value="Grande (250+ dipendenti)" className="bg-slate-800 text-white">Grande (250+ dipendenti)</option>
+                          <option value="" className="bg-slate-800 text-gray-800">Seleziona dimensione</option>
+                          <option value="Micro (1-9 dipendenti)" className="bg-slate-800 text-gray-800">Micro (1-9 dipendenti)</option>
+                          <option value="Piccola (10-49 dipendenti)" className="bg-slate-800 text-gray-800">Piccola (10-49 dipendenti)</option>
+                          <option value="Media (50-249 dipendenti)" className="bg-slate-800 text-gray-800">Media (50-249 dipendenti)</option>
+                          <option value="Grande (250+ dipendenti)" className="bg-slate-800 text-gray-800">Grande (250+ dipendenti)</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                          <span className="text-white/50">▼</span>
+                          <span className="text-gray-800/50">▼</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Referente */}
                     <div>
-                      <label className="block text-white/80 font-medium mb-3">
+                      <label className="block text-gray-800/80 font-medium mb-3">
                         Referente
                       </label>
                       <div className="relative">
@@ -231,18 +231,18 @@ const CompanyForm = () => {
                           name="referente"
                           value={formData.referente}
                           onChange={handleInputChange}
-                          className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full bg-gray-50 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           placeholder="Nome del referente"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <span className="text-white/30">👤</span>
+                          <span className="text-gray-800/30">👤</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Email */}
                     <div>
-                      <label className="block text-white/80 font-medium mb-3">
+                      <label className="block text-gray-800/80 font-medium mb-3">
                         Email
                       </label>
                       <div className="relative">
@@ -251,11 +251,11 @@ const CompanyForm = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full bg-gray-50 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           placeholder="email@azienda.com"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <span className="text-white/30">📧</span>
+                          <span className="text-gray-800/30">📧</span>
                         </div>
                       </div>
                     </div>
@@ -264,7 +264,7 @@ const CompanyForm = () => {
 
                 {/* Sezione Opzionali */}
                 <div className="border-t border-white/20 pt-8">
-                  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
+                  <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <span className="text-2xl mr-3">⚙️</span>
                     Campi Opzionali
                   </h3>
@@ -272,7 +272,7 @@ const CompanyForm = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* ID Utente */}
                     <div>
-                      <label className="block text-white/60 font-medium mb-3">
+                      <label className="block text-gray-800/60 font-medium mb-3">
                         ID Utente
                       </label>
                       <input
@@ -280,14 +280,14 @@ const CompanyForm = () => {
                         name="user_id"
                         value={formData.user_id}
                         onChange={handleInputChange}
-                        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-white/80 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-gray-800/80 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                         placeholder="ID utente (opzionale)"
                       />
                     </div>
 
                     {/* ID Azienda */}
                     <div>
-                      <label className="block text-white/60 font-medium mb-3">
+                      <label className="block text-gray-800/60 font-medium mb-3">
                         ID Azienda esistente
                       </label>
                       <input
@@ -295,7 +295,7 @@ const CompanyForm = () => {
                         name="company_id"
                         value={formData.company_id || ''}
                         onChange={handleInputChange}
-                        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-white/80 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-gray-800/80 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                         placeholder="ID azienda esistente (opzionale)"
                       />
                     </div>
@@ -307,7 +307,7 @@ const CompanyForm = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 rounded-2xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold shadow-2xl border border-white/30 hover:scale-105 hover:shadow-blue-500/25"
+                    className="group flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-gray-800 py-4 px-8 rounded-2xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold shadow-2xl border border-gray-300 hover:scale-105 hover:shadow-blue-500/25"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center">
@@ -325,7 +325,7 @@ const CompanyForm = () => {
                   <button
                     type="button"
                     onClick={() => navigate('/dashboard')}
-                    className="group bg-white/10 backdrop-blur-sm text-white py-4 px-8 rounded-2xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300 font-medium border border-white/30 hover:scale-105"
+                    className="group bg-gray-50 backdrop-blur-sm text-gray-800 py-4 px-8 rounded-2xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300 font-medium border border-gray-300 hover:scale-105"
                   >
                     <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">←</span>
                     Torna alla Dashboard
@@ -337,7 +337,7 @@ const CompanyForm = () => {
 
           {/* Bottom Info */}
           <div className="text-center mt-8">
-            <p className="text-white/50 text-sm">
+            <p className="text-gray-800/50 text-sm">
               Assessment Digitale 4.0 • Trasformazione digitale per il manifatturiero
             </p>
           </div>

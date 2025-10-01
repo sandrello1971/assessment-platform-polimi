@@ -39,6 +39,7 @@ class AssessmentResult(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     session_id = Column(UUID(as_uuid=True), ForeignKey("assessment_session.id"), nullable=False)
     process = Column(String, nullable=False)
+    activity = Column(String, nullable=False)
     category = Column(String, nullable=False)
     dimension = Column(String, nullable=False)
     score = Column(Integer, nullable=False)  # Ora accetta 0-5

@@ -19,6 +19,7 @@ class User(BaseModel):
 # 📝 Assessment Result
 class AssessmentResultCreate(BaseModel):
     process: str
+    activity: str
     category: str
     dimension: str
     score: int

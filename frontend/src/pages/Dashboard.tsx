@@ -172,29 +172,24 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-white">
       {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-        <div className="absolute top-40 left-1/2 w-60 h-60 bg-emerald-500 rounded-full mix-blend-multiply filter blur-xl opacity-15 animate-pulse animation-delay-4000"></div>
-      </div>
+      <div className="absolute inset-0 overflow-y-auto">
 
-      <div className="relative max-w-7xl mx-auto px-8 py-12">
+      <div className="relative max-w-7xl mx-auto px-0 py-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+            <h1 className="text-5xl font-bold text-gray-800 mb-4">
               Dashboard Assessment
             </h1>
-            <p className="text-white/70 text-xl">
+            <p className="text-gray-700 text-lg">
               Gestisci e monitora tutti i tuoi assessment digitali
             </p>
           </div>
           
           <button
             onClick={() => navigate('/company-form')}
-            className="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-bold flex items-center shadow-2xl border border-white/30 hover:scale-105 hover:shadow-blue-500/25"
+            className="group bg-gradient-to-r bg-blue-500 text-gray-800 px-8 py-4 rounded-2xl hover:bg-blue-600 transition-all duration-300 font-bold flex items-center shadow-2xl border border-white/30 hover:scale-105 hover:shadow-blue-500/25"
           >
             <span className="mr-3 text-2xl group-hover:rotate-12 transition-transform duration-300">➕</span>
             Nuovo Assessment
@@ -203,12 +198,12 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <div className="group relative overflow-hidden bg-white/10 backdrop-blur-lg rounded-3xl p-6 text-white shadow-2xl border border-white/20 transform hover:scale-105 transition-all duration-300">
+          <div className="group relative overflow-y-auto bg-white rounded-3xl p-6 text-gray-800 shadow-2xl border border-gray-200 transform hover:scale-105 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/70 text-sm font-medium uppercase tracking-wider">Assessment Totali</p>
+                  <p className="text-gray-700 text-sm font-medium uppercase tracking-wider">Assessment Totali</p>
                   <p className="text-4xl font-bold mt-2">{sessions.length}</p>
                   <div className="w-16 h-1 bg-blue-300 rounded mt-3"></div>
                 </div>
@@ -218,16 +213,16 @@ const Dashboard = () => {
           </div>
 
           {/* ✅ AGGIORNATO: Mostra assessment completati invece di "oggi" */}
-          <div className="group relative overflow-hidden bg-white/10 backdrop-blur-lg rounded-3xl p-6 text-white shadow-2xl border border-white/20 transform hover:scale-105 transition-all duration-300">
+          <div className="group relative overflow-y-auto bg-white rounded-3xl p-6 text-gray-800 shadow-2xl border border-gray-200 transform hover:scale-105 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/70 text-sm font-medium uppercase tracking-wider">Completati Oggi</p>
+                  <p className="text-gray-700 text-sm font-medium uppercase tracking-wider">Completati Oggi</p>
                   <p className="text-4xl font-bold mt-2">{completedAssessments}</p>
                   <div className="w-16 h-1 bg-emerald-300 rounded mt-3"></div>
                   {completedAssessments === 0 && sessions.length > 0 && (
-                    <p className="text-white/50 text-xs mt-2">Assessment in corso</p>
+                    <p className="text-gray-800/50 text-xs mt-2">Assessment in corso</p>
                   )}
                 </div>
                 <div className="text-5xl opacity-80 group-hover:scale-110 transition-transform duration-300">🚀</div>
@@ -235,25 +230,25 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="group relative overflow-hidden bg-white/10 backdrop-blur-lg rounded-3xl p-6 text-white shadow-2xl border border-white/20 transform hover:scale-105 transition-all duration-300">
+          <div className="group relative overflow-y-auto bg-white rounded-3xl p-6 text-gray-800 shadow-2xl border border-gray-200 transform hover:scale-105 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/70 text-sm font-medium uppercase tracking-wider">Media Punteggio</p>
+                  <p className="text-gray-700 text-sm font-medium uppercase tracking-wider">Media Punteggio</p>
                   <p className="text-4xl font-bold mt-2">
                     {formatAverageScore(averageScore)}
                   </p>
                   <div className="w-16 h-1 bg-purple-300 rounded mt-3"></div>
                   {/* ✅ MESSAGGI INFORMATIVI MIGLIORATI */}
                   {sessions.length === 0 && (
-                    <p className="text-white/50 text-xs mt-2">Nessun dato disponibile</p>
+                    <p className="text-gray-800/50 text-xs mt-2">Nessun dato disponibile</p>
                   )}
                   {sessions.length > 0 && averageScore === null && (
-                    <p className="text-white/50 text-xs mt-2">Assessment non completati</p>
+                    <p className="text-gray-800/50 text-xs mt-2">Assessment non completati</p>
                   )}
                   {averageScore !== null && (
-                    <p className="text-white/50 text-xs mt-2">Su {completedAssessments} completati</p>
+                    <p className="text-gray-800/50 text-xs mt-2">Su {completedAssessments} completati</p>
                   )}
                 </div>
                 <div className="text-5xl opacity-80 group-hover:scale-110 transition-transform duration-300">🎯</div>
@@ -263,15 +258,15 @@ const Dashboard = () => {
         </div>
 
         {/* Sessions Section */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 px-8 py-6 text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-purple-600/30"></div>
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-y-auto">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6 text-gray-800 relative overflow-y-auto">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20"></div>
             <div className="absolute top-0 left-0 w-40 h-40 bg-white/5 rounded-full -ml-20 -mt-20"></div>
             <div className="relative z-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                 📋 Sessioni Assessment
               </h2>
-              <p className="text-white/80 mt-2">Gestisci tutti i tuoi assessment aziendali</p>
+              <p className="text-gray-700 mt-2">Gestisci tutti i tuoi assessment aziendali</p>
             </div>
           </div>
 
@@ -282,19 +277,19 @@ const Dashboard = () => {
                   <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto mb-6"></div>
                   <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-500 mx-auto animate-spin animation-delay-1000"></div>
                 </div>
-                <p className="text-white/80 text-lg font-medium">Caricamento sessioni...</p>
+                <p className="text-gray-700 text-lg font-medium">Caricamento sessioni...</p>
               </div>
             ) : sessions.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
                   <span className="text-6xl opacity-60">📝</span>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Nessun Assessment Trovato</h3>
-                <p className="text-white/70 mb-8 text-lg">Inizia creando il tuo primo assessment digitale</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Nessun Assessment Trovato</h3>
+                <p className="text-gray-700 mb-8 text-lg">Inizia creando il tuo primo assessment digitale</p>
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={() => navigate('/company-form')}
-                    className="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-bold shadow-2xl border border-white/30 hover:scale-105"
+                    className="group bg-gradient-to-r bg-blue-500 text-gray-800 px-10 py-4 rounded-2xl hover:bg-blue-600 transition-all duration-300 font-bold shadow-2xl border border-white/30 hover:scale-105"
                   >
                     <span className="mr-3 text-xl group-hover:rotate-12 transition-transform duration-300">🏢</span>
                     Assessment Completo
@@ -309,20 +304,20 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {sessions.map((session, index) => (
                   <div
                     key={session.id}
-                    className="group bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden hover:bg-white/15 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+                    className="group bg-white/10 backdrop-blur-sm rounded-2xl border border-gray-200 overflow-y-auto hover:bg-white/15 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="p-6">
+                    <div className="p-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
                           {/* Company Info */}
                           <div className="md:col-span-2">
-                            <h3 className="text-xl font-bold text-white mb-1">{session.azienda_nome}</h3>
-                            <div className="flex items-center space-x-4 text-sm text-white/70">
+                            <h3 className="text-lg font-bold text-gray-800 mb-1">{session.azienda_nome}</h3>
+                            <div className="flex items-center space-x-4 text-sm text-gray-700">
                               <span className="flex items-center">
                                 <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
                                 {session.settore || 'Non specificato'}
@@ -336,21 +331,21 @@ const Dashboard = () => {
 
                           {/* Contact */}
                           <div>
-                            <p className="text-white/70 text-sm uppercase tracking-wider mb-1">Referente</p>
-                            <p className="text-white font-medium">{session.referente || 'Non specificato'}</p>
+                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Referente</p>
+                            <p className="text-gray-800 font-medium">{session.referente || 'Non specificato'}</p>
                           </div>
 
                           {/* Date */}
                           <div>
-                            <p className="text-white/70 text-sm uppercase tracking-wider mb-1">Data</p>
-                            <p className="text-white font-medium">
+                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Data</p>
+                            <p className="text-gray-800 font-medium">
                               {session.creato_il ? new Date(session.creato_il).toLocaleDateString('it-IT') : 'N/A'}
                             </p>
                           </div>
 
                           {/* Status Badge */}
                           <div className="flex justify-end">
-                            <span className={`px-4 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r ${session.creato_il ? getStatusColor(session.creato_il) : 'from-gray-500 to-gray-600'} shadow-lg`}>
+                            <span className={`px-4 py-2 rounded-full text-xs font-bold text-gray-800 bg-gradient-to-r ${session.creato_il ? getStatusColor(session.creato_il) : 'from-gray-500 to-gray-600'} shadow-lg`}>
                               {session.creato_il ? getStatusText(session.creato_il) : 'N/A'}
                             </span>
                           </div>
@@ -360,7 +355,7 @@ const Dashboard = () => {
                         <div className="flex items-center space-x-3 ml-6">
                           <button
                             onClick={() => navigate(`/results/${session.id}`)}
-                            className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
+                            className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
                           >
                             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">📊</span>
                             Risultati
@@ -368,7 +363,7 @@ const Dashboard = () => {
                           
                           <button
                             onClick={() => navigate(`/assessment/${session.id}`)}
-                            className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
+                            className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
                           >
                             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">▶️</span>
                             Continua
@@ -376,7 +371,7 @@ const Dashboard = () => {
 
                           <button
                             onClick={() => deleteAssessment(session.id, session.azienda_nome)}
-                            className="group bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-3 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
+                            className="group bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
                           >
                             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">🗑️</span>
                             Elimina
@@ -393,7 +388,7 @@ const Dashboard = () => {
 
         {/* Footer */}
         <div className="text-center mt-12">
-          <p className="text-white/50 text-sm">
+          <p className="text-gray-800/50 text-sm">
             Assessment Digitale 4.0 • Powered by{' '}
             <span className="text-blue-400 font-medium">AI Intelligence</span>
           </p>

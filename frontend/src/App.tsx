@@ -3,16 +3,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import AssessmentForm from './pages/AssessmentForm';
-import ResultsPage from './pages/ResultsPage';
+import AssessmentForm from './pages/TestTableForm';
+import ResultsTablePage from './pages/ResultsTablePage';
 import Sessions from './pages/Sessions';
 import NewAssessment from './pages/NewAssessment';
 import CompanyForm from './pages/CompanyForm';
-
+import TestTableForm from './pages/TestTableForm';
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/test-table/:sessionId" element={<TestTableForm />} />
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         
@@ -27,8 +28,9 @@ const App: React.FC = () => {
         
         {/* Route di fallback per compatibilità */}
         <Route path="/assessment" element={<AssessmentForm />} />
-        
-        <Route path="/results/:id" element={<ResultsPage />} />
+
+<Route path="/results/:id" element={<ResultsTablePage />} />        
+        <Route path="/results-table/:id" element={<ResultsTablePage />} />
         <Route path="/sessions" element={<Sessions />} />
       </Routes>
     </Router>
