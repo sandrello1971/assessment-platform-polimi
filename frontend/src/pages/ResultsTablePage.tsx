@@ -223,12 +223,21 @@ const ResultsTablePage = () => {
               <span className="text-2xl font-bold ml-3">{finalRate}</span>
             </div>
           </div>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold"
-          >
-            Torna alla Dashboard
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
+              className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold flex items-center gap-2"
+            >
+              <span>📄</span>
+              Scarica PDF
+            </button>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold"
+            >
+              Torna alla Dashboard
+            </button>
+          </div>
         </div>
 
         {Object.entries(processResults).map(([process, categories]) => {
