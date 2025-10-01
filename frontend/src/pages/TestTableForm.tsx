@@ -38,7 +38,12 @@ const TestTableFormByCategory = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const questionsRes = await axios.get('/i40_assessment_fto.json');
+        // Carica il model_name dalla sessione
+        const sessionRes = await axios.get(`/api/assessment/session/${id}`);
+        const modelName = sessionRes.data.model_name || 'i40_assessment_fto';
+        console.log('Loading model:', modelName);
+        
+        const questionsRes = await axios.get(`/${modelName}.json`);
         const validProcesses = questionsRes.data.filter((p: ProcessData) => 
           p.activities && p.activities.length > 0
         );

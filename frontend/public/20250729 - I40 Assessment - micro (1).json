@@ -1,0 +1,2212 @@
+{
+  "model_info": {
+    "name": "Assessment I4.0 - by POLIMI 2017 model",
+    "description": "Modello importato da Excel",
+    "version": "1.0"
+  },
+  "dimensions": [
+    "Governance",
+    "Monitoring & Control",
+    "Technology",
+    "Organization"
+  ],
+  "questions": {
+    "Governance": [
+      "Presenza di Best Practices / Procedure / Metodi",
+      "Livello di standardizzazione del processo",
+      "L'informazione è tracciata e usata all'interno del processo?",
+      "Livello di integrazione con gli altri processi",
+      "Ottimizzazione del processo dal punto di vista operativo",
+      "note"
+    ],
+    "Monitoring & Control": [
+      "Quanto il processo tende verso il miglioramento continuo?",
+      "Quanto il processo ha la capacità di riconfigurarsi a seguito di un cambiamento?",
+      "Qual è il livello di feed-back sulle performance utilizzato per le analisi?",
+      "Quanto le decisioni sono guidate e supportate dai feed-back?"
+    ],
+    "Technology": [
+      "Quanto i sistemi di supporto al processo sono standardizzati e integrati?",
+      "Quanto il processo è automatizzato?",
+      "Quanta parte dei dati di processo è archiviata ed elaborata in modo digitale?"
+    ],
+    "Organization": [
+      "Qual è ilvello di consapevolezza sulle responsabilità del processo?",
+      "Qual è il livello di collaborazione tra i processi?"
+    ]
+  },
+  "processes": [
+    {
+      "name": "attività di marketing",
+      "categories": {
+        "Governance": [
+          2.0,
+          3.0,
+          2.0,
+          2.0,
+          4.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          2.0,
+          3.0,
+          3.0
+        ],
+        "Technology": [
+          3.0,
+          3.0,
+          0.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "contacts /leadings",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          2.0,
+          1.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          2.0,
+          3.0
+        ],
+        "Technology": [
+          2.0,
+          3.0,
+          0.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "profilazione",
+      "categories": {
+        "Governance": [
+          3.0,
+          3.0,
+          4.0,
+          3.0,
+          3.0,
+          null
+        ],
+        "Monitoring & Control": [
+          4.0,
+          4.0,
+          4.0,
+          4.0
+        ],
+        "Technology": [
+          5.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "analisi domanda / offerta",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "benchmarking",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "tracking degli ordini / prenotazioni",
+      "categories": {
+        "Governance": [
+          3.0,
+          4.0,
+          2.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          2.0,
+          3.0
+        ],
+        "Technology": [
+          2.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione customer satisfaction",
+      "categories": {
+        "Governance": [
+          3.0,
+          3.0,
+          3.0,
+          2.0,
+          4.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          2.0,
+          3.0,
+          3.0
+        ],
+        "Technology": [
+          3.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite website",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          2.0,
+          2.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          4.0,
+          3.0,
+          2.0,
+          1.0
+        ],
+        "Technology": [
+          4.0,
+          2.0,
+          5.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite social media",
+      "categories": {
+        "Governance": [
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite app",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "name": "scouting prodotti e produttori",
+      "categories": {
+        "Governance": [
+          1.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione accordi con i fornitori",
+      "categories": {
+        "Governance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          3.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi:  assicurative",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          2.0
+        ],
+        "Technology": [
+          2.0,
+          2.0,
+          3.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi:  legale",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi: cyber",
+      "categories": {
+        "Governance": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          4.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "registrazione al portale",
+      "categories": {
+        "Governance": [
+          1.0,
+          3.0,
+          3.0,
+          4.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          4.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ordini online",
+      "categories": {
+        "Governance": [
+          1.0,
+          4.0,
+          4.0,
+          3.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          1.0,
+          3.0,
+          2.0
+        ],
+        "Technology": [
+          4.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ordine al fornitore",
+      "categories": {
+        "Governance": [
+          2.0,
+          4.0,
+          3.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          2.0,
+          2.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "conservazione",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "preparazione",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          5.0,
+          3.0
+        ]
+      }
+    },
+    {
+      "name": "spedizione",
+      "categories": {
+        "Governance": [
+          2.0,
+          4.0,
+          4.0,
+          3.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          3.0,
+          2.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          3.0
+        ]
+      }
+    },
+    {
+      "name": "gestione del magazzino",
+      "categories": {
+        "Governance": [
+          2.0,
+          3.0,
+          1.0,
+          1.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          5.0,
+          3.0
+        ]
+      }
+    },
+    {
+      "name": "pianificazione delle attività",
+      "categories": {
+        "Governance": [
+          3.0,
+          5.0,
+          3.0,
+          2.0,
+          4.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          2.0,
+          1.0,
+          5.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione di best practices, procedure, flusso dei processi interni",
+      "categories": {
+        "Governance": [
+          3.0,
+          2.0,
+          3.0,
+          2.0,
+          3.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          5.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione della documentazione",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          5.0
+        ],
+        "Organization": [
+          2.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione delle azioni di miglioramento",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione delle azioni correttive",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione dei dati (conformità GDPR)",
+      "categories": {
+        "Governance": [
+          2.0,
+          1.0,
+          3.0,
+          3.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          3.0,
+          3.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione dei dati (sicurezza accessi, social, antivirus, on-premise/cloud)",
+      "categories": {
+        "Governance": [
+          2.0,
+          3.0,
+          2.0,
+          2.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          4.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente dopo il primo contatto",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          4.0,
+          3.0,
+          5.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente a seguito dell'ordine",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          4.0,
+          3.0,
+          5.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente durante la consegna",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          4.0,
+          3.0,
+          5.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "intervista del cliente dopo la consegna",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          4.0,
+          3.0,
+          5.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "contatto periodico con i clienti per l'invio di nuove offerte profilate",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          4.0,
+          3.0,
+          5.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          5.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione dei reclami",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Digital Advertising (Brand Proteciton - Generic Keywords)",
+      "categories": {
+        "Governance": [
+          1.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Analisi dei visitatori attraverso Google Analytics",
+      "categories": {
+        "Governance": [
+          1.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Dashboard riepilogative Es PoweBI",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          3.0,
+          2.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Analisi dei flussi di comportamento degli utenti",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          3.0,
+          2.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Campagne Social Nazionali",
+      "categories": {
+        "Governance": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "Campagne Internazionali",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          3.0,
+          0.0,
+          3.0
+        ],
+        "Organization": [
+          3.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione (specificare se interna / esterna)",
+      "categories": {
+        "Governance": [
+          3.0,
+          3.0,
+          3.0,
+          1.0,
+          3.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          3.0,
+          3.0
+        ],
+        "Technology": [
+          1.0,
+          2.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ciclo attivo",
+      "categories": {
+        "Governance": [
+          4.0,
+          5.0,
+          5.0,
+          3.0,
+          4.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          4.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "ciclo passivo",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          2.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          2.0,
+          2.0,
+          1.0
+        ],
+        "Technology": [
+          2.0,
+          2.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "pianificazione strategica",
+      "categories": {
+        "Governance": [
+          2.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ],
+        "Technology": [
+          2.0,
+          2.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "gestione dei pagamenti digitali",
+      "categories": {
+        "Governance": [
+          4.0,
+          4.0,
+          3.0,
+          2.0,
+          2.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          4.0,
+          3.0
+        ],
+        "Technology": [
+          4.0,
+          5.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "accordi sottoscritti formalmente",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "firma elettronica su contrattualistica",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          null
+        ],
+        "Monitoring & Control": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Technology": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "analisi finanziaria",
+      "categories": {
+        "Governance": [
+          3.0,
+          1.0,
+          3.0,
+          2.0,
+          3.0,
+          null
+        ],
+        "Monitoring & Control": [
+          3.0,
+          3.0,
+          3.0,
+          3.0
+        ],
+        "Technology": [
+          2.0,
+          3.0,
+          5.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "controllo di gestione",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          null
+        ],
+        "Monitoring & Control": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Technology": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Organization": [
+          4.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "name": "TOTAL RATE",
+      "categories": {
+        "Governance": [
+          2.1759566326530613,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ASPECT RATING",
+      "categories": {
+        "Governance": [
+          1.7784580498866214,
+          1.7476473922902496,
+          2.9212585034013605,
+          2.2564625850340136,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "MKTG",
+      "categories": {
+        "Governance": [
+          1.6600000000000001,
+          1.9722222222222223,
+          3.047619047619048,
+          2.0,
+          2.1699603174603173,
+          null
+        ]
+      }
+    },
+    {
+      "name": "attività di marketing",
+      "categories": {
+        "Governance": [
+          2.6,
+          2.5,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "contacts /leadings",
+      "categories": {
+        "Governance": [
+          1.8,
+          2.5,
+          1.6666666666666667,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "profilazione",
+      "categories": {
+        "Governance": [
+          3.2,
+          4.0,
+          4.666666666666667,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "analisi domanda / offerta",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          null,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "benchmarking",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          null,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "tracking degli ordini / prenotazioni",
+      "categories": {
+        "Governance": [
+          2.2,
+          2.75,
+          4.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione customer satisfaction",
+      "categories": {
+        "Governance": [
+          3.0,
+          2.5,
+          4.333333333333333,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite website",
+      "categories": {
+        "Governance": [
+          2.6,
+          2.5,
+          3.6666666666666665,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite social media",
+      "categories": {
+        "Governance": [
+          1.2,
+          1.0,
+          1.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "promozione tramite app",
+      "categories": {
+        "Governance": [
+          0.0,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "DESIGN & ENGINEERING",
+      "categories": {
+        "Governance": [
+          0.64,
+          0.65,
+          2.25,
+          1.7,
+          1.31,
+          null
+        ]
+      }
+    },
+    {
+      "name": "scouting prodotti e produttori",
+      "categories": {
+        "Governance": [
+          1.2,
+          1.0,
+          1.0,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione accordi con i fornitori",
+      "categories": {
+        "Governance": [
+          0.6,
+          1.0,
+          1.6666666666666667,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi:  assicurative",
+      "categories": {
+        "Governance": [
+          1.2,
+          1.25,
+          2.3333333333333335,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi:  legale",
+      "categories": {
+        "Governance": [
+          0.0,
+          0.0,
+          null,
+          1.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione rischi: cyber",
+      "categories": {
+        "Governance": [
+          0.2,
+          0.0,
+          4.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "EXECUTION",
+      "categories": {
+        "Governance": [
+          2.085714285714286,
+          1.3571428571428572,
+          2.8095238095238098,
+          3.2142857142857144,
+          2.3666666666666667,
+          null
+        ]
+      }
+    },
+    {
+      "name": "registrazione al portale",
+      "categories": {
+        "Governance": [
+          2.6,
+          1.0,
+          4.666666666666667,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ordini online",
+      "categories": {
+        "Governance": [
+          2.6,
+          2.0,
+          4.666666666666667,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ordine al fornitore",
+      "categories": {
+        "Governance": [
+          2.2,
+          1.0,
+          3.0,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "conservazione",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "preparazione",
+      "categories": {
+        "Governance": [
+          1.4,
+          1.0,
+          1.0,
+          4.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "spedizione",
+      "categories": {
+        "Governance": [
+          3.0,
+          2.5,
+          4.333333333333333,
+          4.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione del magazzino",
+      "categories": {
+        "Governance": [
+          1.8,
+          1.0,
+          1.0,
+          4.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "QUALITY MANAGEMENT",
+      "categories": {
+        "Governance": [
+          1.4857142857142855,
+          1.65,
+          3.1333333333333337,
+          1.7142857142857142,
+          1.9958333333333336,
+          null
+        ]
+      }
+    },
+    {
+      "name": "pianificazione delle attività",
+      "categories": {
+        "Governance": [
+          3.4,
+          2.0,
+          2.6666666666666665,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione di best practices, procedure, flusso dei processi interni",
+      "categories": {
+        "Governance": [
+          2.6,
+          2.25,
+          2.3333333333333335,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione della documentazione",
+      "categories": {
+        "Governance": [
+          0.0,
+          1.0,
+          2.3333333333333335,
+          1.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione delle azioni di miglioramento",
+      "categories": {
+        "Governance": [
+          0.0,
+          null,
+          null,
+          1.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione delle azioni correttive",
+      "categories": {
+        "Governance": [
+          0.0,
+          null,
+          null,
+          1.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione dei dati (conformità GDPR)",
+      "categories": {
+        "Governance": [
+          2.2,
+          1.0,
+          3.6666666666666665,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione dei dati (sicurezza accessi, social, antivirus, on-premise/cloud)",
+      "categories": {
+        "Governance": [
+          2.2,
+          2.0,
+          4.666666666666667,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "CUSTOMER CARE",
+      "categories": {
+        "Governance": [
+          3.5,
+          2.9166666666666665,
+          4.333333333333333,
+          2.6666666666666665,
+          3.3541666666666665,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente dopo il primo contatto",
+      "categories": {
+        "Governance": [
+          4.0,
+          3.25,
+          4.333333333333333,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente a seguito dell'ordine",
+      "categories": {
+        "Governance": [
+          4.0,
+          3.25,
+          4.333333333333333,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione del cliente durante la consegna",
+      "categories": {
+        "Governance": [
+          4.0,
+          3.25,
+          4.333333333333333,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "intervista del cliente dopo la consegna",
+      "categories": {
+        "Governance": [
+          4.0,
+          3.25,
+          4.333333333333333,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "contatto periodico con i clienti per l'invio di nuove offerte profilate",
+      "categories": {
+        "Governance": [
+          4.0,
+          3.25,
+          4.333333333333333,
+          3.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione dei reclami",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.25,
+          null,
+          1.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "DIGITAL MKTG",
+      "categories": {
+        "Governance": [
+          1.1666666666666667,
+          1.5,
+          2.0,
+          2.0,
+          1.6666666666666667,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Digital Advertising (Brand Proteciton - Generic Keywords)",
+      "categories": {
+        "Governance": [
+          1.2,
+          1.0,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Analisi dei visitatori attraverso Google Analytics",
+      "categories": {
+        "Governance": [
+          1.2,
+          1.0,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Dashboard riepilogative Es PoweBI",
+      "categories": {
+        "Governance": [
+          2.2,
+          2.25,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Analisi dei flussi di comportamento degli utenti",
+      "categories": {
+        "Governance": [
+          2.2,
+          2.25,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Campagne Social Nazionali",
+      "categories": {
+        "Governance": [
+          0.2,
+          1.0,
+          2.0,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "Campagne Internazionali",
+      "categories": {
+        "Governance": [
+          0.0,
+          null,
+          null,
+          2.0,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ADMINISTRATION",
+      "categories": {
+        "Governance": [
+          1.911111111111111,
+          2.1875,
+          2.875,
+          2.5,
+          2.368402777777778,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione (specificare se interna / esterna)",
+      "categories": {
+        "Governance": [
+          2.6,
+          2.75,
+          2.6666666666666665,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ciclo attivo",
+      "categories": {
+        "Governance": [
+          4.2,
+          3.0,
+          4.333333333333333,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "ciclo passivo",
+      "categories": {
+        "Governance": [
+          1.6,
+          1.5,
+          3.0,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "pianificazione strategica",
+      "categories": {
+        "Governance": [
+          1.4,
+          2.0,
+          3.0,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "gestione dei pagamenti digitali",
+      "categories": {
+        "Governance": [
+          3.0,
+          3.25,
+          4.666666666666667,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "accordi sottoscritti formalmente",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "firma elettronica su contrattualistica",
+      "categories": {
+        "Governance": [
+          1.0,
+          1.0,
+          1.0,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "analisi finanziaria",
+      "categories": {
+        "Governance": [
+          2.4,
+          3.0,
+          3.3333333333333335,
+          2.5,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "name": "controllo di gestione",
+      "categories": {
+        "Governance": [
+          0.0,
+          null,
+          null,
+          2.5,
+          null,
+          null
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "total_processes": 109,
+    "total_dimensions": 4,
+    "parser_version": "1.0"
+  }
+}
