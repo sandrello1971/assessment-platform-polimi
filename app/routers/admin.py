@@ -1,3 +1,5 @@
+import os
+from pydantic import BaseModel
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -170,3 +172,56 @@ async def list_models():
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class SaveModelRequest(BaseModel):
+    filename: str
+    model_data: list
+
+
+@router.post("/save-model")
+async def save_model(request: SaveModelRequest):
+    """
+    Salva un modello JSON con nome personalizzato
+    """
+    try:
+        # Valida il filename
+        if not request.filename or not request.filename.endswith('.json'):
+            filename = f"{request.filename}.json"
+        
+        # Path dove salvare
+        models_dir = Path("frontend/public")
+        models_dir.mkdir(parents=True, exist_ok=True)
+        
+        target_file = models_dir / filename
+        
+        # Se esiste già, crea backup
+        if target_file.exists():
+            backup_dir = Path("backups/models")
+            backup_dir.mkdir(parents=True, exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_file = backup_dir / f"{target_file.stem}_{timestamp}.json"
+            shutil.copy2(target_file, backup_file)
+        
+        # Salva il nuovo modello
+        with open(target_file, 'w', encoding='utf-8') as f:
+            json.dump(request.model_data, f, indent=2, ensure_ascii=False)
+        
+        # Imposta permessi corretti (644) e proprietario (ubuntu:www-data)
+        os.chmod(target_file, 0o644)
+        try:
+            import pwd, grp
+            uid = pwd.getpwnam("ubuntu").pw_uid
+            gid = grp.getgrnam("www-data").gr_gid
+            os.chown(target_file, uid, gid)
+        except Exception:
+            pass  # Continua anche se non riesce a cambiare owner
+        
+        return {
+            "success": True,
+            "message": f"Modello '{filename}' salvato con successo",
+            "filename": filename,
+            "path": str(target_file)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore salvataggio: {str(e)}")

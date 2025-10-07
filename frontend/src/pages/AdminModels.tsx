@@ -63,12 +63,20 @@ const AdminModels = () => {
               <h1 className="text-4xl font-bold text-gray-800 mb-2">🔧 Gestione Modelli Assessment</h1>
               <p className="text-gray-600">Carica nuovi file Excel per creare modelli personalizzati</p>
             </div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all"
-            >
-              ← Torna alla Dashboard
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate('/admin/questions')}
+                className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
+              >
+                📝 Editor Domande
+              </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all"
+              >
+                ← Torna alla Dashboard
+              </button>
+            </div>
           </div>
         </div>
 

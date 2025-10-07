@@ -186,7 +186,7 @@ const Dashboard = () => {
               Gestisci e monitora tutti i tuoi assessment digitali
             </p>
           </div>
-          
+<div className="flex gap-4">          
           <button
             onClick={() => navigate('/company-form')}
             className="group bg-blue-500 text-white px-8 py-4 rounded-2xl hover:bg-blue-600 transition-all duration-300 font-bold flex items-center shadow-2xl"
@@ -194,6 +194,14 @@ const Dashboard = () => {
             <span className="mr-3 text-2xl group-hover:rotate-12 transition-transform duration-300">➕</span>
             Nuovo Assessment
           </button>
+<button
+            onClick={() => navigate('/admin/questions')}
+            className="group bg-purple-500 text-white px-8 py-4 rounded-2xl hover:bg-purple-600 transition-all duration-300 font-bold flex items-center shadow-2xl"
+          >
+            <span className="mr-3 text-2xl group-hover:rotate-12 transition-transform duration-300">⚙️</span>
+            Gestisci Modelli
+          </button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -390,7 +398,7 @@ const Dashboard = () => {
         <div className="text-center mt-12">
           <p className="text-gray-800/50 text-sm">
             Assessment Digitale 4.0 • Powered by{' '}
-            <span className="text-blue-400 font-medium">AI Intelligence</span>
+            <span className="text-blue-400 font-medium">Noscite - In Digitali Nova Virtus</span>
           </p>
         </div>
       </div>

@@ -14,6 +14,7 @@ import TestTableForm from './pages/TestTableForm';
 import TestTableFormByCategory from './pages/TestTableFormByCategory';
 
 import AdminModels from './pages/AdminModels';
+import AdminQuestions from './pages/AdminQuestions';
 const App: React.FC = () => {
   return (
     <Router>
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin/models" element={<AdminModels />} />
+        <Route path="/admin/questions" element={<AdminQuestions />} />
         
         {/* Nuova route per inserire dati azienda */}
         <Route path="/company-form" element={<CompanyForm />} />
