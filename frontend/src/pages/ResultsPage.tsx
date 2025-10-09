@@ -533,7 +533,7 @@ const ResultsPage = () => {
         }
 
         try {
-         const suggestionsResponse = await fetch(`/api/assessment/${sessionId}/ai-suggestions-enhanced`);
+         const suggestionsResponse = await fetch(`/api/assessment/${sessionId}/ai-suggestions-enhanced?include_roadmap=true`);
           if (suggestionsResponse.ok) {
             const suggData = await suggestionsResponse.json();
             setSuggestions(suggData);

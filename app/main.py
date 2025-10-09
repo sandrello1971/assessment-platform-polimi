@@ -89,7 +89,80 @@ def submit(session_id: UUID, results: List[schemas.AssessmentResultCreate], db: 
 # 📊 Visualizza risultati sessione
 @api_router.get("/assessment/{session_id}/results", response_model=List[schemas.AssessmentResultOut])
 def results(session_id: UUID, db: Session = Depends(get_db)):
-    return db.query(models.AssessmentResult).filter(models.AssessmentResult.session_id == session_id).all()
+    """Restituisce i risultati ordinati secondo il modello JSON"""
+    
+    # Ottieni risultati dal DB
+    results = db.query(models.AssessmentResult).filter(
+        models.AssessmentResult.session_id == session_id
+    ).all()
+    
+    # Ottieni il nome del modello dalla sessione
+    session = db.query(models.AssessmentSession).filter(
+        models.AssessmentSession.id == session_id
+    ).first()
+    
+    if not session or not results:
+        return results
+    
+    model_name = session.model_name or 'casoin'
+    
+    # Carica il JSON del modello per ottenere l'ordine
+    try:
+        import json
+        from pathlib import Path
+        
+        model_path = Path(f"frontend/public/{model_name}.json")
+        if not model_path.exists():
+            return results  # Se il modello non esiste, restituisci senza ordinare
+        
+        with open(model_path, 'r', encoding='utf-8') as f:
+            model_data = json.load(f)
+        
+        # Crea mappa di ordinamento: process -> category -> [activities in order]
+        order_map = {}
+        for proc in model_data:
+            proc_name = proc.get('process')
+            if proc_name not in order_map:
+                order_map[proc_name] = {}
+            
+            for activity in proc.get('activities', []):
+                act_name = activity.get('name')
+                for category in activity.get('categories', {}).keys():
+                    if category not in order_map[proc_name]:
+                        order_map[proc_name][category] = []
+                    if act_name not in order_map[proc_name][category]:
+                        order_map[proc_name][category].append(act_name)
+        
+        # Ordina i risultati
+        def get_sort_key(result):
+            proc = result.process
+            cat = result.category
+            act = result.activity
+            
+            # Ottieni l'indice dall'order_map
+            try:
+                proc_order = list(order_map.keys()).index(proc)
+            except (ValueError, AttributeError):
+                proc_order = 999
+            
+            try:
+                cat_order = ['Governance', 'Monitoring & Control', 'Technology', 'Organization'].index(cat)
+            except ValueError:
+                cat_order = 999
+            
+            try:
+                act_order = order_map.get(proc, {}).get(cat, []).index(act)
+            except (ValueError, AttributeError):
+                act_order = 999
+            
+            return (proc_order, cat_order, act_order)
+        
+        results.sort(key=get_sort_key)
+        
+    except Exception as e:
+        print(f"⚠️ Warning: Could not order results: {e}")
+    
+    return results
 
 # 🗑️ Cancella assessment completo (sessione + risultati)
 @api_router.delete("/assessment/{session_id}")
@@ -139,3 +212,25 @@ app.include_router(radar.router, prefix="/api")
 app.include_router(pdf.router, prefix="/api", tags=["pdf"])
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+
+@app.put("/api/assessment/{session_id}/save-ai-conclusions")
+async def save_ai_conclusions(session_id: str, conclusions: dict, db: Session = Depends(get_db)):
+    """Salva le conclusioni AI nel database"""
+    try:
+        session = db.query(models.AssessmentSession).filter(
+            models.AssessmentSession.id == session_id
+        ).first()
+        
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Salva nel campo raccomandazioni
+        session.raccomandazioni = conclusions.get('text', '')
+        db.commit()
+        
+        return {"message": "Conclusioni salvate con successo"}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+

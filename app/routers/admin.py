@@ -127,6 +127,13 @@ async def upload_excel_model(
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(frontend_data, f, ensure_ascii=False, indent=2)
         
+        # Copia anche in frontend/dist per nginx
+        dist_path = Path("frontend/dist") / json_filename
+        if dist_path.parent.exists():
+            with open(dist_path, 'w', encoding='utf-8') as dist_f:
+                json.dump(frontend_data, dist_f, ensure_ascii=False, indent=2)
+            print(f"✅ Copiato anche in: {dist_path}")
+        
         # Rimuovi file temporaneo
         Path(temp_path).unlink()
         
@@ -205,6 +212,19 @@ async def save_model(request: SaveModelRequest):
         # Salva il nuovo modello
         with open(target_file, 'w', encoding='utf-8') as f:
             json.dump(request.model_data, f, indent=2, ensure_ascii=False)
+        
+        # Copia anche in frontend/dist per nginx
+        dist_dir = Path("frontend/dist")
+        if dist_dir.exists():
+            dist_file = dist_dir / filename
+            with open(dist_file, 'w', encoding='utf-8') as dist_f:
+                json.dump(request.model_data, dist_f, indent=2, ensure_ascii=False)
+            os.chmod(dist_file, 0o644)
+            try:
+                os.chown(dist_file, uid, gid)
+            except:
+                pass
+            print(f"✅ Modello copiato anche in dist: {dist_file}")
         
         # Imposta permessi corretti (644) e proprietario (ubuntu:www-data)
         os.chmod(target_file, 0o644)

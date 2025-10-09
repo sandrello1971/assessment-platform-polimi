@@ -47,11 +47,20 @@ interface CriticalPoint {
 }
 
 
+interface AISuggestions {
+  critical_count: number;
+  suggestions: string;
+}
+
+const CATEGORIES_ORDER = ["Governance", "Monitoring & Control", "Technology", "Organization"];
+
 const ResultsTablePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [processResults, setProcessResults] = useState<ProcessResults>({});
   const [loading, setLoading] = useState(true);
+  const [suggestions, setSuggestions] = useState<AISuggestions | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/assessment/${id}/results`)
@@ -62,6 +71,17 @@ const ResultsTablePage = () => {
       .catch(err => {
         console.error(err);
         setLoading(false);
+      });
+
+    // Carica suggerimenti AI
+    setAiLoading(true);
+    axios.get(`/api/assessment/${id}/ai-suggestions-enhanced?include_roadmap=true`)
+      .then(res => {
+        setSuggestions(res.data);
+        setAiLoading(false);
+      })
+      .catch(() => {
+        setAiLoading(false);
       });
   }, [id]);
 
@@ -361,8 +381,8 @@ const ResultsTablePage = () => {
                 <p className="text-sm text-gray-600 mb-6">Media per categoria del processo {process}</p>
                 
                 <div className="flex justify-center">
-                  <div className="relative" style={{ width: '400px', height: '400px' }}>
-                    <svg viewBox="0 0 400 400" className="w-full h-full">
+                  <div className="relative" style={{ width: '600px', height: '600px' }}>
+                    <svg viewBox="0 0 600 600" className="w-full h-full">
                       {[0, 1, 2, 3, 4, 5].map(level => {
                         const categoryNames = Object.keys(processAverages[process]);
                         return (
@@ -371,8 +391,8 @@ const ResultsTablePage = () => {
                             points={categoryNames.map((_, i) => {
                               const angle = (Math.PI * 2 * i) / categoryNames.length - Math.PI / 2;
                               const radius = (level / 5) * 150;
-                              const x = 200 + radius * Math.cos(angle);
-                              const y = 200 + radius * Math.sin(angle);
+                              const x = 300 + radius * Math.cos(angle);
+                              const y = 300 + radius * Math.sin(angle);
                               return `${x},${y}`;
                             }).join(' ')}
                             fill="none"
@@ -385,13 +405,13 @@ const ResultsTablePage = () => {
                       {Object.keys(processAverages[process]).map((_, i) => {
                         const categoryNames = Object.keys(processAverages[process]);
                         const angle = (Math.PI * 2 * i) / categoryNames.length - Math.PI / 2;
-                        const x = 200 + 150 * Math.cos(angle);
-                        const y = 200 + 150 * Math.sin(angle);
+                        const x = 300 + 200 * Math.cos(angle);
+                        const y = 300 + 200 * Math.sin(angle);
                         return (
                           <line
                             key={i}
-                            x1="200"
-                            y1="200"
+                            x1="300"
+                            y1="300"
                             x2={x}
                             y2={y}
                             stroke="#e5e7eb"
@@ -405,8 +425,8 @@ const ResultsTablePage = () => {
                           const categoryNames = Object.keys(processAverages[process]);
                           const angle = (Math.PI * 2 * i) / categoryNames.length - Math.PI / 2;
                           const radius = (score / 5) * 150;
-                          const x = 200 + radius * Math.cos(angle);
-                          const y = 200 + radius * Math.sin(angle);
+                          const x = 300 + radius * Math.cos(angle);
+                          const y = 300 + radius * Math.sin(angle);
                           return `${x},${y}`;
                         }).join(' ')}
                         fill="rgba(59, 130, 246, 0.3)"
@@ -417,8 +437,8 @@ const ResultsTablePage = () => {
                       {Object.keys(processAverages[process]).map((name, i) => {
                         const categoryNames = Object.keys(processAverages[process]);
                         const angle = (Math.PI * 2 * i) / categoryNames.length - Math.PI / 2;
-                        const x = 200 + 170 * Math.cos(angle);
-                        const y = 200 + 170 * Math.sin(angle);
+                        const x = 300 + 240 * Math.cos(angle);
+                        const y = 300 + 240 * Math.sin(angle);
                         return (
                           <text
                             key={name}
@@ -436,8 +456,8 @@ const ResultsTablePage = () => {
                         const categoryNames = Object.keys(processAverages[process]);
                         const angle = (Math.PI * 2 * i) / categoryNames.length - Math.PI / 2;
                         const radius = (score / 5) * 150;
-                        const x = 200 + radius * Math.cos(angle);
-                        const y = 200 + radius * Math.sin(angle);
+                        const x = 300 + radius * Math.cos(angle);
+                        const y = 300 + radius * Math.sin(angle);
                         return (
                           <text
                             key={`score-${i}`}
@@ -456,7 +476,7 @@ const ResultsTablePage = () => {
               </div>
             )}
             
-            {Object.entries(categories).map(([category, activities]) => {
+            {CATEGORIES_ORDER.filter(cat => categories[cat]).map(category => { const activities = categories[category];
               const allActivities = Object.keys(activities);
               const allDimensions = allActivities.length > 0 
                 ? Object.keys(activities[allActivities[0]])
@@ -809,6 +829,58 @@ const ResultsTablePage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* AI Suggestions Section */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
+          <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <span>🤖</span>
+            <span>Suggerimenti AI Personalizzati</span>
+          </h3>
+          
+          {aiLoading && (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
+              <p className="text-lg font-semibold text-gray-700">Generazione raccomandazioni AI...</p>
+              <p className="text-sm text-gray-500 mt-2">Analisi approfondita in corso (fino a 30 secondi)</p>
+            </div>
+          )}
+          
+          {!aiLoading && !suggestions && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">⚠️ Suggerimenti AI non disponibili</p>
+            </div>
+          )}
+          
+          {!aiLoading && suggestions && (
+            <div>
+              {suggestions.critical_count > 0 && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-700 font-semibold text-center">
+                    ⚠️ {suggestions.critical_count} aree critiche identificate che richiedono attenzione
+                  </p>
+                </div>
+              )}
+              <div 
+                className="prose max-w-none space-y-4"
+                dangerouslySetInnerHTML={{ 
+                  __html: suggestions.suggestions
+                    .replace(/###\s*(.*)/g, '<h3 class="text-xl font-bold mt-6 mb-3 text-gray-800 border-b-2 border-blue-200 pb-2">$1</h3>')
+                    .replace(/🎯\s*\*\*(.*)\*\*/g, '<div class="p-4 bg-blue-50 border-l-4 border-blue-400 rounded mb-3"><strong class="text-blue-800">🎯 $1</strong></div>')
+                    .replace(/💰\s*\*\*(.*)\*\*/g, '<div class="p-4 bg-green-50 border-l-4 border-green-400 rounded mb-3"><strong class="text-green-800">💰 $1</strong></div>')
+                    .replace(/📈\s*\*\*(.*)\*\*/g, '<div class="p-4 bg-purple-50 border-l-4 border-purple-400 rounded mb-3"><strong class="text-purple-800">📈 $1</strong></div>')
+                    .replace(/⏱️\s*\*\*(.*)\*\*/g, '<div class="p-4 bg-orange-50 border-l-4 border-orange-400 rounded mb-3"><strong class="text-orange-800">⏱️ $1</strong></div>')
+                    .replace(/🔧\s*\*\*(.*)\*\*/g, '<div class="p-4 bg-gray-50 border-l-4 border-gray-400 rounded mb-3"><strong class="text-gray-800">🔧 $1</strong></div>')
+                    .replace(/🏆\s*\*\*(.*)\*\*/g, '<div class="p-5 bg-yellow-50 border-l-4 border-yellow-500 rounded mb-4"><strong class="text-yellow-900 text-lg">🏆 $1</strong></div>')
+                    .replace(/⚠️\s*\*\*(.*)\*\*/g, '<div class="p-5 bg-red-50 border-l-4 border-red-500 rounded mb-4"><strong class="text-red-900 text-lg">⚠️ $1</strong></div>')
+                    .replace(/🚀\s*\*\*(.*)\*\*/g, '<div class="p-5 bg-indigo-50 border-l-4 border-indigo-500 rounded mb-4"><strong class="text-indigo-900 text-lg">🚀 $1</strong></div>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                    .replace(/\n\n/g, '<br><br>')
+                    .replace(/\n/g, ' ')
+                }} 
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

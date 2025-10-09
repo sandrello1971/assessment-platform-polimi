@@ -130,16 +130,7 @@ const TestTableFormByCategory = () => {
   const progressPercentage = ((currentCategoryIndex + 1) / CATEGORIES.length) * 100;
 
   return (
-    <>
-      {/* Bottone Dashboard - Fixed */}
-      <button
-        onClick={() => navigate('/dashboard')}
-        className="fixed top-4 right-4 z-50 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold flex items-center gap-2"
-      >
-        ← Dashboard
-      </button>
-
-            <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Assessment Digitale 4.0 - {currentCategory}</h1>
@@ -256,8 +247,8 @@ const TestTableFormByCategory = () => {
             </button>
           )}
         </div>
-      </div>      </div>
-    </>
+      </div>
+    </div>
   );
 };
 

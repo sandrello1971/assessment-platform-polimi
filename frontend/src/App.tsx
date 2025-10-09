@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AssessmentForm from './pages/TestTableForm';
 import AssessmentFormByDimension from './pages/AssessmentFormByDimension';
-import ResultsTablePage from './pages/ResultsTablePage';
+import ResultsByCategoryPage from "./pages/ResultsByCategoryPage";
 import Sessions from './pages/Sessions';
 import NewAssessment from './pages/NewAssessment';
 import CompanyForm from './pages/CompanyForm';
@@ -40,8 +40,8 @@ const App: React.FC = () => {
         {/* Route di fallback per compatibilità */}
         <Route path="/assessment" element={<AssessmentForm />} />
 
-<Route path="/results/:id" element={<ResultsTablePage />} />        
-        <Route path="/results-table/:id" element={<ResultsTablePage />} />
+<Route path="/results/:id" element={<ResultsByCategoryPage />} />        
+        <Route path="/results-table/:id" element={<ResultsByCategoryPage />} />
         <Route path="/sessions" element={<Sessions />} />
       </Routes>
     </Router>

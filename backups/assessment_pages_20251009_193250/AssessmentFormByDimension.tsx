@@ -302,14 +302,6 @@ const AssessmentFormByDimension: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        {/* Bottone Dashboard */}
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="fixed top-4 right-4 z-50 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold"
-        >
-          ← Dashboard
-        </button>
-
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto mb-6"></div>
           <p className="text-white/80 text-lg font-medium">Caricamento assessment...</p>

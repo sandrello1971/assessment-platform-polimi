@@ -116,6 +116,34 @@ class AIRecommendationEngine:
             "email": session_data.get("email")
         }
     
+    def _extract_employee_count(self, size_string: str) -> Dict[str, Any]:
+        """Estrae informazioni sui dipendenti dalla stringa dimensione"""
+        size_map = {
+            "Micro (1-9 dipendenti)": {"min": 1, "max": 9, "category": "MICRO", "label": "Microimpresa"},
+            "Piccola (10-49 dipendenti)": {"min": 10, "max": 49, "category": "PICCOLA", "label": "Piccola Impresa"},
+            "Media (50-249 dipendenti)": {"min": 50, "max": 249, "category": "MEDIA", "label": "Media Impresa"},
+            "Grande (250+ dipendenti)": {"min": 250, "max": 1000, "category": "GRANDE", "label": "Grande Impresa"}
+        }
+        
+        for key, value in size_map.items():
+            if key.lower() in size_string.lower():
+                employee_range = f"{value['min']}-{value['max']}" if value["max"] < 1000 else f"{value['min']}+"
+                avg_count = (value["min"] + value["max"]) // 2 if value["max"] < 1000 else 500
+                return {
+                    "range": employee_range,
+                    "avg_employees": avg_count,
+                    "category": value["category"],
+                    "label": value["label"]
+                }
+        
+        return {
+            "range": "Non specificato",
+            "avg_employees": 25,
+            "category": "PICCOLA",
+            "label": "Piccola Impresa"
+        }
+
+
     def _perform_advanced_analysis(self, results, company_context):
         """Esegue analisi multi-dimensionale avanzata"""
         print("🔍 Eseguendo analisi multi-dimensionale...")
@@ -492,10 +520,43 @@ class AIRecommendationEngine:
         else:
             return {"level": "PRINCIPIANTE", "description": "Trasformazione necessaria", "color": "#DC2626"}
     
+    def _get_size_specific_context(self, size_category: str) -> str:
+        """Restituisce contesto specifico per dimensione aziendale"""
+        contexts = {
+            "MICRO": """
+- Budget limitato: privilegiare soluzioni low-cost e cloud
+- Risorse umane ridotte: focus su automazione e outsourcing
+- Investimenti: €2K-€15K, priorità ROI immediato
+- Approccio: soluzioni plug&play, no personalizzazioni complesse
+- Consiglia: SaaS, piattaforme integrate, formazione base""",
+            "PICCOLA": """
+- Budget contenuto: bilanciare costi e benefici
+- Team snello: soluzioni user-friendly, formazione essenziale
+- Investimenti: €10K-€50K, ROI entro 12-18 mesi
+- Approccio: mix cloud/on-premise, integrazioni standard
+- Consiglia: ERP leggeri, CRM essenziali, digitalizzazione graduale""",
+            "MEDIA": """
+- Budget strutturato: investimenti strategici pianificati
+- Team dedicato: possibile specializzazione IT interna
+- Investimenti: €40K-€200K, ROI 18-36 mesi accettabile
+- Approccio: soluzioni enterprise, personalizzazioni mirate
+- Consiglia: ERP completi, BI, automazione avanzata, consulenza""",
+            "GRANDE": """
+- Budget significativo: progetti transformation complessi
+- Dipartimento IT: competenze interne, team dedicati
+- Investimenti: €150K-€1M+, focus su innovazione e vantaggio competitivo
+- Approccio: soluzioni custom, integrazioni complesse, AI/ML
+- Consiglia: Digital Twin, IoT Platform, Advanced Analytics, Innovation Lab"""
+        }
+        return contexts.get(size_category, contexts["PICCOLA"])
+
     def _generate_smart_recommendations(self, analysis, company_context):
         """Genera raccomandazioni AI intelligenti"""
         try:
             high_priority = analysis["priority_matrix"]["high_priority"][:3]
+            
+            # Estrai info dipendenti
+            employee_info = self._extract_employee_count(company_context["size"])
             sector = company_context["sector"]
             
             # ✅ PROMPT SPECIFICO PER TURISMO
@@ -510,7 +571,7 @@ SETTORE TURISMO - SPECIFICITÀ:
 - KPI: RevPAR, ADR, Booking Conversion, NPS, Review Score
 """
             else:
-                sector_context = f"SETTORE MANIFATTURIERO: Focus su Efficienza, Qualità, Industry 4.0"
+                sector_context = f"""\nSETTORE MANIFATTURIERO - SPECIFICITÀ:\n- Focus su Efficienza Produttiva, Qualità, Industry 4.0\n- Importanza IoT, Automazione, Digitalizzazione Processi\n- Centralità MES, ERP, Supply Chain Management\n- Necessità integrazione Macchine/Sistemi Gestionali\n- Obiettivo: Ridurre Costi, Aumentare Produttività, Qualità\n- KPI: OEE, Lead Time, Difettosità, Costi Produzione, On-Time Delivery\n"""
             
             prompt = f"""Sei un consulente senior di trasformazione digitale specializzato in {sector}.
 
@@ -519,7 +580,8 @@ SETTORE TURISMO - SPECIFICITÀ:
 CONTESTO AZIENDA:
 - Nome: {company_context["name"]}
 - Settore: {sector}  
-- Dimensione: {company_context["size"]}
+- Dimensione: {employee_info["label"]} ({employee_info["range"]} dipendenti)
+- Dipendenti (stima): ~{employee_info["avg_employees"]}
 - Punteggio Digitale: {analysis["summary"]["overall_score"]}/5
 - Maturità: {analysis["summary"]["maturity_level"]["level"]}
 
@@ -542,19 +604,52 @@ TOP 3 AREE CRITICHE (solo applicabili):
 BUDGET: €{analysis["roi_predictions"]["investment_range"]["min"]:,} - €{analysis["roi_predictions"]["investment_range"]["max"]:,}
 BENCHMARK: {analysis["benchmark"]["position"]} nel settore {sector}
 
-Per ogni area critica fornisci:
-🎯 AZIONE SPECIFICA (max 2 righe, actionable)  
-💰 INVESTIMENTO REALISTICO (cifra specifica)
-📈 BENEFICIO CONCRETO (KPI misurabili settore-specifici)
+CONTESTO DIMENSIONALE ({employee_info["category"]}):
+{self._get_size_specific_context(employee_info["category"])}
+
+Per OGNI area critica, fornisci un'analisi APPROFONDITA con:
+
+🎯 AZIONE SPECIFICA 
+   - Descrizione dettagliata (3-4 righe)
+   - Tool/Software/Fornitori SPECIFICI consigliati per l'Italia
+   - Esempio concreto di implementazione
+
+💰 INVESTIMENTO REALISTICO
+   - Cifra specifica totale
+   - Breakdown costi (software, hardware, formazione, consulenza)
+   - Costi ricorrenti annuali se applicabili
+
+📈 BENEFICIO CONCRETO
+   - KPI misurabili settore-specifici con % precisa
+   - Tempi per vedere i primi risultati
+   - ROI stimato e payback period
+
 ⏱️ TIMELINE REALISTICA
-🔧 PRIMI 3 STEP OPERATIVI
+   - Milestone specifici mese per mese
+   - Quick wins (primi 30 giorni)
 
-Poi:
-🏆 STRATEGIA SETTORIALE (come vincere nel {sector})  
-⚠️ RISCHI SPECIFICI SETTORE
-🚀 OPPORTUNITÀ UNICHE {sector}
+🔧 PRIMI 5 STEP OPERATIVI DETTAGLIATI
+   - Ogni step con tempistiche e responsabilità
+   - Risorse necessarie per ogni step
+   - Possibili ostacoli e come superarli
 
-Tono professionale, concreto, settore-specifico. NO genericità."""
+DOPO tutte le aree critiche:
+
+🏆 STRATEGIA SETTORIALE COMPLETA (come vincere nel {sector})
+   - Piano strategico a 12-24 mesi
+   - Priorità di investimento
+   - Competitive advantages da sviluppare
+
+⚠️ RISCHI SPECIFICI SETTORE (almeno 5)
+   - Ogni rischio con strategia di mitigazione
+   - Segnali di warning da monitorare
+
+🚀 OPPORTUNITÀ UNICHE {sector} (almeno 5)
+   - Ogni opportunità con piano di azione
+   - Trend di mercato da sfruttare
+   - Case study o esempi di successo italiani
+
+Tono: Consulente senior esperto. Risposte LUNGHE e DETTAGLIATE. Fornisci nomi specifici di prodotti/servizi disponibili in Italia. Usa dati e numeri concreti."""
 
             response = openai.chat.completions.create(
                 model=self.model,
@@ -562,7 +657,7 @@ Tono professionale, concreto, settore-specifico. NO genericità."""
                     {"role": "system", "content": f"Sei un consulente senior di trasformazione digitale con 15+ anni esperienza nel settore {sector} italiano."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=3000,
+                max_tokens=6000,
                 temperature=0.6
             )
             

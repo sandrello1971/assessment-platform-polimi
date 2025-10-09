@@ -1,43 +1,51 @@
+#!/usr/bin/env python3
 import re
 
-# Leggi il file originale
+# Leggi il file
 with open('frontend/src/pages/ResultsTablePage.tsx', 'r') as f:
     content = f.read()
 
-# Trova l'ultimo import
-last_import = content.rfind('import')
-last_import_end = content.find(';', last_import) + 1
+# Rimuovi la sezione AI mal posizionata (dopo };)
+content = re.sub(
+    r'\n\s*{/\* AI Suggestions Section \*/}.*?dangerouslySetInnerHTML.*?\n\s*</div>\s*\n\s*</div>\s*\n\s*}\)\s*\n',
+    '\n',
+    content,
+    flags=re.DOTALL
+)
 
-# Aggiungi le nuove interfacce dopo gli import esistenti
-new_interfaces = '''
-
-// 🎯 NUOVO: Interfaccia per Punti Critici
-interface CriticalPoint {
-  process: string;
-  subprocess: string;
-  governance: number | null;
-  monitoring_control: number | null;
-  technology: number | null;
-  organization: number | null;
-  process_rating: number | null;
-  notes: string;
-  is_critical: boolean;
-}
+# Trova l'ultima chiusura prima di );
+# Cerca "      </div>\n    </div>\n  );"
+ai_section = '''
+        {/* AI Suggestions Section */}
+        {suggestions && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <div className="flex items-center mb-4">
+              <span className="text-3xl mr-3">🤖</span>
+              <h3 className="text-2xl font-bold">Suggerimenti AI</h3>
+            </div>
+            {suggestions.critical_count > 0 && (
+              <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded">
+                <p className="text-red-700 font-medium">
+                  ⚠️ {suggestions.critical_count} aree critiche identificate
+                </p>
+              </div>
+            )}
+            <div 
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: suggestions.suggestions }}
+            />
+          </div>
+        )}
 '''
 
-# Inserisci le nuove interfacce
-content = content[:last_import_end] + new_interfaces + content[last_import_end:]
-
-# Trova useState declarations e aggiungi activeView
-useState_pattern = r"(const \[loading, setLoading\] = useState\(true\);)"
-content = re.sub(
-    useState_pattern,
-    r"\1\n  const [activeView, setActiveView] = useState<'detailed' | 'critical'>('detailed'); // 🎯 NUOVO",
-    content
+# Inserisci PRIMA della chiusura del return
+content = content.replace(
+    '      </div>\n    </div>\n  );',
+    '      </div>\n' + ai_section + '\n    </div>\n  );'
 )
 
 # Salva
-with open('frontend/src/pages/ResultsTablePage_fixed.tsx', 'w') as f:
+with open('frontend/src/pages/ResultsTablePage.tsx', 'w') as f:
     f.write(content)
 
-print("✅ File base preparato")
+print("✅ File corretto!")
