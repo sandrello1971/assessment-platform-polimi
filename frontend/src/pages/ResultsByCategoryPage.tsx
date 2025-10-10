@@ -212,40 +212,64 @@ const ResultsByCategoryPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {forza.map((act, idx) => (
-                    <tr key={idx} className="bg-green-50">
-                      <td className="border px-3 py-2 font-semibold">{act.process}</td>
-                      <td className="border px-3 py-2">{act.activity}</td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.governance)}
-                          <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.monitoring)}
-                          <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.technology)}
-                          <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.organization)}
-                          <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center bg-amber-50">
-                        <span className="font-bold text-lg">{act.processRating?.toFixed(2) || '-'}</span>
-                      </td>
-                      <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
-                    </tr>
-                  ))}
+                  {(() => {
+                    const grouped: { [key: string]: any[] } = {};
+                    forza.forEach(act => {
+                      if (!grouped[act.process]) grouped[act.process] = [];
+                      grouped[act.process].push(act);
+                    });
+                    
+                    return Object.entries(grouped).map(([process, activities]) => {
+                      const processRating = activities.length > 0 
+                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
+                        : 0;
+                      
+                      return (
+                        <>
+                          {activities.map((act, idx) => (
+                            <tr key={`${process}-${idx}`} className="bg-green-50">
+                              <td className="border px-3 py-2 font-semibold">{idx === 0 ? act.process : ''}</td>
+                              <td className="border px-3 py-2">{act.activity}</td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.governance)}
+                                  <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.monitoring)}
+                                  <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.technology)}
+                                  <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.organization)}
+                                  <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center"></td>
+                              <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-green-200 font-bold">
+                            <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
+                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center bg-amber-100">
+                              <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
+                            </td>
+                            <td className="border px-3 py-2"></td>
+                          </tr>
+                        </>
+                      );
+                    });
+                  })()}
                 </tbody>
               </table>
             ) : <p className="text-gray-500">Nessun punto di forza</p>}
@@ -274,40 +298,64 @@ const ResultsByCategoryPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {debolezza.map((act, idx) => (
-                    <tr key={idx} className="bg-yellow-50">
-                      <td className="border px-3 py-2 font-semibold">{act.process}</td>
-                      <td className="border px-3 py-2">{act.activity}</td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.monitoring)}
-                          <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.technology)}
-                          <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.organization)}
-                          <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.governance)}
-                          <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center bg-amber-50">
-                        <span className="font-bold text-lg">{act.processRating?.toFixed(2) || '-'}</span>
-                      </td>
-                      <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
-                    </tr>
-                  ))}
+                  {(() => {
+                    const grouped: { [key: string]: any[] } = {};
+                    debolezza.forEach(act => {
+                      if (!grouped[act.process]) grouped[act.process] = [];
+                      grouped[act.process].push(act);
+                    });
+                    
+                    return Object.entries(grouped).map(([process, activities]) => {
+                      const processRating = activities.length > 0 
+                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
+                        : 0;
+                      
+                      return (
+                        <>
+                          {activities.map((act, idx) => (
+                            <tr key={`${process}-${idx}`} className="bg-yellow-50">
+                              <td className="border px-3 py-2 font-semibold">{idx === 0 ? act.process : ''}</td>
+                              <td className="border px-3 py-2">{act.activity}</td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.governance)}
+                                  <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.monitoring)}
+                                  <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.technology)}
+                                  <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.organization)}
+                                  <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center"></td>
+                              <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-yellow-200 font-bold">
+                            <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
+                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center bg-amber-100">
+                              <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
+                            </td>
+                            <td className="border px-3 py-2"></td>
+                          </tr>
+                        </>
+                      );
+                    });
+                  })()}
                 </tbody>
               </table>
             ) : <p className="text-gray-500">Nessun punto di debolezza</p>}
@@ -336,40 +384,64 @@ const ResultsByCategoryPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {critici.map((act, idx) => (
-                    <tr key={idx} className="bg-red-50">
-                      <td className="border px-3 py-2 font-semibold">{act.process}</td>
-                      <td className="border px-3 py-2">{act.activity}</td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.governance)}
-                          <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.monitoring)}
-                          <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.technology)}
-                          <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {getScoreIcon(act.organization)}
-                          <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="border px-3 py-2 text-center bg-amber-50">
-                        <span className="font-bold text-lg">{act.processRating?.toFixed(2) || '-'}</span>
-                      </td>
-                      <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
-                    </tr>
-                  ))}
+                  {(() => {
+                    const grouped: { [key: string]: any[] } = {};
+                    critici.forEach(act => {
+                      if (!grouped[act.process]) grouped[act.process] = [];
+                      grouped[act.process].push(act);
+                    });
+                    
+                    return Object.entries(grouped).map(([process, activities]) => {
+                      const processRating = activities.length > 0 
+                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
+                        : 0;
+                      
+                      return (
+                        <>
+                          {activities.map((act, idx) => (
+                            <tr key={`${process}-${idx}`} className="bg-red-50">
+                              <td className="border px-3 py-2 font-semibold">{idx === 0 ? act.process : ''}</td>
+                              <td className="border px-3 py-2">{act.activity}</td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.governance)}
+                                  <span className="font-bold text-sm">{act.governance?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.monitoring)}
+                                  <span className="font-bold text-sm">{act.monitoring?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.technology)}
+                                  <span className="font-bold text-sm">{act.technology?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  {getScoreIcon(act.organization)}
+                                  <span className="font-bold text-sm">{act.organization?.toFixed(2) || '-'}</span>
+                                </div>
+                              </td>
+                              <td className="border px-3 py-2 text-center"></td>
+                              <td className="border px-3 py-2 text-xs">{act.note || '-'}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-red-200 font-bold">
+                            <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
+                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center bg-amber-100">
+                              <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
+                            </td>
+                            <td className="border px-3 py-2"></td>
+                          </tr>
+                        </>
+                      );
+                    });
+                  })()}
                 </tbody>
               </table>
             ) : <p className="text-gray-500">Nessun punto critico</p>}
