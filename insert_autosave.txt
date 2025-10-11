@@ -1,0 +1,18 @@
+  // Auto-save senza validazione
+  const autoSave = useCallback(async () => {
+    if (!sessionId || answers.size === 0) return;
+    
+    setSaving(true);
+    try {
+      console.log('💾 Salvataggio in corso...');
+      const results = Array.from(answers.values());
+      await axios.post(`/api/assessment/${sessionId}/submit`, results);
+      console.log('✅ Salvato!');
+      await new Promise(resolve => setTimeout(resolve, 300));
+    } catch (error) {
+      console.error('❌ Errore salvataggio:', error);
+    } finally {
+      setSaving(false);
+    }
+  }, [sessionId, answers]);
+

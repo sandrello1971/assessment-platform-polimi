@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -33,6 +33,7 @@ const TestTableFormByCategory = () => {
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, Answer>>(new Map());
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -130,6 +131,24 @@ const TestTableFormByCategory = () => {
     return count > 0 ? (total / count) : null;
   };
 
+  // Auto-save senza validazione
+  const autoSave = useCallback(async () => {
+    if (!sessionId || answers.size === 0) return;
+    
+    setSaving(true);
+    try {
+      console.log('💾 Salvataggio in corso...');
+      const results = Array.from(answers.values());
+      await axios.post(`/api/assessment/${sessionId}/submit`, results);
+      console.log('✅ Salvato!');
+      await new Promise(resolve => setTimeout(resolve, 300));
+    } catch (error) {
+      console.error('❌ Errore salvataggio:', error);
+    } finally {
+      setSaving(false);
+    }
+  }, [sessionId, answers]);
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -155,10 +174,11 @@ const TestTableFormByCategory = () => {
     <>
       {/* Bottone Dashboard - Fixed */}
       <button
-        onClick={() => navigate('/dashboard')}
-        className="fixed top-4 right-4 z-50 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold flex items-center gap-2"
+        onClick={async () => { await autoSave(); navigate('/dashboard'); }}
+        className="fixed top-4 right-4 z-50 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={saving}
       >
-        ← Dashboard
+        {saving ? "💾 Salvataggio..." : "← Dashboard"}
       </button>
 
       <div className="min-h-screen bg-gray-50 p-8">

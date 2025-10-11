@@ -341,6 +341,22 @@ const AssessmentForm: React.FC = () => {
     });
   };
 
+  // Auto-save senza validazione (per salvataggio parziale)
+  const autoSave = async () => {
+    if (!sessionId || answers.length === 0) return;
+    
+    try {
+      console.log('💾 Auto-salvataggio in corso...');
+      await axios.post(`/api/assessment/${sessionId}/submit`, answers, {
+        timeout: 30000,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log('✅ Auto-salvataggio completato');
+    } catch (error) {
+      console.error('⚠️ Errore durante auto-salvataggio:', error);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!validateAnswers()) {
       setSubmissionStatus('Per favore completa tutte le valutazioni (0-5) o marca come "Non Applicabile".');
@@ -420,7 +436,7 @@ const AssessmentForm: React.FC = () => {
               Riprova
             </button>
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={async () => { await autoSave(); navigate('/dashboard'); }}
               className="group bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 font-medium border border-white/30 hover:scale-105"
             >
               <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">←</span>
@@ -676,7 +692,7 @@ const AssessmentForm: React.FC = () => {
         {/* Bottom Navigation */}
         <div className="flex justify-center mt-12">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={async () => { await autoSave(); navigate('/dashboard'); }}
             className="group bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-2xl hover:bg-white/20 transition-all duration-300 font-medium border border-white/30 hover:scale-105"
           >
             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">←</span>

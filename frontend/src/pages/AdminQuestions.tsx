@@ -26,7 +26,7 @@ const AdminQuestions = () => {
   const [standardQuestions, setStandardQuestions] = useState<StandardQuestions>({
     Governance: [
       'Presenza di Best Practices / Procedure / Metodi',
-      'Livello di standadizzazione del processo',
+      'Livello di standardizzazione del processo',
       "L'informazione è tracciata e usata all'interno del processo?",
       'Livello di integrazione con gli altri processi',
       'Ottimizzazione del processo dal punto di vista operativo'
