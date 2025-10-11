@@ -28,6 +28,7 @@ const CompanyForm = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [assessmentMode, setAssessmentMode] = useState<'manual' | 'ai'>('manual');
   const [models, setModels] = useState<Array<{name: string; filename: string; is_default: boolean}>>([]);
 
   useEffect(() => {
@@ -68,7 +69,11 @@ const CompanyForm = () => {
       });
       
       const sessionId = response.data.id;
-      navigate(`/assessment/${sessionId}`);
+      if (assessmentMode === 'ai') {
+        navigate(`/ai-interview/${sessionId}`);
+      } else {
+        navigate(`/assessment/${sessionId}`);
+      }
       
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
@@ -127,6 +132,50 @@ const CompanyForm = () => {
                   </div>
                 </div>
               )}
+
+              {/* Scelta Modalità */}
+              <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 border-2 border-purple-200">
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                  🎯 Scegli come compilare l'Assessment
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Assessment Manuale */}
+                  <div
+                    onClick={() => setAssessmentMode('manual')}
+                    className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${
+                      assessmentMode === 'manual'
+                        ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
+                        : 'border-gray-300 bg-white hover:border-blue-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="text-5xl mb-4">📝</div>
+                      <h4 className="font-bold text-lg mb-2">Assessment Manuale</h4>
+                      <p className="text-sm text-gray-600">
+                        Compila le domande una per una in modo tradizionale
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* AI Interview */}
+                  <div
+                    onClick={() => setAssessmentMode('ai')}
+                    className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${
+                      assessmentMode === 'ai'
+                        ? 'border-purple-500 bg-purple-50 shadow-lg scale-105'
+                        : 'border-gray-300 bg-white hover:border-purple-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="text-5xl mb-4">🤖</div>
+                      <h4 className="font-bold text-lg mb-2">AI Interview</h4>
+                      <p className="text-sm text-gray-600">
+                        Carica un'intervista e lascia che l'AI compili automaticamente
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="space-y-6">
@@ -287,7 +336,7 @@ const CompanyForm = () => {
                     ) : (
                       <div className="flex items-center justify-center">
                         <span className="mr-3 text-2xl group-hover:rotate-12 transition-transform duration-300">🚀</span>
-                        Inizia Assessment
+                        {assessmentMode === 'ai' ? 'Continua con AI 🤖' : 'Inizia Assessment'}
                       </div>
                     )}
                   </button>

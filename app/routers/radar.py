@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from uuid import UUID
+from app.database import get_db
 from app import database, models
 from dotenv import load_dotenv
 from urllib.parse import unquote
@@ -745,7 +746,7 @@ Rispondi in italiano, tono professionale ma accessibile."""
             response = openai.chat.completions.create(
                 model=os.getenv("OPENAI_MODEL", "gpt-4"),
                 messages=[
-                    {"role": "system", "content": "Sei un consulente di trasformazione digitale per PMI italiane."},
+                    {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=2000,
@@ -2144,7 +2145,7 @@ Rispondi in italiano, tono professionale ma accessibile."""
             response = openai.chat.completions.create(
                 model=os.getenv("OPENAI_MODEL", "gpt-4"),
                 messages=[
-                    {"role": "system", "content": "Sei un consulente di trasformazione digitale per PMI italiane."},
+                    {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=2000,
@@ -2184,3 +2185,40 @@ print("   - /ai-recommendations-advanced")
 print("   - /sector-insights-advanced") 
 print("   - /smart-recommendations")
 print("   - /enhanced-summary")
+
+
+# ==================== EDITOR CONCLUSIONI AI ====================
+
+@router.post("/assessment/{session_id}/reformat-conclusions")
+def reformat_conclusions(session_id: UUID, data: dict, db: Session = Depends(get_db)):
+    """Riformatta il testo delle conclusioni usando GPT-4"""
+    import os
+    from openai import OpenAI
+    
+    try:
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
+                {"role": "user", "content": f"Correggi SOLO gli errori grammaticali e sintattici in questo testo, mantenendo tutto il contenuto originale:\n\n{data['text']}"}
+            ],
+            temperature=0.3
+        )
+        formatted_text = response.choices[0].message.content
+        return {"formatted_text": formatted_text, "status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore: {str(e)}")
+
+
+@router.post("/assessment/{session_id}/save-conclusions")
+def save_conclusions(session_id: UUID, data: dict, db: Session = Depends(get_db)):
+    """Salva le conclusioni finali nel database"""
+    session = db.query(models.AssessmentSession).filter(
+        models.AssessmentSession.id == session_id
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Sessione non trovata")
+    session.raccomandazioni = data['text']
+    db.commit()
+    return {"status": "success", "message": "Conclusioni salvate"}

@@ -234,3 +234,7 @@ async def save_ai_conclusions(session_id: str, conclusions: dict, db: Session = 
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# AI Interview Router
+from app.routers import ai_interview
+api_router.include_router(ai_interview.router, prefix="/api", tags=["ai-interview"])

@@ -9,7 +9,7 @@ const getScoreIcon = (score: number | null | undefined) => {
   if (score === null || score === undefined) return <span className="text-gray-400">-</span>;
   if (score >= 4.0) return <span className="text-xl">✅</span>;
   if (score >= 3.0) return <span className="text-xl">🟢</span>;
-  if (score >= 2.0) return <span className="text-xl">⭕</span>;
+  if (score >= 2.0) return <span className="text-xl" style={{filter: "grayscale(1) brightness(0)"}}>⭕</span>;
   if (score >= 1.0) return <span className="text-xl">🔴</span>;
   return <span className="text-xl">❌</span>;
 };
@@ -21,6 +21,9 @@ const ResultsByCategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiConclusions, setAiConclusions] = useState<string>('');
+  const [isEditingAI, setIsEditingAI] = useState(false);
+  const [editedConclusions, setEditedConclusions] = useState<string>('');
+  const [reformatting, setReformatting] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/assessment/${id}/results`)
@@ -45,6 +48,38 @@ const ResultsByCategoryPage = () => {
         setLoadingAI(false);
       });
   }, [id]);
+
+  // Riformatta conclusioni con AI
+  const handleReformat = async () => {
+    setReformatting(true);
+    try {
+      const response = await axios.post(`/api/assessment/${id}/reformat-conclusions`, {
+        text: editedConclusions
+      });
+      setEditedConclusions(response.data.formatted_text);
+      alert('✅ Testo riformattato!');
+    } catch (error) {
+      console.error('Errore riformattazione:', error);
+      alert('❌ Errore durante la riformattazione');
+    } finally {
+      setReformatting(false);
+    }
+  };
+
+  // Salva conclusioni finali
+  const handleSaveConclusions = async () => {
+    try {
+      await axios.post(`/api/assessment/${id}/save-conclusions`, {
+        text: editedConclusions
+      });
+      setAiConclusions(editedConclusions);
+      setIsEditingAI(false);
+      alert('✅ Conclusioni salvate!');
+    } catch (error) {
+      console.error('Errore salvataggio:', error);
+      alert('❌ Errore durante il salvataggio');
+    }
+  };
 
   if (loading) return <div className="p-8">Caricamento...</div>;
 
@@ -719,7 +754,7 @@ const ResultsByCategoryPage = () => {
 
           {/* Radar Riassuntivo - Tutti i Processi */}
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Radar Riassuntivo - Confronto Processi</h3>
+            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Dominii</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={CATEGORIES_ORDER.map(cat => {
                 const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
@@ -780,7 +815,7 @@ const ResultsByCategoryPage = () => {
 
           {/* Radar Riassuntivo - Tutte le Categorie */}
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Radar Riassuntivo - Confronto Categorie</h3>
+            <h3 className="text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(proc => {
                 const procData: any = { process: proc };
@@ -852,16 +887,62 @@ const ResultsByCategoryPage = () => {
               <p className="text-lg font-semibold text-gray-700">Generazione raccomandazioni AI...</p>
             </div>
           ) : aiConclusions ? (
-            <div 
-              className="prose max-w-none space-y-4"
-              dangerouslySetInnerHTML={{ 
-                __html: aiConclusions
-                  .replace(/###\s*(.*)/g, '<h3 class="text-xl font-bold mt-6 mb-3 text-gray-800 border-b-2 border-blue-200 pb-2">$1</h3>')
-                  .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
-                  .replace(/\n\n/g, '<br><br>')
-                  .replace(/\n/g, ' ')
-              }} 
-            />
+            <div>
+              {!isEditingAI ? (
+                <>
+                  <div 
+                    className="prose max-w-none space-y-4 mb-6"
+                    dangerouslySetInnerHTML={{ 
+                      __html: aiConclusions
+                        .replace(/###\s*(.*)/g, '<h3 class="text-xl font-bold mt-6 mb-3 text-gray-800 border-b-2 border-blue-200 pb-2">$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                        .replace(/\n\n/g, '<br><br>')
+                        .replace(/\n/g, ' ')
+                    }} 
+                  />
+                  <button
+                    onClick={() => {
+                      setIsEditingAI(true);
+                      setEditedConclusions(aiConclusions);
+                    }}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold"
+                  >
+                    ✏️ Modifica Conclusioni
+                  </button>
+                </>
+              ) : (
+                <>
+                  <textarea
+                    value={editedConclusions}
+                    onChange={(e) => setEditedConclusions(e.target.value)}
+                    rows={20}
+                    className="w-full p-4 border-2 border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-500 mb-4 font-mono text-sm"
+                    placeholder="Modifica le conclusioni..."
+                  />
+                  <div className="flex gap-4">
+                    <button
+                      onClick={handleReformat}
+                      disabled={reformatting}
+                      className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 font-semibold disabled:opacity-50"
+                    >
+                      {reformatting ? '🔄 Riformattazione...' : '🤖 Riformatta con AI'}
+                    </button>
+                    <button
+                      onClick={handleSaveConclusions}
+                      className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 font-semibold"
+                    >
+                      💾 Salva
+                    </button>
+                    <button
+                      onClick={() => setIsEditingAI(false)}
+                      className="px-6 py-3 bg-gray-300 text-gray-800 rounded-xl hover:bg-gray-400 font-semibold"
+                    >
+                      ❌ Annulla
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           ) : (
             <p className="text-gray-500 italic text-center py-8">⚠️ Suggerimenti AI non disponibili</p>
           )}

@@ -10,6 +10,7 @@ import ResultsByCategoryPage from "./pages/ResultsByCategoryPage";
 import Sessions from './pages/Sessions';
 import NewAssessment from './pages/NewAssessment';
 import CompanyForm from './pages/CompanyForm';
+import AIInterview from './pages/AIInterview';
 import TestTableForm from './pages/TestTableForm';
 import TestTableFormByCategory from './pages/TestTableFormByCategory';
 
@@ -35,6 +36,7 @@ const App: React.FC = () => {
         <Route path="/assessment/new" element={<NewAssessment />} />
         
         {/* Assessment form che riceve l'ID della sessione */}
+        <Route path="/ai-interview/:sessionId" element={<AIInterview />} />
         <Route path="/assessment/:sessionId" element={<AssessmentForm />} />
         
         {/* Route di fallback per compatibilità */}
