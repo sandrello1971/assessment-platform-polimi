@@ -637,7 +637,7 @@ def detailed_stats(session_id: UUID, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=500, detail=f"Errore statistiche: {str(e)}")
 
 @router.get("/assessment/{session_id}/ai-suggestions-enhanced")
-def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db: Session = Depends(database.get_db)):
+def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, regenerate: bool = False, db: Session = Depends(database.get_db)):
     """Versione migliorata dell'endpoint ai-suggestions originale"""
     try:
         print(f"🤖 AI SUGGESTIONS ENHANCED: Per sessione {session_id}")
@@ -671,12 +671,23 @@ def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db:
                 "enhanced_available": True
             }
 
+        # Carica la sessione
+        session = db.query(models.AssessmentSession).filter(
+            models.AssessmentSession.id == session_id
+        ).first()
+        
+        # Se esistono raccomandazioni salvate e non è richiesta la rigenerazione, restituiscile
+        if session and session.raccomandazioni and not regenerate:
+            print(f"✅ Restituisco raccomandazioni salvate per sessione {session_id}")
+            return {
+                "critical_count": len(critical_areas),
+                "suggestions": session.raccomandazioni,
+                "cached": True,
+                "enhanced_mode": True
+            }
+        
         # Se disponibile, usa il modulo AI avanzato
         try:
-            session = db.query(models.AssessmentSession).filter(
-                models.AssessmentSession.id == session_id
-            ).first()
-            
             if session and include_roadmap:
                 session_data = {
                     "azienda_nome": session.azienda_nome,
@@ -689,9 +700,15 @@ def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db:
                     str(session_id), results, session_data
                 )
                 
+                # Salva le raccomandazioni nel database
+                ai_content = advanced_recommendations["ai_recommendations"]["content"]
+                session.raccomandazioni = ai_content
+                db.commit()
+                print(f"💾 Raccomandazioni AI salvate per sessione {session_id}")
+                
                 return {
                     "critical_count": len(critical_areas),
-                    "suggestions": advanced_recommendations["ai_recommendations"]["content"],
+                    "suggestions": ai_content,
                     "enhanced_mode": True,
                     "roadmap_included": True,
                     "priority_matrix": advanced_recommendations["priority_matrix"],
@@ -735,9 +752,16 @@ Rispondi in italiano, tono professionale ma accessibile."""
                 temperature=0.7
             )
             
+            # Salva le raccomandazioni nel database
+            ai_content = response.choices[0].message.content
+            if session:
+                session.raccomandazioni = ai_content
+                db.commit()
+                print(f"💾 Raccomandazioni AI (fallback) salvate per sessione {session_id}")
+            
             return {
                 "critical_count": len(critical_areas),
-                "suggestions": response.choices[0].message.content,
+                "suggestions": ai_content,
                 "enhanced_mode": False,
                 "model_used": os.getenv("OPENAI_MODEL", "gpt-4")
             }
@@ -2012,7 +2036,7 @@ def get_suggested_next_steps(overall_score: float, sector: str) -> List[str]:
 # Sostituisci l'endpoint ai-suggestions esistente con questa versione migliorata:
 
 @router.get("/assessment/{session_id}/ai-suggestions-enhanced")
-def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db: Session = Depends(database.get_db)):
+def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, regenerate: bool = False, db: Session = Depends(database.get_db)):
     """Versione migliorata dell'endpoint ai-suggestions originale"""
     try:
         print(f"🤖 AI SUGGESTIONS ENHANCED: Per sessione {session_id}")
@@ -2046,12 +2070,23 @@ def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db:
                 "enhanced_available": True
             }
 
+        # Carica la sessione
+        session = db.query(models.AssessmentSession).filter(
+            models.AssessmentSession.id == session_id
+        ).first()
+        
+        # Se esistono raccomandazioni salvate e non è richiesta la rigenerazione, restituiscile
+        if session and session.raccomandazioni and not regenerate:
+            print(f"✅ Restituisco raccomandazioni salvate per sessione {session_id}")
+            return {
+                "critical_count": len(critical_areas),
+                "suggestions": session.raccomandazioni,
+                "cached": True,
+                "enhanced_mode": True
+            }
+        
         # Se disponibile, usa il modulo AI avanzato
         try:
-            session = db.query(models.AssessmentSession).filter(
-                models.AssessmentSession.id == session_id
-            ).first()
-            
             if session and include_roadmap:
                 session_data = {
                     "azienda_nome": session.azienda_nome,
@@ -2064,9 +2099,15 @@ def ai_suggestions_enhanced(session_id: UUID, include_roadmap: bool = False, db:
                     str(session_id), results, session_data
                 )
                 
+                # Salva le raccomandazioni nel database
+                ai_content = advanced_recommendations["ai_recommendations"]["content"]
+                session.raccomandazioni = ai_content
+                db.commit()
+                print(f"💾 Raccomandazioni AI salvate per sessione {session_id}")
+                
                 return {
                     "critical_count": len(critical_areas),
-                    "suggestions": advanced_recommendations["ai_recommendations"]["content"],
+                    "suggestions": ai_content,
                     "enhanced_mode": True,
                     "roadmap_included": True,
                     "priority_matrix": advanced_recommendations["priority_matrix"],
@@ -2110,9 +2151,16 @@ Rispondi in italiano, tono professionale ma accessibile."""
                 temperature=0.7
             )
             
+            # Salva le raccomandazioni nel database
+            ai_content = response.choices[0].message.content
+            if session:
+                session.raccomandazioni = ai_content
+                db.commit()
+                print(f"💾 Raccomandazioni AI (fallback) salvate per sessione {session_id}")
+            
             return {
                 "critical_count": len(critical_areas),
-                "suggestions": response.choices[0].message.content,
+                "suggestions": ai_content,
                 "enhanced_mode": False,
                 "model_used": os.getenv("OPENAI_MODEL", "gpt-4")
             }

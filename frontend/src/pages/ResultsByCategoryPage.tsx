@@ -224,6 +224,17 @@ const ResultsByCategoryPage = () => {
                         ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
                         : 0;
                       
+                      // Calcola medie per categoria
+                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
+                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
+                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
+                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      
+                      const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
+                      const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
+                      const avgTech = techScores.length > 0 ? techScores.reduce((a,b) => a+b, 0) / techScores.length : null;
+                      const avgOrg = orgScores.length > 0 ? orgScores.reduce((a,b) => a+b, 0) / orgScores.length : null;
+                      
                       return (
                         <>
                           {activities.map((act, idx) => (
@@ -260,7 +271,30 @@ const ResultsByCategoryPage = () => {
                           ))}
                           <tr className="bg-green-200 font-bold">
                             <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
-                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgGov)}
+                                <span className="font-bold text-sm">{avgGov?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgMon)}
+                                <span className="font-bold text-sm">{avgMon?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgTech)}
+                                <span className="font-bold text-sm">{avgTech?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgOrg)}
+                                <span className="font-bold text-sm">{avgOrg?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
                             <td className="border px-3 py-2 text-center bg-amber-100">
                               <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
                             </td>
@@ -310,6 +344,17 @@ const ResultsByCategoryPage = () => {
                         ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
                         : 0;
                       
+                      // Calcola medie per categoria
+                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
+                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
+                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
+                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      
+                      const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
+                      const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
+                      const avgTech = techScores.length > 0 ? techScores.reduce((a,b) => a+b, 0) / techScores.length : null;
+                      const avgOrg = orgScores.length > 0 ? orgScores.reduce((a,b) => a+b, 0) / orgScores.length : null;
+                      
                       return (
                         <>
                           {activities.map((act, idx) => (
@@ -346,7 +391,30 @@ const ResultsByCategoryPage = () => {
                           ))}
                           <tr className="bg-yellow-200 font-bold">
                             <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
-                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgGov)}
+                                <span className="font-bold text-sm">{avgGov?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgMon)}
+                                <span className="font-bold text-sm">{avgMon?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgTech)}
+                                <span className="font-bold text-sm">{avgTech?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgOrg)}
+                                <span className="font-bold text-sm">{avgOrg?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
                             <td className="border px-3 py-2 text-center bg-amber-100">
                               <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
                             </td>
@@ -396,6 +464,17 @@ const ResultsByCategoryPage = () => {
                         ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
                         : 0;
                       
+                      // Calcola medie per categoria
+                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
+                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
+                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
+                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      
+                      const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
+                      const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
+                      const avgTech = techScores.length > 0 ? techScores.reduce((a,b) => a+b, 0) / techScores.length : null;
+                      const avgOrg = orgScores.length > 0 ? orgScores.reduce((a,b) => a+b, 0) / orgScores.length : null;
+                      
                       return (
                         <>
                           {activities.map((act, idx) => (
@@ -432,7 +511,30 @@ const ResultsByCategoryPage = () => {
                           ))}
                           <tr className="bg-red-200 font-bold">
                             <td colSpan={2} className="border px-3 py-2 text-right">PROCESS RATING - {process}:</td>
-                            <td colSpan={4} className="border px-3 py-2"></td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgGov)}
+                                <span className="font-bold text-sm">{avgGov?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgMon)}
+                                <span className="font-bold text-sm">{avgMon?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgTech)}
+                                <span className="font-bold text-sm">{avgTech?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
+                            <td className="border px-3 py-2 text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {getScoreIcon(avgOrg)}
+                                <span className="font-bold text-sm">{avgOrg?.toFixed(2) || '-'}</span>
+                              </div>
+                            </td>
                             <td className="border px-3 py-2 text-center bg-amber-100">
                               <span className="font-bold text-lg">{processRating.toFixed(2)}</span>
                             </td>
@@ -457,7 +559,12 @@ const ResultsByCategoryPage = () => {
             
             {Object.entries(organized[category]).map(([process, activities]: [string, any]) => {
               const allActivitiesKeys = Object.keys(activities);
-              const allDimensions = allActivitiesKeys.length > 0 ? Object.keys(activities[allActivitiesKeys[0]]) : [];
+              // Raccoglie TUTTE le dimensioni da TUTTE le attività (non solo la prima)
+              const allDimensionsSet = new Set<string>();
+              allActivitiesKeys.forEach(actKey => {
+                Object.keys(activities[actKey]).forEach(dim => allDimensionsSet.add(dim));
+              });
+              const allDimensions = Array.from(allDimensionsSet);
               const processAvg = calculateProcessAverage(activities);
 
               return (
@@ -565,7 +672,6 @@ const ResultsByCategoryPage = () => {
                         <PolarAngleAxis dataKey="category" />
                         <PolarRadiusAxis angle={90} domain={[0, 5]} />
                         <Radar name={process} dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-                        <Legend />
                       </RadarChart>
                     </ResponsiveContainer>
                   </div>
@@ -603,7 +709,6 @@ const ResultsByCategoryPage = () => {
                         <PolarAngleAxis dataKey="process" />
                         <PolarRadiusAxis angle={90} domain={[0, 5]} />
                         <Radar name={category} dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
-                        <Legend />
                       </RadarChart>
                     </ResponsiveContainer>
                   </div>
@@ -632,19 +737,12 @@ const ResultsByCategoryPage = () => {
                 <PolarGrid />
                 <PolarAngleAxis dataKey="category" />
                 <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                {Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map((proc, idx) => {
-                  const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-                  return <Radar key={proc} name={proc} dataKey={proc} stroke={colors[idx % colors.length]} fill={colors[idx % colors.length]} fillOpacity={0} strokeWidth={2} />;
-                })}
-                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
-              </RadarChart>
-            </ResponsiveContainer>
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-bold mb-2">📊 Calcolo Area Poligono</h4>
-              <p className="text-sm text-gray-700">
                 {(() => {
                   const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
-                  return processes.map((proc, idx) => {
+                  const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+                  
+                  // Calcola aree per ogni processo
+                  const processesWithArea = processes.map((proc, idx) => {
                     const values = CATEGORIES_ORDER.map(cat => {
                       const activities = organized[cat]?.[proc] || {};
                       const avgs: number[] = [];
@@ -657,17 +755,28 @@ const ResultsByCategoryPage = () => {
                     const n = values.length;
                     const avgRadius = values.reduce((a,b) => a+b, 0) / n;
                     const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
-                    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-                    return (
-                      <span key={proc} className="inline-block mr-4">
-                        <span style={{color: colors[idx % colors.length]}} className="font-bold">■</span> {proc}: <strong>{area.toFixed(2)}</strong>
-                      </span>
-                    );
+                    return { proc, area, colorIdx: idx };
                   });
+                  
+                  // Ordina per area decrescente
+                  processesWithArea.sort((a, b) => b.area - a.area);
+                  
+                  return processesWithArea.map(({ proc, area, colorIdx }) => (
+                    <Radar 
+                      key={proc} 
+                      name={`${proc} (${area.toFixed(2)})`} 
+                      dataKey={proc} 
+                      stroke={colors[colorIdx % colors.length]} 
+                      fill={colors[colorIdx % colors.length]} 
+                      fillOpacity={0} 
+                      strokeWidth={2} 
+                    />
+                  ));
                 })()}
-              </p>
-            </div>
-          </div>
+                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
+              </RadarChart>
+            </ResponsiveContainer>
+               </div>
 
           {/* Radar Riassuntivo - Tutte le Categorie */}
           <div className="bg-white rounded-xl shadow-lg p-8">
@@ -689,19 +798,12 @@ const ResultsByCategoryPage = () => {
                 <PolarGrid />
                 <PolarAngleAxis dataKey="process" />
                 <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                {CATEGORIES_ORDER.map((cat, idx) => {
-                  const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
-                  return <Radar key={cat} name={cat} dataKey={cat} stroke={colors[idx]} fill={colors[idx]} fillOpacity={0} strokeWidth={2} />;
-                })}
-                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
-              </RadarChart>
-            </ResponsiveContainer>
-            <div className="mt-4 p-4 bg-green-50 rounded-lg">
-              <h4 className="font-bold mb-2">📊 Calcolo Area Poligono</h4>
-              <p className="text-sm text-gray-700">
                 {(() => {
-                  return CATEGORIES_ORDER.map((cat, idx) => {
-                    const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
+                  const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
+                  const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
+                  
+                  // Calcola aree per ogni categoria
+                  const categoriesWithArea = CATEGORIES_ORDER.map((cat, idx) => {
                     const values = processes.map(proc => {
                       const activities = organized[cat]?.[proc] || {};
                       const avgs: number[] = [];
@@ -714,17 +816,28 @@ const ResultsByCategoryPage = () => {
                     const n = values.length;
                     const avgRadius = values.reduce((a,b) => a+b, 0) / n;
                     const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
-                    const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
-                    return (
-                      <span key={cat} className="inline-block mr-4">
-                        <span style={{color: colors[idx]}} className="font-bold">■</span> {cat}: <strong>{area.toFixed(2)}</strong>
-                      </span>
-                    );
+                    return { cat, area, colorIdx: idx };
                   });
+                  
+                  // Ordina per area decrescente
+                  categoriesWithArea.sort((a, b) => b.area - a.area);
+                  
+                  return categoriesWithArea.map(({ cat, area, colorIdx }) => (
+                    <Radar 
+                      key={cat} 
+                      name={`${cat} (${area.toFixed(2)})`} 
+                      dataKey={cat} 
+                      stroke={colors[colorIdx]} 
+                      fill={colors[colorIdx]} 
+                      fillOpacity={0} 
+                      strokeWidth={2} 
+                    />
+                  ));
                 })()}
-              </p>
-            </div>
-        </div>
+                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
+              </RadarChart>
+            </ResponsiveContainer>
+             </div>
 
                 {/* Conclusioni AI */}
         <div className="mt-12 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl shadow-lg p-8 border-2 border-purple-200">
