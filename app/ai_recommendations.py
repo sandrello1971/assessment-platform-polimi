@@ -143,7 +143,6 @@ class AIRecommendationEngine:
             "label": "Piccola Impresa"
         }
 
-
     def _perform_advanced_analysis(self, results, company_context):
         """Esegue analisi multi-dimensionale avanzata"""
         print("🔍 Eseguendo analisi multi-dimensionale...")
@@ -151,7 +150,9 @@ class AIRecommendationEngine:
         # Organizza dati per processo e categoria
         data_by_process = {}
         all_scores = []
-        critical_areas = []
+        critical_areas = []      # score <= 1.0
+        weak_areas = []          # 1.0 < score < 2.0
+        strong_areas = []        # score > 3.0
         
         for result in results:
             process = result.process
@@ -170,16 +171,23 @@ class AIRecommendationEngine:
             data_by_process[process]["scores"].append(result.score)
             all_scores.append(result.score)
             
-            if result.score < 2.5:  # Soglia critica più sofisticata
-                critical_areas.append({
-                    "process": process,
-                    "category": result.category,
-                    "dimension": result.dimension,
-                    "score": result.score,
-                    "criticality": self._get_criticality_level(result.score),
-                    "impact_weight": self._calculate_impact_weight(process, result.category),
-                    "note": result.note
-                })
+            area_data = {
+                "process": process,
+                "category": result.category,
+                "dimension": result.dimension,
+                "score": result.score,
+                "criticality": self._get_criticality_level(result.score),
+                "impact_weight": self._calculate_impact_weight(process, result.category),
+                "note": result.note
+            }
+            
+            # Classifica in base allo score
+            if result.score <= 1.0:
+                critical_areas.append(area_data)
+            elif result.score < 2.0:
+                weak_areas.append(area_data)
+            elif result.score > 3.0:
+                strong_areas.append(area_data)
         
         # Calcola medie per processo
         for process in data_by_process:
@@ -199,6 +207,8 @@ class AIRecommendationEngine:
                 "overall_score": round(overall_avg, 2),
                 "total_processes": len(data_by_process),
                 "critical_areas_count": len(critical_areas),
+                "weak_areas_count": len(weak_areas),
+                "strong_areas_count": len(strong_areas),
                 "maturity_level": self._get_maturity_level(overall_avg),
                 "strongest_process": max(data_by_process.items(), key=lambda x: x[1]["avg_score"])[0] if data_by_process else None,
                 "weakest_process": min(data_by_process.items(), key=lambda x: x[1]["avg_score"])[0] if data_by_process else None
@@ -206,8 +216,9 @@ class AIRecommendationEngine:
             "priority_matrix": priority_matrix,
             "roadmap": roadmap,
             "roi_predictions": roi_predictions,
-            "benchmark": benchmark,
-            "detailed_data": data_by_process
+            "detailed_data": data_by_process,
+            "weak_areas": weak_areas,
+            "strong_areas": strong_areas,
         }
     
     def _get_criticality_level(self, score):
@@ -343,7 +354,7 @@ class AIRecommendationEngine:
     
     def _create_implementation_roadmap(self, priority_matrix, company_context):
         """Crea roadmap di implementazione intelligente"""
-        high_priority = priority_matrix["high_priority"][:3]
+        high_priority = priority_matrix["high_priority"]
         medium_priority = priority_matrix["medium_priority"][:3]
         
         roadmap = {
@@ -553,7 +564,7 @@ class AIRecommendationEngine:
     def _generate_smart_recommendations(self, analysis, company_context):
         """Genera raccomandazioni AI intelligenti"""
         try:
-            high_priority = analysis["priority_matrix"]["high_priority"][:3]
+            high_priority = analysis["priority_matrix"]["high_priority"]
             
             # Estrai info dipendenti
             employee_info = self._extract_employee_count(company_context["size"])
@@ -607,28 +618,8 @@ BENCHMARK: {analysis["benchmark"]["position"]} nel settore {sector}
 CONTESTO DIMENSIONALE ({employee_info["category"]}):
 {self._get_size_specific_context(employee_info["category"])}
 
-Per OGNI area critica, fornisci un'analisi APPROFONDITA con:
+Per OGNI area critica sopra elencata, fornisci RACCOMANDAZIONI OPERATIVE con focus su AI/Blockchain/Innovazione Digitale:
 
-🎯 AZIONE SPECIFICA 
-   - Descrizione dettagliata (3-4 righe)
-   - Tool/Software/Fornitori SPECIFICI consigliati per l'Italia
-   - Esempio concreto di implementazione
-
-💰 INVESTIMENTO REALISTICO
-   - Cifra specifica totale
-   - Breakdown costi (software, hardware, formazione, consulenza)
-   - Costi ricorrenti annuali se applicabili
-
-📈 BENEFICIO CONCRETO
-   - KPI misurabili settore-specifici con % precisa
-   - Tempi per vedere i primi risultati
-   - ROI stimato e payback period
-
-⏱️ TIMELINE REALISTICA
-   - Milestone specifici mese per mese
-   - Quick wins (primi 30 giorni)
-
-🔧 PRIMI 5 STEP OPERATIVI DETTAGLIATI
    - Ogni step con tempistiche e responsabilità
    - Risorse necessarie per ogni step
    - Possibili ostacoli e come superarli
@@ -649,7 +640,7 @@ DOPO tutte le aree critiche:
    - Trend di mercato da sfruttare
    - Case study o esempi di successo italiani
 
-Tono: Consulente senior esperto. Risposte LUNGHE e DETTAGLIATE. Fornisci nomi specifici di prodotti/servizi disponibili in Italia. Usa dati e numeri concreti."""
+Tono: Consulente senior esperto. Risposte LUNGHE e DETTAGLIATE. Fornisci nomi specifici di prodotti/servizi disponibili in Italia. Usa dati concreti. REGOLE: NON inventare vendor/prezzi, usa TBD se incerto. NON citare benchmark inesistenti. Focus su AI/Blockchain/Digital."""
 
             response = openai.chat.completions.create(
                 model=self.model,

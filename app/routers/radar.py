@@ -744,13 +744,13 @@ Rispondi in italiano, tono professionale ma accessibile."""
 
         try:
             response = openai.chat.completions.create(
-                model=os.getenv("OPENAI_MODEL", "gpt-4"),
+                model=os.getenv("OPENAI_MODEL", "gpt-4o"),
                 messages=[
                     {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=2000,
-                temperature=0.7
+                max_tokens=4000,
+                temperature=0.2
             )
             
             # Salva le raccomandazioni nel database
@@ -2138,18 +2138,18 @@ AREE CRITICHE IDENTIFICATE ({len(critical_areas)} su {len(results)} domande appl
                 prompt += f"  💬 Nota: {item['note']}\n"
 
         prompt += """
-Per ogni area critica, fornisci raccomandazioni specifiche e actionable.
+                    {"role": "system", "content": "Sei un consulente di trasformazione digitale per PMI italiane. Fornisci raccomandazioni operative concrete per ogni area critica. Focus su AI, Blockchain, Innovazione Digitale. REGOLE: NON inventare vendor/costi, usa TBD se incerto. Basa tutto sui dati forniti."},
 Rispondi in italiano, tono professionale ma accessibile."""
 
         try:
             response = openai.chat.completions.create(
-                model=os.getenv("OPENAI_MODEL", "gpt-4"),
+                model=os.getenv("OPENAI_MODEL", "gpt-4o"),
                 messages=[
                     {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=2000,
-                temperature=0.7
+                max_tokens=4000,
+                temperature=0.2
             )
             
             # Salva le raccomandazioni nel database
@@ -2163,7 +2163,7 @@ Rispondi in italiano, tono professionale ma accessibile."""
                 "critical_count": len(critical_areas),
                 "suggestions": ai_content,
                 "enhanced_mode": False,
-                "model_used": os.getenv("OPENAI_MODEL", "gpt-4")
+                "model_used": os.getenv("OPENAI_MODEL", "gpt-4o")
             }
             
         except Exception as e:
