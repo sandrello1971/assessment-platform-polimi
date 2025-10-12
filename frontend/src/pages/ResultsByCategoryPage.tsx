@@ -9,7 +9,7 @@ const getScoreIcon = (score: number | null | undefined) => {
   if (score === null || score === undefined) return <span className="text-gray-400">-</span>;
   if (score >= 4.0) return <span className="text-xl">✅</span>;
   if (score >= 3.0) return <span className="text-xl">🟢</span>;
-  if (score >= 2.0) return <span className="text-xl" style={{filter: "grayscale(1) brightness(0)"}}>⭕</span>;
+  if (score >= 2.0) return <span className="text-xl">⭕</span>;
   if (score >= 1.0) return <span className="text-xl">🔴</span>;
   return <span className="text-xl">❌</span>;
 };
@@ -26,7 +26,7 @@ const ResultsByCategoryPage = () => {
   const [reformatting, setReformatting] = useState(false);
 
   useEffect(() => {
-    axios.get(`/api/assessment/${id}/results`)
+    axios.get(`/api/assessment/${id}/results`, { headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" } })
       .then(res => {
         setResults(res.data);
         setLoading(false);
@@ -156,15 +156,18 @@ const ResultsByCategoryPage = () => {
   
   const allActivities = Array.from(activityScores.values());
   
+  // Aggiungi processRating dai results originali
   allActivities.forEach(act => {
-    const scores = [act.governance, act.monitoring, act.technology, act.organization]
-      .filter(s => s !== null && s !== undefined && !isNaN(s));
-    act.processRating = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+    const matchingResult = results.find(r => 
+      r.process === act.process && 
+      r.activity === act.activity
+    );
+    act.processRating = matchingResult?.processRating || 0;
   });
 
   const critici = allActivities.filter(a => {
     const scores = [a.governance, a.monitoring, a.technology, a.organization];
-    return scores.some(s => s !== null && s !== undefined && s < 2.0);
+    return scores.some(s => s !== null && s !== undefined && s <= 1.0);
   }).sort((a, b) => {
     // Prima ordina per processo
     if (a.process !== b.process) return a.process.localeCompare(b.process);
@@ -174,7 +177,7 @@ const ResultsByCategoryPage = () => {
 
   const debolezza = allActivities.filter(a => {
     const scores = [a.governance, a.monitoring, a.technology, a.organization];
-    return scores.some(s => s !== null && s !== undefined && s >= 2.0 && s < 3.0);
+    return scores.some(s => s !== null && s !== undefined && s >= 1.0 && s < 2.0);
   }).sort((a, b) => {
     if (a.process !== b.process) return a.process.localeCompare(b.process);
     return (a.processRating || 0) - (b.processRating || 0);
@@ -182,7 +185,7 @@ const ResultsByCategoryPage = () => {
 
   const forza = allActivities.filter(a => {
     const scores = [a.governance, a.monitoring, a.technology, a.organization];
-    return scores.some(s => s !== null && s !== undefined && s >= 3.0);
+    return scores.some(s => s !== null && s !== undefined && s > 3.0);
   }).sort((a, b) => {
     if (a.process !== b.process) return a.process.localeCompare(b.process);
     return (b.processRating || 0) - (a.processRating || 0);
@@ -228,7 +231,7 @@ const ResultsByCategoryPage = () => {
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <div className="bg-green-600 text-white px-4 py-2 rounded-lg">
-                <span className="font-bold">&gt;= 3.00</span>
+                <span className="font-bold">&gt; 3.00</span>
               </div>
               <h3 className="text-2xl font-bold">PUNTI DI FORZA ({forza.length})</h3>
             </div>
@@ -255,10 +258,9 @@ const ResultsByCategoryPage = () => {
                     });
                     
                     return Object.entries(grouped).map(([process, activities]) => {
-                      const processRating = activities.length > 0 
-                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
-                        : 0;
+                      const processRating = activities[0]?.processRating || 0;
                       
+                      console.log("CUSTOMER CARE processRating:", process, activities[0]?.processRating);
                       // Calcola medie per categoria
                       const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
                       const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
@@ -348,7 +350,7 @@ const ResultsByCategoryPage = () => {
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <div className="bg-yellow-500 text-white px-4 py-2 rounded-lg">
-                <span className="font-bold">2.00 - 2.99</span>
+                <span className="font-bold">1.00 - 1.99</span>
               </div>
               <h3 className="text-2xl font-bold">PUNTI DI DEBOLEZZA ({debolezza.length})</h3>
             </div>
@@ -375,9 +377,7 @@ const ResultsByCategoryPage = () => {
                     });
                     
                     return Object.entries(grouped).map(([process, activities]) => {
-                      const processRating = activities.length > 0 
-                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
-                        : 0;
+                      const processRating = activities[0]?.processRating || 0;
                       
                       // Calcola medie per categoria
                       const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
@@ -468,7 +468,7 @@ const ResultsByCategoryPage = () => {
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <div className="bg-red-600 text-white px-4 py-2 rounded-lg">
-                <span className="font-bold">&lt; 2.00</span>
+                <span className="font-bold">&le; 1.00</span>
               </div>
               <h3 className="text-2xl font-bold">PUNTI CRITICI ({critici.length})</h3>
             </div>
@@ -495,9 +495,7 @@ const ResultsByCategoryPage = () => {
                     });
                     
                     return Object.entries(grouped).map(([process, activities]) => {
-                      const processRating = activities.length > 0 
-                        ? activities.reduce((sum, a) => sum + (a.processRating || 0), 0) / activities.length 
-                        : 0;
+                      const processRating = activities[0]?.processRating || 0;
                       
                       // Calcola medie per categoria
                       const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
@@ -754,7 +752,7 @@ const ResultsByCategoryPage = () => {
 
           {/* Radar Riassuntivo - Tutti i Processi */}
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Dominii</h3>
+            <h3 className="text-2xl font-bold mb-6">Radar Riassuntivo - Confronto Processi</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={CATEGORIES_ORDER.map(cat => {
                 const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
@@ -815,7 +813,7 @@ const ResultsByCategoryPage = () => {
 
           {/* Radar Riassuntivo - Tutte le Categorie */}
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
+            <h3 className="text-2xl font-bold mb-6">Radar Riassuntivo - Confronto Categorie</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(proc => {
                 const procData: any = { process: proc };

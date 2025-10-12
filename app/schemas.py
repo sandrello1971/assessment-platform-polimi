@@ -40,6 +40,7 @@ class AssessmentResultCreate(BaseModel):
 class AssessmentResultOut(AssessmentResultCreate):
     id: UUID
     session_id: UUID
+    processRating: Optional[float] = 0.0
 
     class Config:
         from_attributes = True

@@ -216,6 +216,7 @@ class AIRecommendationEngine:
             "priority_matrix": priority_matrix,
             "roadmap": roadmap,
             "roi_predictions": roi_predictions,
+            "benchmark": benchmark,
             "detailed_data": data_by_process,
             "weak_areas": weak_areas,
             "strong_areas": strong_areas,

@@ -162,6 +162,23 @@ def results(session_id: UUID, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"⚠️ Warning: Could not order results: {e}")
     
+    
+    # Calcola processRating per ogni processo
+    process_scores = {}
+    for result in results:
+        if result.process not in process_scores:
+            process_scores[result.process] = []
+        if result.score is not None and not result.is_not_applicable:
+            process_scores[result.process].append(result.score)
+    
+    process_ratings = {}
+    for proc, scores in process_scores.items():
+        if scores:
+            process_ratings[proc] = round(sum(scores) / len(scores), 2)
+    
+    for result in results:
+        result.processRating = process_ratings.get(result.process, 0)
+
     return results
 
 # 🗑️ Cancella assessment completo (sessione + risultati)
