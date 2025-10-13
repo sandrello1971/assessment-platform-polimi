@@ -9,7 +9,7 @@ const getScoreIcon = (score: number | null | undefined) => {
   if (score === null || score === undefined) return <span className="text-gray-400">-</span>;
   if (score >= 4.0) return <span className="text-xl">✅</span>;
   if (score >= 3.0) return <span className="text-xl">🟢</span>;
-  if (score >= 2.0) return <span className="text-xl">⭕</span>;
+  if (score >= 2.0) return <span className="text-xl" style={{filter: "grayscale(1) brightness(0)"}}>⭕</span>;
   if (score >= 1.0) return <span className="text-xl">🔴</span>;
   return <span className="text-xl">❌</span>;
 };
@@ -262,10 +262,12 @@ const ResultsByCategoryPage = () => {
                       
                       console.log("CUSTOMER CARE processRating:", process, activities[0]?.processRating);
                       // Calcola medie per categoria
-                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
-                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
-                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
-                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      // Calcola medie GLOBALI per processo raggruppando per category
+                      const processResults = results.filter(r => r.process === process && !r.is_not_applicable);
+                      const govScores = processResults.filter(r => r.category === 'Governance').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const monScores = processResults.filter(r => r.category === 'Monitoring & Control').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const techScores = processResults.filter(r => r.category === 'Technology').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const orgScores = processResults.filter(r => r.category === 'Organization').map(r => r.score).filter(s => s !== null && s !== undefined);
                       
                       const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
                       const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
@@ -380,10 +382,12 @@ const ResultsByCategoryPage = () => {
                       const processRating = activities[0]?.processRating || 0;
                       
                       // Calcola medie per categoria
-                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
-                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
-                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
-                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      // Calcola medie GLOBALI per processo raggruppando per category
+                      const processResults = results.filter(r => r.process === process && !r.is_not_applicable);
+                      const govScores = processResults.filter(r => r.category === 'Governance').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const monScores = processResults.filter(r => r.category === 'Monitoring & Control').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const techScores = processResults.filter(r => r.category === 'Technology').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const orgScores = processResults.filter(r => r.category === 'Organization').map(r => r.score).filter(s => s !== null && s !== undefined);
                       
                       const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
                       const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
@@ -498,10 +502,12 @@ const ResultsByCategoryPage = () => {
                       const processRating = activities[0]?.processRating || 0;
                       
                       // Calcola medie per categoria
-                      const govScores = activities.map(a => a.governance).filter(s => s !== null && s !== undefined);
-                      const monScores = activities.map(a => a.monitoring).filter(s => s !== null && s !== undefined);
-                      const techScores = activities.map(a => a.technology).filter(s => s !== null && s !== undefined);
-                      const orgScores = activities.map(a => a.organization).filter(s => s !== null && s !== undefined);
+                      // Calcola medie GLOBALI per processo raggruppando per category
+                      const processResults = results.filter(r => r.process === process && !r.is_not_applicable);
+                      const govScores = processResults.filter(r => r.category === 'Governance').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const monScores = processResults.filter(r => r.category === 'Monitoring & Control').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const techScores = processResults.filter(r => r.category === 'Technology').map(r => r.score).filter(s => s !== null && s !== undefined);
+                      const orgScores = processResults.filter(r => r.category === 'Organization').map(r => r.score).filter(s => s !== null && s !== undefined);
                       
                       const avgGov = govScores.length > 0 ? govScores.reduce((a,b) => a+b, 0) / govScores.length : null;
                       const avgMon = monScores.length > 0 ? monScores.reduce((a,b) => a+b, 0) / monScores.length : null;
