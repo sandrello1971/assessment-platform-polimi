@@ -30,11 +30,9 @@ const ResultsByCategoryPage = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
-  const [showProcessRadars, setShowProcessRadars] = useState(false);
-  const [showCategoryRadars, setShowCategoryRadars] = useState(false);
-  const [showProcessRadars, setShowProcessRadars] = useState(false);
-  const [showCategoryRadars, setShowCategoryRadars] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [showProcessRadars, setShowProcessRadars] = useState(false);
+  const [showCategoryRadars, setShowCategoryRadars] = useState(false);
   const [aiConclusions, setAiConclusions] = useState<string>('');
   const [isEditingAI, setIsEditingAI] = useState(false);
   const [editedConclusions, setEditedConclusions] = useState<string>('');
@@ -917,6 +915,7 @@ const ResultsByCategoryPage = () => {
         <div className="mt-12 space-y-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
           
+          <div style={{display: showProcessRadars ? 'block' : 'none'}}>
           {/* Radar per Processo */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h3 className="text-2xl font-bold mb-6">Radar per Processo</h3>
@@ -953,8 +952,10 @@ const ResultsByCategoryPage = () => {
             </div>
           </div>
 
+          </div>
           {/* Radar per Categoria */}
           <div className="bg-white rounded-xl shadow-lg p-8">
+          <div style={{display: showCategoryRadars ? 'block' : 'none'}}>
             <h3 className="text-2xl font-bold mb-6">Radar per Categoria</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {CATEGORIES_ORDER.map(category => {
@@ -991,7 +992,9 @@ const ResultsByCategoryPage = () => {
           </div>
 
           {/* Global Radar - Processi vs Domini */}
+          </div>
           <div className="bg-white rounded-xl shadow-lg p-8">
+
             <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Domini</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={CATEGORIES_ORDER.map(cat => {
@@ -1050,6 +1053,13 @@ const ResultsByCategoryPage = () => {
               </RadarChart>
             </ResponsiveContainer>
                </div>
+          <div className="mb-6 text-center">
+            <button onClick={() => setShowProcessRadars(!showProcessRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
+              {showProcessRadars ? '▲ Nascondi Radar per Processo' : '▼ Mostra Radar per Processo'}
+            </button>
+          </div>
+
+
 
           {/* Global Radar - Dominii vs Processi */}
           <div className="bg-white rounded-xl shadow-lg p-8">
@@ -1111,6 +1121,12 @@ const ResultsByCategoryPage = () => {
               </RadarChart>
             </ResponsiveContainer>
              </div>
+          <div className="mb-6 text-center">
+            <button onClick={() => setShowCategoryRadars(!showCategoryRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
+              {showCategoryRadars ? '▲ Nascondi Radar per Categoria' : '▼ Mostra Radar per Categoria'}
+            </button>
+          </div>
+
 
                 {/* Conclusioni AI */}
         <div className="mt-12 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl shadow-lg p-8 border-2 border-purple-200">
