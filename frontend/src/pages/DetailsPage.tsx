@@ -29,11 +29,6 @@ const ResultsByCategoryPage = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showDetails, setShowDetails] = useState(false);
-  const [showProcessRadars, setShowProcessRadars] = useState(false);
-  const [showCategoryRadars, setShowCategoryRadars] = useState(false);
-  const [showProcessRadars, setShowProcessRadars] = useState(false);
-  const [showCategoryRadars, setShowCategoryRadars] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiConclusions, setAiConclusions] = useState<string>('');
   const [isEditingAI, setIsEditingAI] = useState(false);
@@ -443,15 +438,9 @@ const ResultsByCategoryPage = () => {
               </table>
             </div>
           </div>
-        <div className="mb-6 text-center">
-          <button onClick={() => setShowDetails(!showDetails)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg">
-            {showDetails ? '▲ Nascondi Tabelle Dettagliate' : '▼ Mostra Tabelle Dettagliate'}
-          </button>
-        </div>
-
         </div>
         {/* Tabelle Riassuntive */}
-        <div className="mb-12 space-y-8" style={{display: showDetails ? 'block' : 'none'}}>
+        <div className="mb-12 space-y-8">
           {/* Punti di Forza */}
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
@@ -822,7 +811,6 @@ const ResultsByCategoryPage = () => {
         </div>
 
         {/* Sezione per Categoria */}
-        <div style={{display: showDetails ? 'block' : 'none'}}>
         {CATEGORIES_ORDER.filter(cat => organized[cat]).map(category => (
           <div key={category} className="mb-12">
             <h2 className="text-2xl font-bold text-white bg-blue-600 p-4 rounded-t-xl mb-6">
@@ -912,7 +900,6 @@ const ResultsByCategoryPage = () => {
           </div>
         ))}
 
-        </div>
         {/* Radar Charts */}
         <div className="mt-12 space-y-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
