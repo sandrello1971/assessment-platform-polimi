@@ -258,9 +258,33 @@ const TestTableFormByCategory = () => {
                               return (
                                 <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white">
                                   <div className="flex flex-col items-center gap-2">
-                                    <input type="number" min="0" max="5" value={answer?.score || 0} disabled={answer?.is_not_applicable}
-                                      onChange={(e) => handleScoreChange(row.process, row.activityName, currentCategory, dim, Number(e.target.value))}
-                                      className={`w-full max-w-[60px] mx-auto px-2 py-1 text-center ${answer?.is_not_applicable ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-800'} border border-gray-300 rounded focus:ring-2 focus:ring-blue-400`} />
+                                    <input 
+                                      type="number" 
+                                      min="0" 
+                                      max="5" 
+                                      value={answer?.score || 0} 
+                                      disabled={answer?.is_not_applicable}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-' || e.key === '.') {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        const val = parseInt(input.value);
+                                        if (input.value !== '' && (isNaN(val) || val < 0 || val > 5)) {
+                                          input.value = (answer?.score || 0).toString();
+                                          alert('⚠️ Il valore deve essere compreso tra 0 e 5');
+                                        }
+                                      }}
+                                      onChange={(e) => {
+                                        const val = parseInt(e.target.value);
+                                        if (!isNaN(val) && val >= 0 && val <= 5) {
+                                          handleScoreChange(row.process, row.activityName, currentCategory, dim, val);
+                                        }
+                                      }}
+                                      className={`w-full max-w-[60px] mx-auto px-2 py-1 text-center ${answer?.is_not_applicable ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-800'} border border-gray-300 rounded focus:ring-2 focus:ring-blue-400`} 
+                                    />
                                     <label className="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
                                       <input type="checkbox" checked={answer?.is_not_applicable || false}
                                         onChange={() => handleNotApplicableToggle(row.process, row.activityName, currentCategory, dim)} className="w-3 h-3" />

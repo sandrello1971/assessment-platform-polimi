@@ -362,27 +362,27 @@ const Dashboard = () => {
                         {/* Actions */}
                         <div className="flex items-center space-x-3 ml-6">
                           <button
-                            onClick={() => navigate(`/results/${session.id}`)}
-                            className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
-                          >
-                            <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">📊</span>
-                            Risultati
-                          </button>
-                          
-                          <button
                             onClick={() => navigate(`/assessment/${session.id}`)}
                             className="group bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
                           >
                             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">▶️</span>
-                            Continua
+                            Survey
                           </button>
 
+                          <button
+                            onClick={() => navigate(`/results/${session.id}`)}
+                            className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
+                          >
+                            <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">📊</span>
+                            Report
+                          </button>
+                          
                           <button
                             onClick={() => deleteAssessment(session.id, session.azienda_nome)}
                             className="group bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium shadow-lg border border-white/30 hover:scale-105"
                           >
                             <span className="mr-2 group-hover:rotate-12 transition-transform duration-300">🗑️</span>
-                            Elimina
+                            Remove
                           </button>
                         </div>
                       </div>

@@ -239,6 +239,221 @@ const ResultsByCategoryPage = () => {
         </div>
 
         {/* Nuova Tabella Strengths & Weaknesses */}
+        <div className="mt-12 space-y-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
+          
+
+            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Domini</h3>
+            <ResponsiveContainer width="100%" height={500}>
+              <RadarChart data={CATEGORIES_ORDER.map(cat => {
+                const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
+                Object.keys(organized[CATEGORIES_ORDER[0]] || {}).forEach(proc => {
+                  const activities = organized[cat]?.[proc] || {};
+                  const avgs: number[] = [];
+                  Object.values(activities).forEach((dims: any) => {
+                    const avg = calculateRowAverage(dims);
+                    if (avg !== null) avgs.push(avg);
+                  });
+                  catData[proc] = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                });
+                return catData;
+              })}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="category" />
+                <PolarRadiusAxis angle={90} domain={[0, 5]} />
+                {(() => {
+                  const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
+                  const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+                  
+                  // Calcola aree per ogni processo
+                  const processesWithArea = processes.map((proc, idx) => {
+                    const values = CATEGORIES_ORDER.map(cat => {
+                      const activities = organized[cat]?.[proc] || {};
+                      const avgs: number[] = [];
+                      Object.values(activities).forEach((dims: any) => {
+                        const avg = calculateRowAverage(dims);
+                        if (avg !== null) avgs.push(avg);
+                      });
+                      return avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                    });
+                    const n = values.length;
+                    const avgRadius = values.reduce((a,b) => a+b, 0) / n;
+                    const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
+                    return { proc, area, colorIdx: idx };
+                  });
+                  
+                  // Ordina per area decrescente
+                  processesWithArea.sort((a, b) => b.area - a.area);
+                  
+                  return processesWithArea.map(({ proc, area, colorIdx }) => (
+                    <Radar 
+                      key={proc} 
+                      name={`${proc} (${area.toFixed(2)})`} 
+                      dataKey={proc} 
+                      stroke={colors[colorIdx % colors.length]} 
+                      fill={colors[colorIdx % colors.length]} 
+                      fillOpacity={0} 
+                      strokeWidth={2} 
+                    />
+                  ));
+                })()}
+                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
+              </RadarChart>
+            </ResponsiveContainer>
+               </div>
+          <div className="mb-6 text-center">
+            <button onClick={() => setShowProcessRadars(!showProcessRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
+              {showProcessRadars ? '▲ Nascondi Radar per Processo' : '▼ Mostra Radar per Processo'}
+            </button>
+          </div>
+
+
+
+          {/* Global Radar - Dominii vs Processi */}
+          <div style={{display: showProcessRadars ? 'block' : 'none'}}>
+          {/* Radar per Processo */}
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h3 className="text-2xl font-bold mb-6">Radar per Processo</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(process => {
+                const data = CATEGORIES_ORDER.map(cat => {
+                  const activities = organized[cat]?.[process] || {};
+                  const avgs: number[] = [];
+                  Object.values(activities).forEach((dims: any) => {
+                    const avg = calculateRowAverage(dims);
+                    if (avg !== null) avgs.push(avg);
+                  });
+                  const processAvg = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                  return {
+                    category: cat.replace('Monitoring & Control', 'M&C'),
+                    value: processAvg
+                  };
+                });
+                
+                return (
+                  <div key={process} className="border rounded-lg p-4">
+                    <h4 className="font-bold text-lg mb-4 text-center">{process}</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RadarChart data={data}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="category" />
+                        <PolarRadiusAxis angle={90} domain={[0, 5]} />
+                        <Radar name={process} dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          </div>
+          {/* Radar per Categoria */}
+          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h3 className="text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
+            <ResponsiveContainer width="100%" height={500}>
+              <RadarChart data={Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(proc => {
+                const procData: any = { process: proc };
+                CATEGORIES_ORDER.forEach(cat => {
+                  const activities = organized[cat]?.[proc] || {};
+                  const avgs: number[] = [];
+                  Object.values(activities).forEach((dims: any) => {
+                    const avg = calculateRowAverage(dims);
+                    if (avg !== null) avgs.push(avg);
+                  });
+                  procData[cat] = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                });
+                return procData;
+              })}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="process" />
+                <PolarRadiusAxis angle={90} domain={[0, 5]} />
+                {(() => {
+                  const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
+                  const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
+                  
+                  // Calcola aree per ogni categoria
+                  const categoriesWithArea = CATEGORIES_ORDER.map((cat, idx) => {
+                    const values = processes.map(proc => {
+                      const activities = organized[cat]?.[proc] || {};
+                      const avgs: number[] = [];
+                      Object.values(activities).forEach((dims: any) => {
+                        const avg = calculateRowAverage(dims);
+                        if (avg !== null) avgs.push(avg);
+                      });
+                      return avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                    });
+                    const n = values.length;
+                    const avgRadius = values.reduce((a,b) => a+b, 0) / n;
+                    const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
+                    return { cat, area, colorIdx: idx };
+                  });
+                  
+                  // Ordina per area decrescente
+                  categoriesWithArea.sort((a, b) => b.area - a.area);
+                  
+                  return categoriesWithArea.map(({ cat, area, colorIdx }) => (
+                    <Radar 
+                      key={cat} 
+                      name={`${cat} (${area.toFixed(2)})`} 
+                      dataKey={cat} 
+                      stroke={colors[colorIdx]} 
+                      fill={colors[colorIdx]} 
+                      fillOpacity={0} 
+                      strokeWidth={2} 
+                    />
+                  ));
+                })()}
+                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
+              </RadarChart>
+            </ResponsiveContainer>
+             </div>
+          <div className="mb-6 text-center">
+            <button onClick={() => setShowCategoryRadars(!showCategoryRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
+              {showCategoryRadars ? '▲ Nascondi Radar per Categoria' : '▼ Mostra Radar per Categoria'}
+            </button>
+          </div>
+          <div style={{display: showCategoryRadars ? 'block' : 'none'}}>
+            <h3 className="text-2xl font-bold mb-6">Radar per Categoria</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {CATEGORIES_ORDER.map(category => {
+                const processes = organized[category] || {};
+                const data = Object.keys(processes).map(proc => {
+                  const activities = processes[proc];
+                  const avgs: number[] = [];
+                  Object.values(activities).forEach((dims: any) => {
+                    const avg = calculateRowAverage(dims);
+                    if (avg !== null) avgs.push(avg);
+                  });
+                  const procAvg = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
+                  return {
+                    process: proc,
+                    value: procAvg
+                  };
+                });
+                
+                return (
+                  <div key={category} className="border rounded-lg p-4">
+                    <h4 className="font-bold text-lg mb-4 text-center">{category}</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RadarChart data={data}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="process" />
+                        <PolarRadiusAxis angle={90} domain={[0, 5]} />
+                        <Radar name={category} dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Global Radar - Processi vs Domini */}
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-8">
+
         <div className="mb-12">
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
             <h2 className="text-3xl font-bold mb-6 text-gray-800">STRENGTHS & WEAKNESSES BY PROCESS</h2>
@@ -912,221 +1127,6 @@ const ResultsByCategoryPage = () => {
 
         </div>
         {/* Radar Charts */}
-        <div className="mt-12 space-y-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
-          
-          <div style={{display: showProcessRadars ? 'block' : 'none'}}>
-          {/* Radar per Processo */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Radar per Processo</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(process => {
-                const data = CATEGORIES_ORDER.map(cat => {
-                  const activities = organized[cat]?.[process] || {};
-                  const avgs: number[] = [];
-                  Object.values(activities).forEach((dims: any) => {
-                    const avg = calculateRowAverage(dims);
-                    if (avg !== null) avgs.push(avg);
-                  });
-                  const processAvg = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                  return {
-                    category: cat.replace('Monitoring & Control', 'M&C'),
-                    value: processAvg
-                  };
-                });
-                
-                return (
-                  <div key={process} className="border rounded-lg p-4">
-                    <h4 className="font-bold text-lg mb-4 text-center">{process}</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <RadarChart data={data}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="category" />
-                        <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                        <Radar name={process} dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          </div>
-          {/* Radar per Categoria */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-          <div style={{display: showCategoryRadars ? 'block' : 'none'}}>
-            <h3 className="text-2xl font-bold mb-6">Radar per Categoria</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {CATEGORIES_ORDER.map(category => {
-                const processes = organized[category] || {};
-                const data = Object.keys(processes).map(proc => {
-                  const activities = processes[proc];
-                  const avgs: number[] = [];
-                  Object.values(activities).forEach((dims: any) => {
-                    const avg = calculateRowAverage(dims);
-                    if (avg !== null) avgs.push(avg);
-                  });
-                  const procAvg = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                  return {
-                    process: proc,
-                    value: procAvg
-                  };
-                });
-                
-                return (
-                  <div key={category} className="border rounded-lg p-4">
-                    <h4 className="font-bold text-lg mb-4 text-center">{category}</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <RadarChart data={data}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="process" />
-                        <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                        <Radar name={category} dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Global Radar - Processi vs Domini */}
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-8">
-
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Domini</h3>
-            <ResponsiveContainer width="100%" height={500}>
-              <RadarChart data={CATEGORIES_ORDER.map(cat => {
-                const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
-                Object.keys(organized[CATEGORIES_ORDER[0]] || {}).forEach(proc => {
-                  const activities = organized[cat]?.[proc] || {};
-                  const avgs: number[] = [];
-                  Object.values(activities).forEach((dims: any) => {
-                    const avg = calculateRowAverage(dims);
-                    if (avg !== null) avgs.push(avg);
-                  });
-                  catData[proc] = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                });
-                return catData;
-              })}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="category" />
-                <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                {(() => {
-                  const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
-                  const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-                  
-                  // Calcola aree per ogni processo
-                  const processesWithArea = processes.map((proc, idx) => {
-                    const values = CATEGORIES_ORDER.map(cat => {
-                      const activities = organized[cat]?.[proc] || {};
-                      const avgs: number[] = [];
-                      Object.values(activities).forEach((dims: any) => {
-                        const avg = calculateRowAverage(dims);
-                        if (avg !== null) avgs.push(avg);
-                      });
-                      return avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                    });
-                    const n = values.length;
-                    const avgRadius = values.reduce((a,b) => a+b, 0) / n;
-                    const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
-                    return { proc, area, colorIdx: idx };
-                  });
-                  
-                  // Ordina per area decrescente
-                  processesWithArea.sort((a, b) => b.area - a.area);
-                  
-                  return processesWithArea.map(({ proc, area, colorIdx }) => (
-                    <Radar 
-                      key={proc} 
-                      name={`${proc} (${area.toFixed(2)})`} 
-                      dataKey={proc} 
-                      stroke={colors[colorIdx % colors.length]} 
-                      fill={colors[colorIdx % colors.length]} 
-                      fillOpacity={0} 
-                      strokeWidth={2} 
-                    />
-                  ));
-                })()}
-                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
-              </RadarChart>
-            </ResponsiveContainer>
-               </div>
-          <div className="mb-6 text-center">
-            <button onClick={() => setShowProcessRadars(!showProcessRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
-              {showProcessRadars ? '▲ Nascondi Radar per Processo' : '▼ Mostra Radar per Processo'}
-            </button>
-          </div>
-
-
-
-          {/* Global Radar - Dominii vs Processi */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
-            <ResponsiveContainer width="100%" height={500}>
-              <RadarChart data={Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(proc => {
-                const procData: any = { process: proc };
-                CATEGORIES_ORDER.forEach(cat => {
-                  const activities = organized[cat]?.[proc] || {};
-                  const avgs: number[] = [];
-                  Object.values(activities).forEach((dims: any) => {
-                    const avg = calculateRowAverage(dims);
-                    if (avg !== null) avgs.push(avg);
-                  });
-                  procData[cat] = avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                });
-                return procData;
-              })}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="process" />
-                <PolarRadiusAxis angle={90} domain={[0, 5]} />
-                {(() => {
-                  const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
-                  const processes = Object.keys(organized[CATEGORIES_ORDER[0]] || {});
-                  
-                  // Calcola aree per ogni categoria
-                  const categoriesWithArea = CATEGORIES_ORDER.map((cat, idx) => {
-                    const values = processes.map(proc => {
-                      const activities = organized[cat]?.[proc] || {};
-                      const avgs: number[] = [];
-                      Object.values(activities).forEach((dims: any) => {
-                        const avg = calculateRowAverage(dims);
-                        if (avg !== null) avgs.push(avg);
-                      });
-                      return avgs.length > 0 ? avgs.reduce((a,b) => a+b, 0) / avgs.length : 0;
-                    });
-                    const n = values.length;
-                    const avgRadius = values.reduce((a,b) => a+b, 0) / n;
-                    const area = (n * Math.pow(avgRadius, 2) * Math.sin(2 * Math.PI / n)) / 2;
-                    return { cat, area, colorIdx: idx };
-                  });
-                  
-                  // Ordina per area decrescente
-                  categoriesWithArea.sort((a, b) => b.area - a.area);
-                  
-                  return categoriesWithArea.map(({ cat, area, colorIdx }) => (
-                    <Radar 
-                      key={cat} 
-                      name={`${cat} (${area.toFixed(2)})`} 
-                      dataKey={cat} 
-                      stroke={colors[colorIdx]} 
-                      fill={colors[colorIdx]} 
-                      fillOpacity={0} 
-                      strokeWidth={2} 
-                    />
-                  ));
-                })()}
-                <Legend wrapperStyle={{ fontSize: "12px" }} layout="vertical" align="right" verticalAlign="middle" />
-              </RadarChart>
-            </ResponsiveContainer>
-             </div>
-          <div className="mb-6 text-center">
-            <button onClick={() => setShowCategoryRadars(!showCategoryRadars)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold">
-              {showCategoryRadars ? '▲ Nascondi Radar per Categoria' : '▼ Mostra Radar per Categoria'}
-            </button>
-          </div>
-
 
                 {/* Conclusioni AI */}
         <div className="mt-12 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl shadow-lg p-8 border-2 border-purple-200">
