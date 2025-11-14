@@ -260,16 +260,43 @@ const TestTableFormByCategory = () => {
                                   <div className="flex flex-col items-center gap-2">
                                     <input 
                                       type="number" 
+                                      data-process={row.process}
+                                      data-activity={row.activityName}
+                                      data-category={currentCategory}
+                                      data-dimension={dim}
                                       min="0" 
                                       max="5" 
                                       value={answer?.score || 0} 
                                       disabled={answer?.is_not_applicable}
-                                      onKeyDown={(e) => {
+onKeyDown={(e) => {
                                         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-' || e.key === '.') {
                                           e.preventDefault();
+                                          return;
+                                        }
+                                        
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          const currentInput = e.currentTarget;
+                                          const currentDim = currentInput.getAttribute('data-dimension');
+                                          
+                                          // Trova tutti gli input della stessa dimensione (colonna)
+                                          const allInputs = Array.from(
+document.querySelectorAll(`input[data-dimension="${currentDim}"]:not([disabled])`)
+
+                                          ) as HTMLInputElement[];
+                                          
+                                          const currentIndex = allInputs.indexOf(currentInput);
+                                          
+                                          if (e.shiftKey && currentIndex > 0) {
+                                            allInputs[currentIndex - 1].focus();
+                                            allInputs[currentIndex - 1].select();
+                                          } else if (!e.shiftKey && currentIndex < allInputs.length - 1) {
+                                            allInputs[currentIndex + 1].focus();
+                                            allInputs[currentIndex + 1].select();
+                                          }
                                         }
                                       }}
-                                      onInput={(e) => {
+	                                      onInput={(e) => {
                                         const input = e.target as HTMLInputElement;
                                         const val = parseInt(input.value);
                                         if (input.value !== '' && (isNaN(val) || val < 0 || val > 5)) {
