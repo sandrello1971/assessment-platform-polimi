@@ -267,6 +267,29 @@ const TestTableFormByCategory = () => {
                                       onKeyDown={(e) => {
                                         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-' || e.key === '.') {
                                           e.preventDefault();
+                                          return;
+                                        }
+                                        
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          const currentInput = e.currentTarget;
+                                          const allInputs = Array.from(
+                                            document.querySelectorAll('input[type="number"]:not([disabled])')
+                                          ) as HTMLInputElement[];
+                                          
+                                          const currentIndex = allInputs.indexOf(currentInput);
+                                          
+                                          if (e.shiftKey) {
+                                            if (currentIndex > 0) {
+                                              allInputs[currentIndex - 1].focus();
+                                              allInputs[currentIndex - 1].select();
+                                            }
+                                          } else {
+                                            if (currentIndex < allInputs.length - 1) {
+                                              allInputs[currentIndex + 1].focus();
+                                              allInputs[currentIndex + 1].select();
+                                            }
+                                          }
                                         }
                                       }}
                                       onInput={(e) => {

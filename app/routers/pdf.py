@@ -65,10 +65,25 @@ async def generate_pdf_report(session_id: str, db: Session = Depends(get_db)):
     stats_data = await calculate_pdf_stats(session_id, db)
     stats_data["session_id"] = session_id
     
+    
+    # Calcola dati radar per processi (per grafico globale con 4 dimensioni)
+    processes_radar = await calculate_processes_radar(session_id, db)
+    stats_data["processes_radar"] = processes_radar
+    
+    # Recupera conclusioni AI se disponibili
+    ai_conclusions = None
+    try:
+        ai_result = db.query(models.AssessmentSession).filter(
+            models.AssessmentSession.id == session_id
+        ).first()
+        if ai_result and hasattr(ai_result, "ai_suggestions") and ai_result.ai_suggestions:
+            ai_conclusions = ai_result.ai_suggestions
+    except:
+        ai_conclusions = None
     try:
         # Genera PDF
         pdf_generator = PDFReportGenerator()
-        pdf_bytes = pdf_generator.generate_assessment_report(session_data, results_data, stats_data)
+        pdf_bytes = pdf_generator.generate_assessment_report(session_data, results_data, stats_data, ai_conclusions)
         
         # Prepara nome file pulito
         clean_company_name = session.azienda_nome.replace(' ', '_').replace('/', '_') if session.azienda_nome else 'Assessment'
@@ -239,3 +254,69 @@ async def get_pdf_stats_preview(session_id: str, db: Session = Depends(get_db)):
         "ready_for_pdf": True,
         "stats": stats_data
     }
+
+
+async def calculate_processes_radar(session_id: str, db: Session) -> List[Dict]:
+    """
+    Calcola i dati radar per ogni processo con le 4 dimensioni
+    (Governance, Monitoring & Control, Technology, Organization)
+    """
+    
+    # Query per ottenere medie per processo e categoria
+    results = (
+        db.query(
+            AssessmentResult.process,
+            AssessmentResult.category,
+            func.avg(AssessmentResult.score).label("avg_score")
+        )
+        .filter(AssessmentResult.session_id == session_id)
+        .filter(AssessmentResult.is_not_applicable.is_(False))
+        .group_by(AssessmentResult.process, AssessmentResult.category)
+        .all()
+    )
+    
+    if not results:
+        return []
+    
+    # Organizza i dati per processo
+    processes_data = {}
+    
+    for process, category, avg_score in results:
+        if process not in processes_data:
+            processes_data[process] = {
+                "process": process,
+                "dimensions": {
+                    "governance": 0.0,
+                    "monitoring_control": 0.0,
+                    "technology": 0.0,
+                    "organization": 0.0
+                },
+                "overall_score": 0.0
+            }
+        
+        # Mappa le categorie alle 4 dimensioni
+        category_lower = category.lower()
+        if "governance" in category_lower or "process" in category_lower:
+            processes_data[process]["dimensions"]["governance"] = round(float(avg_score), 2)
+        elif "monitoring" in category_lower or "control" in category_lower:
+            processes_data[process]["dimensions"]["monitoring_control"] = round(float(avg_score), 2)
+        elif "technology" in category_lower or "tech" in category_lower or "ict" in category_lower:
+            processes_data[process]["dimensions"]["technology"] = round(float(avg_score), 2)
+        elif "organization" in category_lower or "org" in category_lower or "people" in category_lower:
+            processes_data[process]["dimensions"]["organization"] = round(float(avg_score), 2)
+    
+    # Calcola punteggio complessivo per ogni processo
+    for process_key in processes_data:
+        dimensions = processes_data[process_key]["dimensions"]
+        valid_scores = [v for v in dimensions.values() if v > 0]
+        if valid_scores:
+            processes_data[process_key]["overall_score"] = round(sum(valid_scores) / len(valid_scores), 2)
+    
+    # Converti in lista e ordina per punteggio
+    processes_list = sorted(
+        list(processes_data.values()),
+        key=lambda x: x["overall_score"],
+        reverse=True
+    )
+    
+    return processes_list

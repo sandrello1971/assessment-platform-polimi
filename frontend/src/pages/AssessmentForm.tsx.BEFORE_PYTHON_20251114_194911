@@ -35,10 +35,8 @@ const ScoreSelector: React.FC<{
   isNotApplicable: boolean;
   onChange: (score: number, isNotApplicable: boolean) => void;
   questionText: string;
-  dataProcess?: string;
-  dataCategory?: string;
-  dataDimension?: string;
-}> = ({ value, isNotApplicable, onChange, questionText, dataProcess, dataCategory, dataDimension }) => {  
+}> = ({ value, isNotApplicable, onChange, questionText }) => {
+  
   const handleScoreChange = (newScore: number) => {
     onChange(newScore, false);
   };
@@ -116,42 +114,16 @@ const ScoreSelector: React.FC<{
               onChange={e => handleScoreChange(Number(e.target.value))}
               className="flex-1 h-3 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
               tabIndex={0}
-              data-process={dataProcess}
-              data-category={dataCategory}
-              data-dimension={dataDimension}
               onKeyDown={(e) => {
-                if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.ctrlKey) {
+                if (e.key === 'Enter' && e.ctrlKey) {
                   e.preventDefault();
                   e.stopPropagation();
-console.log('Key pressed:', e.key, 'Current:', { dataProcess, dataCategory, dataDimension });                  
-                  // Trova tutti gli slider con stessa categoria e dimensione
+                  const currentInput = e.currentTarget;
                   const allSliders = Array.from(
                     document.querySelectorAll('input[type="range"]')
                   ) as HTMLInputElement[];
-                  
-                  const currentCategory = dataCategory;
-                  const currentDimension = dataDimension;
-                  const currentProcess = dataProcess;
-                  
-                  // Filtra slider con stessa categoria e dimensione
-                  const sameColumnSliders = allSliders.filter(slider => 
-                    slider.getAttribute('data-category') === currentCategory &&
-                    slider.getAttribute('data-dimension') === currentDimension
-                  );
-                  
-                  // Trova indice corrente
-                  const currentIndex = sameColumnSliders.findIndex(slider =>
-                    slider.getAttribute('data-process') === currentProcess
-                  );
-                  
-                  // Naviga su/giù
-                  if (e.key === 'ArrowUp' && currentIndex > 0) {
-                    sameColumnSliders[currentIndex - 1].focus();
-console.log('Same column sliders found:', sameColumnSliders.length, 'Current index:', currentIndex);
-                  } else if (e.key === 'ArrowDown' && currentIndex < sameColumnSliders.length - 1) {
-                    sameColumnSliders[currentIndex + 1].focus();
-                  }
-                  if (e.key === 'ArrowUp') {
+                  const currentIndex = allSliders.indexOf(currentInput);
+                  if (e.shiftKey) {
                     if (currentIndex > 0) {
                       allSliders[currentIndex - 1].focus();
                     }
@@ -623,15 +595,13 @@ const AssessmentForm: React.FC = () => {
                         return (
                           <div key={idx} className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
                             {/* ✅ NUOVO COMPONENTE SCORE SELECTOR */}
-<ScoreSelector
-  value={answers[answerIndex]?.score || 3}
-  isNotApplicable={answers[answerIndex]?.is_not_applicable || false}
-  onChange={(score, isNotApplicable) => handleScoreChange(answerIndex, score, isNotApplicable)}
-  questionText={dim.dimension}
-  dataProcess={dim.process}
-  dataCategory={dim.category}
-  dataDimension={dim.dimension}
-/>
+                            <ScoreSelector
+                              value={answers[answerIndex]?.score || 3}
+                              isNotApplicable={answers[answerIndex]?.is_not_applicable || false}
+                              onChange={(score, isNotApplicable) => handleScoreChange(answerIndex, score, isNotApplicable)}
+                              questionText={dim.dimension}
+                            />
+
                             <input
                               type="text"
                               placeholder="Note aggiuntive (opzionale)"

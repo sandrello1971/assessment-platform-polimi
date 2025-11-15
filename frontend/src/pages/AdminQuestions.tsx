@@ -298,7 +298,7 @@ const AdminQuestions = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Domande Standard
+              Dominii
             </button>
             <button
               onClick={() => setActiveTab('processes')}

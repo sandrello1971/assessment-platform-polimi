@@ -243,7 +243,7 @@ const ResultsByCategoryPage = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
           
 
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Domini</h3>
+            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Dominii</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={CATEGORIES_ORDER.map(cat => {
                 const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
