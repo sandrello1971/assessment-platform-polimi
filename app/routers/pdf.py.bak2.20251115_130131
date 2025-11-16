@@ -55,7 +55,6 @@ async def generate_pdf_report(session_id: str, db: Session = Depends(get_db)):
         results_data.append({
             "process": result.process,
             "category": result.category,
-            "activity": result.activity,
             "dimension": result.dimension,
             "score": result.score,
             "note": result.note,

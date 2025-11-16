@@ -55,7 +55,6 @@ async def generate_pdf_report(session_id: str, db: Session = Depends(get_db)):
         results_data.append({
             "process": result.process,
             "category": result.category,
-            "activity": result.activity,
             "dimension": result.dimension,
             "score": result.score,
             "note": result.note,
@@ -254,99 +253,57 @@ async def calculate_processes_radar(session_id: str, db: Session) -> List[Dict]:
     """
     Calcola i dati radar per ogni processo con le 4 dimensioni
     (Governance, Monitoring & Control, Technology, Organization)
-    Usa la logica "media delle medie delle righe" come nel frontend
     """
     
-    # Query per ottenere TUTTI i risultati grezzi
+    # Query per ottenere medie per processo e categoria
     results = (
         db.query(
             AssessmentResult.process,
             AssessmentResult.category,
-            AssessmentResult.activity,
-            AssessmentResult.dimension,
-            AssessmentResult.score,
-            AssessmentResult.is_not_applicable
+            func.avg(AssessmentResult.score).label("avg_score")
         )
         .filter(AssessmentResult.session_id == session_id)
+        .filter(AssessmentResult.is_not_applicable.is_(False))
+        .group_by(AssessmentResult.process, AssessmentResult.category)
         .all()
     )
     
     if not results:
         return []
     
-    # Organizza: category -> process -> activity -> {dimension: score}
-    organized = {}
-    for process, category, activity, dimension, score, is_na in results:
-        if category not in organized:
-            organized[category] = {}
-        if process not in organized[category]:
-            organized[category][process] = {}
-        if activity not in organized[category][process]:
-            organized[category][process][activity] = {}
-        organized[category][process][activity][dimension] = {
-            "score": score,
-            "is_not_applicable": is_na
-        }
-    
-    # Helper: calcola media riga (attività)
-    def calculate_row_average(dimensions_dict):
-        total = 0
-        count = 0
-        for dim_data in dimensions_dict.values():
-            if not dim_data.get("is_not_applicable") and dim_data.get("score") is not None:
-                total += dim_data["score"]
-                count += 1
-        return total / count if count > 0 else None
-    
-    # Calcola per ogni processo la media per categoria (dominio)
-    # Logica: per ogni processo in ogni categoria, media delle medie delle attività
-    all_processes = set()
-    for cat_data in organized.values():
-        all_processes.update(cat_data.keys())
-    
+    # Organizza i dati per processo
     processes_data = {}
-    for proc in all_processes:
-        processes_data[proc] = {
-            "process": proc,
-            "dimensions": {
-                "governance": 0.0,
-                "monitoring_control": 0.0,
-                "technology": 0.0,
-                "organization": 0.0
-            },
-            "overall_score": 0.0
-        }
     
-    # Per ogni categoria (dominio), calcola la media per ogni processo
-    category_mapping = {
-        "Governance": "governance",
-        "Monitoring & Control": "monitoring_control",
-        "Technology": "technology",
-        "Organization": "organization"
-    }
-    
-    for category, dim_key in category_mapping.items():
-        if category not in organized:
-            continue
-        for proc in all_processes:
-            if proc not in organized[category]:
-                continue
-            activities = organized[category][proc]
-            # Media delle medie delle righe (attività)
-            avgs = []
-            for activity_dims in activities.values():
-                avg = calculate_row_average(activity_dims)
-                if avg is not None:
-                    avgs.append(avg)
-            if avgs:
-                processes_data[proc]["dimensions"][dim_key] = round(sum(avgs) / len(avgs), 2)
+    for process, category, avg_score in results:
+        if process not in processes_data:
+            processes_data[process] = {
+                "process": process,
+                "dimensions": {
+                    "governance": 0.0,
+                    "monitoring_control": 0.0,
+                    "technology": 0.0,
+                    "organization": 0.0
+                },
+                "overall_score": 0.0
+            }
+        
+        # Mappa le categorie alle 4 dimensioni
+        category_lower = category.lower()
+        if "governance" in category_lower or "process" in category_lower:
+            processes_data[process]["dimensions"]["governance"] = round(float(avg_score), 2)
+        elif "monitoring" in category_lower or "control" in category_lower:
+            processes_data[process]["dimensions"]["monitoring_control"] = round(float(avg_score), 2)
+        elif "technology" in category_lower or "tech" in category_lower or "ict" in category_lower:
+            processes_data[process]["dimensions"]["technology"] = round(float(avg_score), 2)
+        elif "organization" in category_lower or "org" in category_lower or "people" in category_lower:
+            processes_data[process]["dimensions"]["organization"] = round(float(avg_score), 2)
     
     # Calcola punteggio complessivo per ogni processo
-    for proc in processes_data:
-        dimensions = processes_data[proc]["dimensions"]
+    for process_key in processes_data:
+        dimensions = processes_data[process_key]["dimensions"]
         valid_scores = [v for v in dimensions.values() if v > 0]
         if valid_scores:
-            processes_data[proc]["overall_score"] = round(sum(valid_scores) / len(valid_scores), 2)
+            processes_data[process_key]["overall_score"] = round(sum(valid_scores) / len(valid_scores), 2)
     
     # Converti in lista e ordina per punteggio
     processes_list = sorted(

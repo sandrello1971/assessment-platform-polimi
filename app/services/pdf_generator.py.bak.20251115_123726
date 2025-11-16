@@ -2,8 +2,6 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph
-from reportlab.lib.styles import ParagraphStyle
 import io
 from datetime import datetime
 from typing import Dict, List, Any
@@ -14,23 +12,21 @@ import numpy as np
 
 class PDFReportGenerator:
     def __init__(self):
-        # Formato A4 Portrait (verticale)
         self.page_width, self.page_height = A4
-        self.frontpage_template = '/var/www/assessment_ai/app/templates/pdf/frontpage.png'
-        self.report_template = '/var/www/assessment_ai/app/templates/pdf/report.png'
-        self.ai_template = '/var/www/assessment_ai/app/templates/pdf/aiconclusion.png'
+        self.frontpage_template = '/var/www/assessment_ai/frontpage.png'
+        self.report_template = '/var/www/assessment_ai/report.png'
+        self.ai_template = '/var/www/assessment_ai/aiconclusion.png'
         self.margin_left = 2.5*cm
         self.margin_right = 2*cm
         self.margin_top = 4*cm
-        self.margin_bottom = 2.5*cm
+        self.margin_bottom = 2*cm
         self.content_width = self.page_width - self.margin_left - self.margin_right
 
     def generate_assessment_report(self, session_data: Dict, results_data: List[Dict], 
                                  stats_data: Dict, ai_conclusions: str = None) -> bytes:
         buffer = io.BytesIO()
-        c = canvas.Canvas(buffer, pagesize=(self.page_width, self.page_height))
+        c = canvas.Canvas(buffer, pagesize=A4)
         
-        page_num = 1
         # Pagina 1: Copertina
         self._draw_frontpage(c, session_data)
         c.showPage()
@@ -38,37 +34,27 @@ class PDFReportGenerator:
         # Pagina 2: Radar Processi vs Domini (7 linee su 4 assi)
         self._draw_report_page(c)
         self._add_radar_processes_vs_domains(c, stats_data)
-        self._add_page_number(c, page_num)
-        page_num += 1
         c.showPage()
         
         
         # Pagina 3: Radar per Processo (7 radar)
         self._draw_report_page(c)
         self._add_process_radars(c, stats_data)
-        self._add_page_number(c, page_num)
-        page_num += 1
         c.showPage()
         
         # Pagina 4: Radar Domini vs Processi (4 linee su 7 assi)
         self._draw_report_page(c)
         self._add_radar_domains_vs_processes(c, stats_data)
-        self._add_page_number(c, page_num)
-        page_num += 1
         c.showPage()
         
         # Pagina 5: Radar per Categoria (4 radar)
         self._draw_report_page(c)
         self._add_category_radars(c, stats_data)
-        self._add_page_number(c, page_num)
-        page_num += 1
         c.showPage()
         
         # Pagina 6: Strengths & Weaknesses
         self._draw_report_page(c)
         self._add_strengths_weaknesses(c, stats_data, results_data)
-        self._add_page_number(c, page_num)
-        page_num += 1
         c.showPage()
         
         # Pagina 7+: Conclusioni AI
@@ -96,7 +82,7 @@ class PDFReportGenerator:
 
     def _add_radar_processes_vs_domains(self, c: canvas.Canvas, stats_data: Dict):
         """Radar con 4 assi (Domini) e 7 linee (Processi) - Governance in alto"""
-        y_pos = self.page_height - self.margin_top - 2*cm
+        y_pos = self.page_height - self.margin_top - 1*cm
         c.setFont('Helvetica-Bold', 16)
         c.setFillColor(colors.HexColor('#2C3E50'))
         c.drawString(self.margin_left, y_pos, "Global Radar - Processi vs Domini")
@@ -161,7 +147,7 @@ class PDFReportGenerator:
 
     def _add_radar_domains_vs_processes(self, c: canvas.Canvas, stats_data: Dict):
         """Radar con 7 assi (Processi) e 4 linee (Domini) - MKTG in alto"""
-        y_pos = self.page_height - self.margin_top - 2*cm
+        y_pos = self.page_height - self.margin_top - 1*cm
         c.setFont('Helvetica-Bold', 16)
         c.setFillColor(colors.HexColor('#2C3E50'))
         c.drawString(self.margin_left, y_pos, "Global Radar - Domini vs Processi")
@@ -241,10 +227,10 @@ class PDFReportGenerator:
 
     def _add_category_radars(self, c: canvas.Canvas, stats_data: Dict):
         """4 radar (uno per categoria) con 7 assi (processi)"""
-        y_pos = self.page_height - self.margin_top - 2*cm
+        y_pos = self.page_height - self.margin_top - 1*cm
         c.setFont('Helvetica-Bold', 16)
         c.setFillColor(colors.HexColor('#2C3E50'))
-        c.drawString(self.margin_left, y_pos, "Radar per Dominio")
+        c.drawString(self.margin_left, y_pos, "Radar per Categoria")
         
         processes_radar = stats_data.get('processes_radar', [])
         if not processes_radar:
@@ -304,7 +290,7 @@ class PDFReportGenerator:
 
     def _add_process_radars(self, c: canvas.Canvas, stats_data: Dict):
         """7 radar (uno per processo) con 4 assi (domini)"""
-        y_pos = self.page_height - self.margin_top - 2*cm
+        y_pos = self.page_height - self.margin_top - 1*cm
         c.setFont('Helvetica-Bold', 16)
         c.setFillColor(colors.HexColor('#2C3E50'))
         c.drawString(self.margin_left, y_pos, "Radar per Processo")
@@ -370,329 +356,77 @@ class PDFReportGenerator:
             c.drawImage(img, x_pos, y_pos - radar_h, width=radar_w, height=radar_h, preserveAspectRatio=True)
 
     def _add_strengths_weaknesses(self, c: canvas.Canvas, stats_data: Dict, results_data: List[Dict]):
-        """Una pagina per ogni Process Area con tabella dimensioni e box note sotto"""
-        from reportlab.lib.units import cm
-        from reportlab.lib import colors
+        """Tabella Strengths & Weaknesses"""
+        y_pos = self.page_height - self.margin_top - 1*cm
+        c.setFont('Helvetica-Bold', 14)
+        c.setFillColor(colors.HexColor('#2C3E50'))
+        c.drawString(self.margin_left, y_pos, "STRENGTHS & WEAKNESSES BY PROCESS")
+        y_pos -= 1*cm
         
-        # Organizza i dati per processo E categoria
-        # Struttura: process -> category -> activity -> {scores, notes}
-        process_data = {}
-        for item in results_data:
-            proc = item.get('process', '')
-            cat = item.get('category', '')  # Governance, M&C, Technology, Organization
-            act = item.get('activity', '')
-            score = item.get('score', 0) or 0
-            note = item.get('note', '')
-            is_na = item.get('is_not_applicable', False)
-            
-            if proc not in process_data:
-                process_data[proc] = {}
-            if cat not in process_data[proc]:
-                process_data[proc][cat] = {}
-            if act not in process_data[proc][cat]:
-                process_data[proc][cat][act] = {'scores': [], 'notes': []}
-            
-            if not is_na and score is not None:
-                process_data[proc][cat][act]['scores'].append(score)
-            if note and note.strip():
-                process_data[proc][cat][act]['notes'].append(note)
+        processes_radar = stats_data.get('processes_radar', [])
+        if not processes_radar:
+            return
         
-        # Ordine dei processi (usa l'ordine da stats_data)
-        process_order = list(stats_data.get('by_process', {}).keys())
+        processes_radar = sorted(processes_radar, key=lambda x: x.get('overall_score', 0), reverse=True)
         
-        for proc_name in process_order:
-            if proc_name not in process_data:
-                continue
+        # Header
+        c.setFont('Helvetica-Bold', 8)
+        c.setFillColor(colors.HexColor('#3DBFBF'))
+        c.rect(self.margin_left, y_pos - 0.5*cm, self.content_width, 0.6*cm, fill=1)
+        
+        c.setFillColor(colors.white)
+        col_x = [self.margin_left + 0.2*cm, self.margin_left + 5.5*cm, self.margin_left + 8*cm,
+                 self.margin_left + 10.5*cm, self.margin_left + 13*cm, self.margin_left + 15.5*cm]
+        headers = ['Process', 'Governance', 'M&C', 'Technology', 'Org', 'Rating']
+        for i, header in enumerate(headers):
+            c.drawString(col_x[i], y_pos - 0.3*cm, header)
+        
+        y_pos -= 0.9*cm
+        c.setFont('Helvetica', 7)
+        
+        for idx, proc in enumerate(processes_radar):
+            if y_pos < 3*cm:
+                break
             
-            proc_cats = process_data[proc_name]
+            if idx % 2 == 0:
+                c.setFillColor(colors.HexColor('#F8F9FA'))
+                c.rect(self.margin_left, y_pos - 0.35*cm, self.content_width, 0.55*cm, fill=1)
             
-            # Nuova pagina per ogni processo
-            self._draw_report_page(c)
+            process_name = proc.get('process', '')
+            dims = proc.get('dimensions', {})
+            overall = proc.get('overall_score', 0)
             
-            y_pos = self.page_height - self.margin_top - 2*cm
+            c.setFillColor(colors.HexColor('#333333'))
+            c.drawString(col_x[0], y_pos - 0.2*cm, process_name[:22])
             
-            # Calcola rating medio del processo (media delle medie delle categorie)
-            cat_avgs = []
-            for cat_name in ['Governance', 'Monitoring & Control', 'Technology', 'Organization']:
-                if cat_name in proc_cats:
-                    # Media delle medie delle attività per questa categoria
-                    act_avgs = []
-                    for act_data in proc_cats[cat_name].values():
-                        if act_data['scores']:
-                            act_avgs.append(sum(act_data['scores']) / len(act_data['scores']))
-                    if act_avgs:
-                        cat_avgs.append(sum(act_avgs) / len(act_avgs))
+            dim_values = [dims.get('governance', 0), dims.get('monitoring_control', 0),
+                         dims.get('technology', 0), dims.get('organization', 0)]
             
-            proc_rating = sum(cat_avgs) / len(cat_avgs) if cat_avgs else 0
-            
-            # Titolo: nome del processo + RATING
-            c.setFont('Helvetica-Bold', 18)
-            c.setFillColor(colors.HexColor('#2C3E50'))
-            c.drawString(self.margin_left, y_pos, proc_name)
-            
-            # Rating colorato accanto al titolo
-            rating_color = colors.HexColor('#27AE60') if proc_rating >= 3 else (colors.HexColor('#E74C3C') if proc_rating < 2 else colors.HexColor('#F39C12'))
-            title_width = c.stringWidth(proc_name, 'Helvetica-Bold', 18)
-            c.setFont('Helvetica-Bold', 20)
-            c.setFillColor(rating_color)
-            c.drawString(self.margin_left + title_width + 1*cm, y_pos, f"{proc_rating:.2f}")
-            
-            y_pos -= 1.5*cm
-            
-            # TABELLA: Dimension | Strengths | Weaknesses
-            col_widths = [4.5*cm, 5.5*cm, 5.5*cm]
-            table_width = sum(col_widths)
-            col_x = [self.margin_left]
-            for w in col_widths[:-1]:
-                col_x.append(col_x[-1] + w)
-            
-            # Header tabella
-            header_h = 0.8*cm
-            c.setFillColor(colors.HexColor('#008B8B'))
-            c.rect(col_x[0], y_pos - header_h, table_width, header_h, fill=1, stroke=0)
-            
-            c.setFont('Helvetica-Bold', 10)
-            c.setFillColor(colors.white)
-            headers = ['Dimension', 'Strengths (≥ 3.0)', 'Weaknesses (< 2.0)']
-            for i, hdr in enumerate(headers):
-                c.drawString(col_x[i] + 0.2*cm, y_pos - 0.55*cm, hdr)
-            
-            y_pos -= header_h
-            
-            # Righe per categoria (Governance, M&C, Technology, Organization)
-            cat_order = ['Governance', 'Monitoring & Control', 'Technology', 'Organization']
-            
-            all_notes = []  # Raccoglie tutte le note per il box sotto
-            
-            for cat_name in cat_order:
-                if cat_name not in proc_cats:
-                    # Categoria vuota - mostra riga vuota
-                    row_h = 1*cm
-                    c.setFillColor(colors.HexColor('#FFF8DC'))
-                    c.rect(col_x[0], y_pos - row_h, table_width, row_h, fill=1, stroke=0)
-                    c.setStrokeColor(colors.HexColor('#CCCCCC'))
-                    c.rect(col_x[0], y_pos - row_h, table_width, row_h, fill=0, stroke=1)
-                    for i in range(1, len(col_x)):
-                        c.line(col_x[i], y_pos, col_x[i], y_pos - row_h)
-                    
-                    c.setFillColor(colors.HexColor('#95A5A6'))
-                    c.circle(col_x[0] + 0.4*cm, y_pos - 0.5*cm, 0.2*cm, fill=1, stroke=0)
-                    c.setFont('Helvetica-Bold', 9)
-                    c.setFillColor(colors.black)
-                    c.drawString(col_x[0] + 0.8*cm, y_pos - 0.55*cm, cat_name)
-                    c.setFillColor(colors.HexColor('#95A5A6'))
-                    c.drawString(col_x[1] + 0.2*cm, y_pos - 0.55*cm, "-")
-                    c.drawString(col_x[2] + 0.2*cm, y_pos - 0.55*cm, "-")
-                    y_pos -= row_h
-                    continue
-                
-                cat_activities = proc_cats[cat_name]
-                
-                # Calcola media della categoria e lista strengths/weaknesses
-                strengths = []
-                weaknesses = []
-                cat_scores = []
-                
-                for act_name, act_data in cat_activities.items():
-                    if act_data['scores']:
-                        act_avg = sum(act_data['scores']) / len(act_data['scores'])
-                        cat_scores.append(act_avg)
-                        
-                        if act_avg >= 3.0:
-                            strengths.append(f"{act_name} ({act_avg:.2f})")
-                        if act_avg < 2.0:
-                            weaknesses.append(f"{act_name} ({act_avg:.2f})")
-                        
-                        # Raccogli note
-                        for note in act_data['notes']:
-                            if note.strip():
-                                all_notes.append({
-                                    'activity': act_name,
-                                    'score': act_avg,
-                                    'note': note.strip()
-                                })
-                
-                cat_avg = sum(cat_scores) / len(cat_scores) if cat_scores else 0
-                
-                # Calcola altezza riga
-                max_items = max(len(strengths), len(weaknesses), 1)
-                row_h = max(max_items * 0.4*cm + 0.4*cm, 1.2*cm)
-                
-                # Sfondo riga
-                c.setFillColor(colors.HexColor('#FFF8DC'))
-                c.rect(col_x[0], y_pos - row_h, table_width, row_h, fill=1, stroke=0)
-                
-                # Bordi
-                c.setStrokeColor(colors.HexColor('#CCCCCC'))
-                c.setLineWidth(0.5)
-                c.rect(col_x[0], y_pos - row_h, table_width, row_h, fill=0, stroke=1)
-                for i in range(1, len(col_x)):
-                    c.line(col_x[i], y_pos, col_x[i], y_pos - row_h)
-                
-                # Colonna Dimension con icona colorata
-                icon_color = colors.HexColor('#27AE60') if cat_avg >= 3 else (colors.HexColor('#E74C3C') if cat_avg < 2 else colors.HexColor('#95A5A6'))
-                c.setFillColor(icon_color)
-                c.circle(col_x[0] + 0.4*cm, y_pos - 0.6*cm, 0.2*cm, fill=1, stroke=0)
-                
-                c.setFont('Helvetica-Bold', 9)
-                c.setFillColor(colors.black)
-                # Abbrevia "Monitoring & Control" se troppo lungo
-                display_cat = cat_name if len(cat_name) <= 20 else cat_name.replace('Monitoring & Control', 'M&C')
-                c.drawString(col_x[0] + 0.8*cm, y_pos - 0.55*cm, display_cat)
-                c.setFillColor(colors.HexColor('#008B8B'))
-                c.setFont('Helvetica', 8)
-                c.drawString(col_x[0] + 0.8*cm, y_pos - 1*cm, f"({cat_avg:.2f})")
-                
-                # Colonna Strengths (verde)
-                c.setFont('Helvetica', 7)
-                c.setFillColor(colors.HexColor('#27AE60'))
-                str_y = y_pos - 0.4*cm
-                if strengths:
-                    for s in strengths[:8]:  # Max 8 items
-                        if len(s) > 45:
-                            s = s[:42] + "..."
-                        c.drawString(col_x[1] + 0.2*cm, str_y, f"• {s}")
-                        str_y -= 0.35*cm
+            for i, val in enumerate(dim_values):
+                if val >= 3.0:
+                    c.setFillColor(colors.HexColor('#10B981'))
+                elif val >= 2.0:
+                    c.setFillColor(colors.HexColor('#F59E0B'))
                 else:
-                    c.setFillColor(colors.HexColor('#95A5A6'))
-                    c.drawString(col_x[1] + 0.2*cm, str_y, "-")
-                
-                # Colonna Weaknesses (rosso)
-                c.setFillColor(colors.HexColor('#E74C3C'))
-                weak_y = y_pos - 0.4*cm
-                if weaknesses:
-                    for w in weaknesses[:8]:  # Max 8 items
-                        if len(w) > 45:
-                            w = w[:42] + "..."
-                        c.drawString(col_x[2] + 0.2*cm, weak_y, f"• {w}")
-                        weak_y -= 0.35*cm
-                else:
-                    c.setFillColor(colors.HexColor('#95A5A6'))
-                    c.drawString(col_x[2] + 0.2*cm, weak_y, "-")
-                
-                y_pos -= row_h
+                    c.setFillColor(colors.HexColor('#EF4444'))
+                c.drawString(col_x[i+1], y_pos - 0.2*cm, f"{val:.2f}")
             
-            y_pos -= 1*cm
-            
-            # BOX NOTE
-            c.setFont('Helvetica-Bold', 12)
-            c.setFillColor(colors.HexColor('#E74C3C'))
-            c.drawString(self.margin_left, y_pos, "Note")
-            y_pos -= 0.8*cm
-            
-            # Rimuovi duplicati dalle note (stessa attività può avere più righe)
-            unique_notes = {}
-            for note_item in all_notes:
-                key = note_item['activity']
-                if key not in unique_notes:
-                    unique_notes[key] = note_item
-            
-            notes_list = list(unique_notes.values())
-            
-            # Calcola altezza box note considerando il word wrap
-            if notes_list:
-                total_lines = 0
-                max_chars_per_line = 75
-                for note_item in notes_list:
-                    note_text = note_item['note']
-                    # Conta quante righe servono per questa nota
-                    remaining = note_text
-                    lines_for_this_note = 0
-                    while remaining:
-                        if len(remaining) <= max_chars_per_line:
-                            lines_for_this_note += 1
-                            break
-                        split_pos = remaining[:max_chars_per_line].rfind(' ')
-                        if split_pos == -1:
-                            split_pos = max_chars_per_line
-                        lines_for_this_note += 1
-                        remaining = remaining[split_pos:].lstrip()
-                    total_lines += lines_for_this_note
-                note_box_height = min(total_lines * 0.55*cm + 2.5*cm, 15*cm)  # Max 15cm per note lunghe
+            if overall >= 3.0:
+                c.setFillColor(colors.HexColor('#10B981'))
             else:
-                note_box_height = 1*cm
+                c.setFillColor(colors.HexColor('#EF4444'))
+            c.drawString(col_x[5], y_pos - 0.2*cm, f"{overall:.2f}")
             
-            # Disegna box
-            c.setStrokeColor(colors.HexColor('#CCCCCC'))
-            c.setLineWidth(1)
-            c.rect(self.margin_left, y_pos - note_box_height, table_width, note_box_height, fill=0, stroke=1)
-            
-            # Contenuto note
-            note_y = y_pos - 0.5*cm
-            max_notes = int((note_box_height - 0.4*cm) / 0.55*cm)
-            
-            for idx, note_item in enumerate(notes_list):
-                act_name = note_item['activity']
-                score = note_item['score']
-                note_text = note_item['note']
-                
-                # Icona colorata
-                if score >= 3:
-                    icon_color = colors.HexColor('#27AE60')
-                elif score < 2:
-                    icon_color = colors.HexColor('#E74C3C')
-                else:
-                    icon_color = colors.HexColor('#F39C12')
-                
-                c.setFillColor(icon_color)
-                c.circle(self.margin_left + 0.3*cm, note_y - 0.1*cm, 0.15*cm, fill=1, stroke=0)
-                
-                # Nome attività in grassetto
-                c.setFont('Helvetica-Bold', 8)
-                c.setFillColor(colors.black)
-                text_x = self.margin_left + 0.7*cm
-                c.drawString(text_x, note_y - 0.15*cm, act_name)
-                
-                # Punteggio in blu
-                name_width = c.stringWidth(act_name, 'Helvetica-Bold', 8)
-                c.setFillColor(colors.HexColor('#3498DB'))
-                c.setFont('Helvetica-Bold', 8)
-                score_text = f" ({score:.2f})"
-                c.drawString(text_x + name_width, note_y - 0.15*cm, score_text)
-                
-                # Nota in corsivo grigio
-                score_width = c.stringWidth(score_text, 'Helvetica-Bold', 8)
-                note_start_x = text_x + name_width + score_width + 0.2*cm
-                
-                c.setFont('Helvetica-Oblique', 7)
-                c.setFillColor(colors.HexColor('#7F8C8D'))
-                
-                # Word wrap per note lunghe
-                max_chars_per_line = 75
-                note_lines = []
-                remaining = note_text
-                while remaining:
-                    if len(remaining) <= max_chars_per_line:
-                        note_lines.append(remaining)
-                        break
-                    split_pos = remaining[:max_chars_per_line].rfind(' ')
-                    if split_pos == -1:
-                        split_pos = max_chars_per_line
-                    note_lines.append(remaining[:split_pos])
-                    remaining = remaining[split_pos:].lstrip()
-                
-                # Scrivi la prima riga accanto al nome attività
-                if note_lines:
-                    c.drawString(note_start_x, note_y - 0.15*cm, note_lines[0])
-                
-                # Scrivi le righe successive sotto (indentate)
-                for extra_line in note_lines[1:]:
-                    note_y -= 0.35*cm
-                    c.drawString(self.margin_left + 0.7*cm, note_y - 0.15*cm, extra_line)
-                
-                note_y -= 0.55*cm
-            
-            if not notes_list:
-                c.setFont('Helvetica-Oblique', 9)
-                c.setFillColor(colors.HexColor('#95A5A6'))
-                c.drawString(self.margin_left + 0.5*cm, y_pos - 0.6*cm, "Nessuna nota disponibile")
-            
-            c.showPage()
+            y_pos -= 0.55*cm
     def _add_ai_pages(self, c: canvas.Canvas, ai_conclusions: str):
         """Pagine conclusioni AI"""
         self._draw_ai_page(c)
-        # Il titolo "Suggerimenti" è già nel template, inizia sotto la grafica
-        y_pos = self.page_height - 9*cm  # Sotto il titolo e la grafica del template
+        y_pos = self.page_height - self.margin_top - 3*cm  # Più in basso per evitare sovrapposizioni
+        
+        c.setFont('Helvetica-Bold', 16)
+        c.setFillColor(colors.HexColor('#2C3E50'))
+        c.drawString(self.margin_left, y_pos, "CONCLUSIONI E RACCOMANDAZIONI AI")
+        y_pos -= 1*cm
         
         lines = ai_conclusions.split('\n')
         line_height = 10
@@ -701,19 +435,12 @@ class PDFReportGenerator:
             if y_pos < self.margin_bottom + 2*cm:
                 c.showPage()
                 self._draw_ai_page(c)
-                y_pos = self.page_height - 9*cm
+                y_pos = self.page_height - self.margin_top - 3*cm
             
             line = line.strip()
-            # Rimuovi markdown bold (**testo** -> testo)
-            import re
-            line = re.sub(r'\*\*([^*]+)\*\*', r'\1', line)
             if not line:
                 y_pos -= line_height * 0.5
                 continue
-            
-            # Rimuovi markdown bold (**testo** -> testo)
-            import re
-            line = re.sub(r'\*\*([^*]+)\*\*', r'\1', line)
             
             if line.startswith('###'):
                 c.setFont('Helvetica-Bold', 11)
@@ -751,7 +478,7 @@ class PDFReportGenerator:
                         if y_pos < self.margin_bottom + 2*cm:
                             c.showPage()
                             self._draw_ai_page(c)
-                            y_pos = self.page_height - 9*cm
+                            y_pos = self.page_height - self.margin_top - 3*cm
                     current_line = word
             if current_line:
                 c.drawString(self.margin_left, y_pos, current_line)
@@ -761,9 +488,3 @@ class PDFReportGenerator:
 
     def _draw_ai_page(self, c: canvas.Canvas):
         c.drawImage(self.ai_template, 0, 0, width=self.page_width, height=self.page_height, preserveAspectRatio=True, mask='auto')
-
-    def _add_page_number(self, c: canvas.Canvas, page_num: int):
-        """Aggiunge numero di pagina in basso al centro"""
-        c.setFont('Helvetica', 9)
-        c.setFillColor(colors.HexColor('#666666'))
-        c.drawCentredString(self.page_width / 2, 1.5*cm, str(page_num))
