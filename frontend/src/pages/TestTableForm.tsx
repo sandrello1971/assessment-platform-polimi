@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -35,6 +35,19 @@ const TestTableFormByCategory = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [floatingMenu, setFloatingMenu] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    process: string;
+    activity: string;
+    category: string;
+    dimension: string;
+    score: number;
+    rowIndex: number;
+    colIndex: number;
+  } | null>(null);
+  const blurTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -109,6 +122,45 @@ const TestTableFormByCategory = () => {
     const existing = answers.get(key) || { process, activity, category, dimension, score: 0, note: '', is_not_applicable: false };
     updated.set(key, { ...existing, is_not_applicable: !existing.is_not_applicable, score: !existing.is_not_applicable ? 0 : existing.score });
     setAnswers(updated);
+  };
+
+  // Copia in colonna (verso il basso)
+  const copyToColumn = (process: string, category: string, dimension: string, score: number, startRowIndex: number) => {
+    const updated = new Map(answers);
+    const allActivities = processesData.find(p => p.process === process)?.activities || [];
+    
+    let count = 0;
+    allActivities.forEach((act, idx) => {
+      if (idx >= startRowIndex) {
+        const key = createKey(process, act.name, category, dimension);
+        const existing = answers.get(key) || { process, activity: act.name, category, dimension, score: 0, note: '', is_not_applicable: false };
+        updated.set(key, { ...existing, score });
+        count++;
+      }
+    });
+    
+    setAnswers(updated);
+    setFloatingMenu(null);
+    // Copiato
+  };
+
+  // Copia in riga (verso destra)
+  const copyToRow = (process: string, activity: string, category: string, score: number, startColIndex: number, allDimensions: string[]) => {
+    const updated = new Map(answers);
+    
+    let count = 0;
+    allDimensions.forEach((dim, idx) => {
+      if (idx >= startColIndex) {
+        const key = createKey(process, activity, category, dim);
+        const existing = answers.get(key) || { process, activity, category, dimension: dim, score: 0, note: '', is_not_applicable: false };
+        updated.set(key, { ...existing, score });
+        count++;
+      }
+    });
+    
+    setAnswers(updated);
+    setFloatingMenu(null);
+    // Copiato
   };
 
   // Funzione per calcolare la media di una riga
@@ -232,8 +284,8 @@ const TestTableFormByCategory = () => {
                       <tr className="bg-blue-500">
                         <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold min-w-[150px]">Attività</th>
                         {processDimensionsArray.map((dim) => (
-                          <th key={dim} className="border border-gray-300 px-2 py-2 text-center text-white font-semibold min-w-[100px]">
-                            <div className="text-xs leading-tight">{dim.substring(0, 80)}</div>
+                          <th key={dim} className="border border-gray-300 px-2 py-2 text-center text-white font-semibold min-w-[150px]">
+                            <div className="text-xs leading-tight whitespace-normal">{dim}</div>
                           </th>
                         ))}
                         <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold min-w-[80px]">Media</th>
@@ -256,9 +308,33 @@ const TestTableFormByCategory = () => {
                                 return <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-gray-100"><span className="text-gray-400 text-xs">-</span></td>;
                               }
                               return (
-                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white">
+                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white" style={{ position: "relative" }}>
                                   <div className="flex flex-col items-center gap-2">
                                     <input 
+                                      onFocus={(e) => {
+                                        // Cancella eventuali timeout di chiusura
+                                        if (blurTimeoutRef.current) {
+                                          clearTimeout(blurTimeoutRef.current);
+                                          blurTimeoutRef.current = null;
+                                        }
+                                        e.currentTarget.select();
+                                        const process = e.currentTarget.getAttribute("data-process") || "";
+                                        const activity = e.currentTarget.getAttribute("data-activity") || "";
+                                        const category = e.currentTarget.getAttribute("data-category") || "";
+                                        const dimension = e.currentTarget.getAttribute("data-dimension") || "";
+                                        const allActivities = processesData.find(p => p.process === process)?.activities || [];
+                                        const actIdx = allActivities.findIndex(a => a.name === activity);
+                                        const act = allActivities.find(a => a.name === activity);
+                                        const dims = act?.categories[category] ? Object.keys(act.categories[category]) : [];
+                                        const colIdx = dims.indexOf(dimension);
+                                        setFloatingMenu({ visible: true, x: 95, y: 5, process, activity, category, dimension, score: answer?.score ?? 0, rowIndex: actIdx, colIndex: colIdx });
+                                      }}
+                                      onBlur={(e) => { 
+                                        const rt = e.relatedTarget as HTMLElement; 
+                                        if (!rt || !rt.hasAttribute("data-floating-button")) {
+                                          blurTimeoutRef.current = setTimeout(() => setFloatingMenu(null), 300);
+                                        }
+                                      }}
                                       type="number" 
                                       data-process={row.process}
                                       data-activity={row.activityName}
@@ -301,12 +377,13 @@ document.querySelectorAll(`input[data-dimension="${currentDim}"]:not([disabled])
                                         const val = parseInt(input.value);
                                         if (input.value !== '' && (isNaN(val) || val < 0 || val > 5)) {
                                           input.value = (answer?.score || 0).toString();
-                                          alert('⚠️ Il valore deve essere compreso tra 0 e 5');
+                                          alert('⚠️ Il valore deve essere compreso tra 0 e 5'); setTimeout(() => input.focus(), 50);
                                         }
                                       }}
                                       onChange={(e) => {
                                         const val = parseInt(e.target.value);
                                         if (!isNaN(val) && val >= 0 && val <= 5) {
+                                          if (floatingMenu) setFloatingMenu({ ...floatingMenu, score: val });
                                           handleScoreChange(row.process, row.activityName, currentCategory, dim, val);
                                         }
                                       }}
@@ -318,6 +395,12 @@ document.querySelectorAll(`input[data-dimension="${currentDim}"]:not([disabled])
                                       N/A
                                     </label>
                                   </div>
+                                  {floatingMenu && floatingMenu.dimension === dim && floatingMenu.activity === row.activityName && (
+                                    <div style={{ position: "absolute", top: floatingMenu.y, left: floatingMenu.x, backgroundColor: "white", border: "2px solid #3b82f6", borderRadius: "12px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", zIndex: 9999, padding: "8px", display: "flex", gap: "8px" }}>
+                                      <button data-floating-button onMouseDown={(e) => e.preventDefault()} onClick={() => { const cs = floatingMenu.score; const pd = processesData.find(p => p.process === floatingMenu.process); if (pd) { const act = pd.activities.find(a => a.name === floatingMenu.activity); if (act?.categories[floatingMenu.category]) { const dims = Object.keys(act.categories[floatingMenu.category]); handleScoreChange(floatingMenu.process, floatingMenu.activity, floatingMenu.category, floatingMenu.dimension, cs); copyToRow(floatingMenu.process, floatingMenu.activity, floatingMenu.category, cs, floatingMenu.colIndex, dims); } } }} style={{ padding: "8px 12px", backgroundColor: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "16px", fontWeight: "bold" }}>→</button>
+                                      <button data-floating-button onMouseDown={(e) => e.preventDefault()} onClick={() => { const cs = floatingMenu.score; handleScoreChange(floatingMenu.process, floatingMenu.activity, floatingMenu.category, floatingMenu.dimension, cs); copyToColumn(floatingMenu.process, floatingMenu.category, floatingMenu.dimension, cs, floatingMenu.rowIndex); }} style={{ padding: "8px 12px", backgroundColor: "#10b981", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "16px", fontWeight: "bold" }}>↓</button>
+                                    </div>
+                                  )}
                                 </td>
                               );
                             })}
@@ -341,6 +424,8 @@ document.querySelectorAll(`input[data-dimension="${currentDim}"]:not([disabled])
               </div>
             );
           })}
+
+
 
           <div className="flex justify-between items-center">
             <button onClick={() => setCurrentCategoryIndex(Math.max(0, currentCategoryIndex - 1))} disabled={currentCategoryIndex === 0}

@@ -9,6 +9,7 @@ from app.database import get_db
 from app import schemas, models
 from app.routers import radar, admin, auth_routes
 from app.routers import assessment_update
+from app.routers import excel_export
 
 # ✅ Init FastAPI app
 app = FastAPI()
@@ -279,6 +280,7 @@ app.include_router(pdf.router, prefix="/api", tags=["pdf"])
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(assessment_update.router, prefix="/api", tags=["assessment"])
+app.include_router(excel_export.router, prefix="/api/excel", tags=["excel"])
 
 @app.put("/api/assessment/{session_id}/save-ai-conclusions")
 async def save_ai_conclusions(session_id: str, conclusions: dict, db: Session = Depends(get_db)):

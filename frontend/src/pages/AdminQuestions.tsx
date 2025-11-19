@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useBeforeUnload } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Save, Edit2, ChevronUp, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, Edit2, ChevronUp, ChevronDown, Download } from 'lucide-react';
 import axios from 'axios';
 
 interface StandardQuestions {
@@ -410,6 +410,34 @@ const AdminQuestions = () => {
     }
   };
 
+  // Download Excel del modello corrente
+  const downloadExcel = async () => {
+    try {
+      const modelName = sourceModel || filename.trim();
+      if (!modelName) {
+        alert('Seleziona un modello da scaricare');
+        return;
+      }
+
+      const response = await axios.get(`/api/excel/export-model-excel/${modelName}`, {
+        responseType: 'blob'
+      });
+
+      // Crea link per download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${modelName}_assessment.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error: any) {
+      console.error('Errore download Excel:', error);
+      alert(`Errore durante il download: ${error.response?.data?.detail || error.message}`);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -468,6 +496,13 @@ const AdminQuestions = () => {
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Salvataggio...' : 'Salva'}
+              </button>
+              <button
+                onClick={downloadExcel}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                <Download className="w-4 h-4" />
+                Download Excel
               </button>
             </div>
           </div>

@@ -1037,6 +1037,7 @@ class PDFReportGenerator:
         ordered_domains = [d for d in domain_order if d in domains] + [d for d in domains if d not in domain_order]
         
         # === DATI PER PROCESSO ===
+        # STEP 1: Calcola gap normalizzati
         process_data = {}
         for process in processes:
             domain_gaps = {}
@@ -1047,14 +1048,23 @@ class PDFReportGenerator:
                 if domain_results:
                     avg_score = sum(r['score'] for r in domain_results) / len(domain_results)
                     gap = 5 - avg_score
-                    touchpoints = len(domain_results)
-                    gap_percent = (gap * touchpoints) / (total_gap * total_touchpoints) * 100
-                    domain_gaps[domain] = gap_percent
-                    total_process_gap += gap_percent
+                    gap_normalized = gap / len(processes)
+                    domain_gaps[domain] = gap_normalized
+                    total_process_gap += gap_normalized
                 else:
                     domain_gaps[domain] = 0
             
             process_data[process] = {'domain_gaps': domain_gaps, 'total': total_process_gap}
+        
+        # STEP 2: Calcola totale di tutti i gap normalizzati
+        total_all_gaps = sum(p['total'] for p in process_data.values())
+        
+        # STEP 3: Converti in percentuali
+        for process in process_data:
+            for domain in process_data[process]['domain_gaps']:
+                if total_all_gaps > 0:
+                    process_data[process]['domain_gaps'][domain] = (process_data[process]['domain_gaps'][domain] / total_all_gaps) * 100
+            process_data[process]['total'] = (process_data[process]['total'] / total_all_gaps) * 100
         
         sorted_processes = sorted(processes, key=lambda p: process_data[p]['total'], reverse=True)
         
@@ -1065,6 +1075,7 @@ class PDFReportGenerator:
             cumulative.append(cum_sum)
         
         # === DATI PER DOMINIO ===
+        # STEP 1: Calcola gap normalizzati
         domain_data = {}
         for domain in ordered_domains:
             process_gaps = {}
@@ -1075,14 +1086,23 @@ class PDFReportGenerator:
                 if proc_results:
                     avg_score = sum(r['score'] for r in proc_results) / len(proc_results)
                     gap = 5 - avg_score
-                    touchpoints = len(proc_results)
-                    gap_percent = (gap * touchpoints) / (total_gap * total_touchpoints) * 100
-                    process_gaps[process] = gap_percent
-                    total_domain_gap += gap_percent
+                    gap_normalized = gap / len(ordered_domains)
+                    process_gaps[process] = gap_normalized
+                    total_domain_gap += gap_normalized
                 else:
                     process_gaps[process] = 0
             
             domain_data[domain] = {'process_gaps': process_gaps, 'total': total_domain_gap}
+        
+        # STEP 2: Calcola totale di tutti i gap normalizzati
+        total_all_domain_gaps = sum(d['total'] for d in domain_data.values())
+        
+        # STEP 3: Converti in percentuali
+        for domain in domain_data:
+            for process in domain_data[domain]['process_gaps']:
+                if total_all_domain_gaps > 0:
+                    domain_data[domain]['process_gaps'][process] = (domain_data[domain]['process_gaps'][process] / total_all_domain_gaps) * 100
+            domain_data[domain]['total'] = (domain_data[domain]['total'] / total_all_domain_gaps) * 100
         
         sorted_domains = sorted(ordered_domains, key=lambda d: domain_data[d]['total'], reverse=True)
         

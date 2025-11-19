@@ -35,7 +35,7 @@ const TestTableFormByCategory = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [contextMenu, setContextMenu] = useState<{
+  const [floatingMenu, setFloatingMenu] = useState<{
     visible: boolean;
     x: number;
     y: number;
@@ -47,7 +47,6 @@ const TestTableFormByCategory = () => {
     rowIndex: number;
     colIndex: number;
   } | null>(null);
-
 
   useEffect(() => {
     const loadData = async () => {
@@ -124,49 +123,44 @@ const TestTableFormByCategory = () => {
     setAnswers(updated);
   };
 
-  // Chiudi context menu
-  useEffect(() => {
-    const handleClick = () => setContextMenu(null);
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, []);
-
   // Copia in colonna
-  const copyToColumn = (process: string, _activity: string, category: string, dimension: string, score: number, startRowIndex: number) => {
+  const copyToColumn = (process: string, category: string, dimension: string, score: number, startRowIndex: number) => {
     const updated = new Map(answers);
     const allActivities = processesData.find(p => p.process === process)?.activities || [];
+    
+    let count = 0;
     allActivities.forEach((act, idx) => {
       if (idx >= startRowIndex) {
         const key = createKey(process, act.name, category, dimension);
         const existing = answers.get(key) || { process, activity: act.name, category, dimension, score: 0, note: '', is_not_applicable: false };
         updated.set(key, { ...existing, score });
+        count++;
       }
     });
+    
     setAnswers(updated);
-    setContextMenu(null);
+    setFloatingMenu(null);
+    alert(`✅ Valore ${score} copiato in ${count} celle della colonna!`);
   };
 
   // Copia in riga
-  const copyToRow = (process: string, activity: string, category: string, _dimension: string, score: number, startColIndex: number) => {
+  const copyToRow = (process: string, activity: string, category: string, score: number, startColIndex: number, allDimensions: string[]) => {
     const updated = new Map(answers);
-    const currentProcess = processesData.find(p => p.process === process);
-    const currentActivity = currentProcess?.activities.find(a => a.name === activity);
-    if (currentActivity && currentActivity.categories[category]) {
-      const dimensions = Object.keys(currentActivity.categories[category]);
-      dimensions.forEach((dim, idx) => {
-        if (idx >= startColIndex) {
-          const key = createKey(process, activity, category, dim);
-          const existing = answers.get(key) || { process, activity, category, dimension: dim, score: 0, note: '', is_not_applicable: false };
-          updated.set(key, { ...existing, score });
-        }
-      });
-    }
+    
+    let count = 0;
+    allDimensions.forEach((dim, idx) => {
+      if (idx >= startColIndex) {
+        const key = createKey(process, activity, category, dim);
+        const existing = answers.get(key) || { process, activity, category, dimension: dim, score: 0, note: '', is_not_applicable: false };
+        updated.set(key, { ...existing, score });
+        count++;
+      }
+    });
+    
     setAnswers(updated);
-    setContextMenu(null);
+    setFloatingMenu(null);
+    alert(`✅ Valore ${score} copiato in ${count} celle della riga!`);
   };
-
-  // Handler context menu
-
 
   // Funzione per calcolare la media di una riga
   const calculateRowAverage = (process: string, activityName: string, category: string, dimensions: string[]) => {
@@ -313,27 +307,30 @@ const TestTableFormByCategory = () => {
                                 return <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-gray-100"><span className="text-gray-400 text-xs">-</span></td>;
                               }
                               return (
-                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white" style={{ userSelect: "none" }} onContextMenu={(e) => e.preventDefault()} data-cell-process={row.process} data-cell-activity={row.activityName} data-cell-category={currentCategory} data-cell-dimension={dim} data-cell-score={answer?.score ?? 0} data-cell-rowidx={actIdx} data-cell-colidx={processDimensionsArray.indexOf(dim)}>
-                                  <div className="flex flex-col items-center gap-2" >
+                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white">
+                                  <div className="flex flex-col items-center gap-2">
                                     <input 
-                                      onContextMenu={(e) => {
-                                        e.preventDefault();
-                                        const td = e.currentTarget.closest("td[data-cell-process]");
-                                        if (td) {
-                                          const process = td.getAttribute("data-cell-process") || "";
-                                          const activity = td.getAttribute("data-cell-activity") || "";
-                                          const category = td.getAttribute("data-cell-category") || "";
-                                          const dimension = td.getAttribute("data-cell-dimension") || "";
-                                          const score = parseInt(td.getAttribute("data-cell-score") || "0");
-                                          const rowIndex = parseInt(td.getAttribute("data-cell-rowidx") || "0");
-                                          const colIndex = parseInt(td.getAttribute("data-cell-colidx") || "0");
-                                          setContextMenu({ visible: true, x: e.clientX, y: e.clientY, process, activity, category, dimension, score, rowIndex, colIndex });
-                                        }
-                                      }}
                                       type="number" 
                                       min={0} 
                                       max={5}
-                                      value={answer?.score ?? 0} 
+                                      value={answer?.score ?? 0}
+                                      onFocus={(e) => {
+                                        console.log("Focus attivato!", e.currentTarget.getBoundingClientRect());
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        setFloatingMenu({
+                                          visible: true,
+                                          x: rect.right + 10,
+                                          y: rect.top,
+                                          process: row.process,
+                                          activity: row.activityName,
+                                          category: currentCategory,
+                                          dimension: dim,
+                                          score: answer?.score ?? 0,
+                                          rowIndex: actIdx,
+                                          colIndex: processDimensionsArray.indexOf(dim)
+                                        });
+                                      }}
+                                      onBlur={() => setTimeout(() => setFloatingMenu(null), 200)} 
                                       disabled={answer?.is_not_applicable}
                                       onKeyDown={(e) => {
                                         if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-' || e.key === '.') {
@@ -409,38 +406,68 @@ const TestTableFormByCategory = () => {
           })}
 
 
-        {/* Context Menu */}
-        {contextMenu && (
+        {/* Floating Menu */}
+        {floatingMenu && (
           <div
             style={{
-              position: "fixed",
-              top: contextMenu.y,
-              left: contextMenu.x,
-              backgroundColor: "white",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              position: 'fixed',
+              top: floatingMenu.y,
+              left: floatingMenu.x,
+              backgroundColor: 'white',
+              border: '2px solid #3b82f6',
+              borderRadius: '12px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
               zIndex: 9999,
-              minWidth: "200px"
+              padding: '8px',
+              display: 'flex',
+              gap: '8px'
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              onClick={() => copyToColumn(contextMenu.process, contextMenu.activity, contextMenu.category, contextMenu.dimension, contextMenu.score, contextMenu.rowIndex)}
-              style={{ padding: "12px 16px", cursor: "pointer", borderBottom: "1px solid #eee" }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "white"}
+            <button
+              onClick={() => {
+                const pd = processesData.find(p => p.process === floatingMenu.process);
+                if (!pd) return;
+                const activity = pd.activities.find(a => a.name === floatingMenu.activity);
+                if (!activity || !activity.categories[floatingMenu.category]) return;
+                const dims = Object.keys(activity.categories[floatingMenu.category]);
+                copyToRow(floatingMenu.process, floatingMenu.activity, floatingMenu.category, floatingMenu.score, floatingMenu.colIndex, dims);
+              }}
+              title="Copia in riga (verso destra)"
+              style={{
+                padding: '12px 16px',
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
             >
-              📋 Copia valore nella colonna
-            </div>
-            <div
-              onClick={() => copyToRow(contextMenu.process, contextMenu.activity, contextMenu.category, contextMenu.dimension, contextMenu.score, contextMenu.colIndex)}
-              style={{ padding: "12px 16px", cursor: "pointer" }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "white"}
+              →
+            </button>
+            <button
+              onClick={() => copyToColumn(floatingMenu.process, floatingMenu.category, floatingMenu.dimension, floatingMenu.score, floatingMenu.rowIndex)}
+              title="Copia in colonna (verso il basso)"
+              style={{
+                padding: '12px 16px',
+                backgroundColor: '#10b981',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#059669'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
             >
-              📋 Copia valore nella riga
-            </div>
+              ↓
+            </button>
           </div>
         )}
 

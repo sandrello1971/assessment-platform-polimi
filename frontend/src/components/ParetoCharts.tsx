@@ -41,21 +41,16 @@ const ParetoCharts = ({ results }: ParetoChartsProps) => {
   );
 
   // Calcola gap totale e touchpoints totali
-  const totalStats = useMemo(() => {
-    const totalTouchpoints = validResults.length;
-    const totalScore = validResults.reduce((sum, r) => sum + r.score, 0) / totalTouchpoints;
-    const totalGap = 5 - totalScore;
-    return { totalTouchpoints, totalGap, totalScore };
-  }, [validResults]);
 
   // Pareto per Processo (barre = processi, suddivise per domini)
   const paretoByProcess = useMemo(() => {
     const processes = [...new Set(validResults.map(r => r.process))];
     const domains = ['Governance', 'Monitoring & Control', 'Technology', 'Organization'];
     
+    // STEP 1: Calcola gap normalizzati
     const processData = processes.map(process => {
       const processResults = validResults.filter(r => r.process === process);
-      let totalProcessGapPercent = 0;
+      let totalProcessGapNormalized = 0;
       
       const domainGaps: Record<string, number> = {};
       
@@ -64,10 +59,9 @@ const ParetoCharts = ({ results }: ParetoChartsProps) => {
         if (domainResults.length > 0) {
           const avgScore = domainResults.reduce((sum, r) => sum + r.score, 0) / domainResults.length;
           const gap = 5 - avgScore;
-          const touchpoints = domainResults.length;
-          const gapPercent = (gap * touchpoints) / (totalStats.totalGap * totalStats.totalTouchpoints) * 100;
-          domainGaps[domain] = gapPercent;
-          totalProcessGapPercent += gapPercent;
+          const gapNormalized = gap / processes.length;
+          domainGaps[domain] = gapNormalized;
+          totalProcessGapNormalized += gapNormalized;
         } else {
           domainGaps[domain] = 0;
         }
@@ -75,32 +69,49 @@ const ParetoCharts = ({ results }: ParetoChartsProps) => {
       
       return {
         name: process,
-        ...domainGaps,
-        total: totalProcessGapPercent,
+        domainGaps,
+        total: totalProcessGapNormalized,
+      };
+    });
+    
+    // STEP 2: Calcola totale di tutti i gap normalizzati
+    const totalAllGaps = processData.reduce((sum, p) => sum + p.total, 0);
+    
+    // STEP 3: Converti in percentuali
+    const processDataWithPercent = processData.map(p => {
+      const domainGapsPercent: Record<string, number> = {};
+      domains.forEach(domain => {
+        domainGapsPercent[domain] = totalAllGaps > 0 ? (p.domainGaps[domain] / totalAllGaps) * 100 : 0;
+      });
+      return {
+        name: p.name,
+        ...domainGapsPercent,
+        total: totalAllGaps > 0 ? (p.total / totalAllGaps) * 100 : 0,
       };
     });
     
     // Ordina per gap totale decrescente
-    processData.sort((a, b) => b.total - a.total);
+    processDataWithPercent.sort((a, b) => b.total - a.total);
     
     // Calcola accumulo
     let cumulative = 0;
-    const processDataWithCumulative = processData.map(item => {
+    const processDataWithCumulative = processDataWithPercent.map(item => {
       cumulative += item.total;
       return { ...item, cumulative };
     });
     
     return processDataWithCumulative;
-  }, [validResults, totalStats]);
+  }, [validResults]);
 
   // Pareto per Dominio (barre = domini, suddivise per processi)
   const paretoByDomain = useMemo(() => {
     const processes = [...new Set(validResults.map(r => r.process))];
     const domains = ['Governance', 'Monitoring & Control', 'Technology', 'Organization'];
     
+    // STEP 1: Calcola gap normalizzati
     const domainData = domains.map(domain => {
       const domainResults = validResults.filter(r => r.category === domain);
-      let totalDomainGapPercent = 0;
+      let totalDomainGapNormalized = 0;
       
       const processGaps: Record<string, number> = {};
       
@@ -109,10 +120,9 @@ const ParetoCharts = ({ results }: ParetoChartsProps) => {
         if (processResults.length > 0) {
           const avgScore = processResults.reduce((sum, r) => sum + r.score, 0) / processResults.length;
           const gap = 5 - avgScore;
-          const touchpoints = processResults.length;
-          const gapPercent = (gap * touchpoints) / (totalStats.totalGap * totalStats.totalTouchpoints) * 100;
-          processGaps[process] = gapPercent;
-          totalDomainGapPercent += gapPercent;
+          const gapNormalized = gap / domains.length;
+          processGaps[process] = gapNormalized;
+          totalDomainGapNormalized += gapNormalized;
         } else {
           processGaps[process] = 0;
         }
@@ -120,23 +130,39 @@ const ParetoCharts = ({ results }: ParetoChartsProps) => {
       
       return {
         name: domain,
-        ...processGaps,
-        total: totalDomainGapPercent,
+        processGaps,
+        total: totalDomainGapNormalized,
+      };
+    });
+    
+    // STEP 2: Calcola totale di tutti i gap normalizzati
+    const totalAllDomainGaps = domainData.reduce((sum, d) => sum + d.total, 0);
+    
+    // STEP 3: Converti in percentuali
+    const domainDataWithPercent = domainData.map(d => {
+      const processGapsPercent: Record<string, number> = {};
+      processes.forEach(process => {
+        processGapsPercent[process] = totalAllDomainGaps > 0 ? (d.processGaps[process] / totalAllDomainGaps) * 100 : 0;
+      });
+      return {
+        name: d.name,
+        ...processGapsPercent,
+        total: totalAllDomainGaps > 0 ? (d.total / totalAllDomainGaps) * 100 : 0,
       };
     });
     
     // Ordina per gap totale decrescente
-    domainData.sort((a, b) => b.total - a.total);
+    domainDataWithPercent.sort((a, b) => b.total - a.total);
     
     // Calcola accumulo
     let cumulative = 0;
-    const domainDataWithCumulative = domainData.map(item => {
+    const domainDataWithCumulative = domainDataWithPercent.map(item => {
       cumulative += item.total;
       return { ...item, cumulative };
     });
     
     return domainDataWithCumulative;
-  }, [validResults, totalStats]);
+  }, [validResults]);
 
   const processes = [...new Set(validResults.map(r => r.process))];
   const domains = ['Governance', 'Monitoring & Control', 'Technology', 'Organization'];
