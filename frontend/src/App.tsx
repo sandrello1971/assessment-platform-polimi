@@ -16,6 +16,7 @@ import TestTableFormByCategory from './pages/TestTableFormByCategory';
 
 import AdminModels from './pages/AdminModels';
 import AdminQuestions from './pages/AdminQuestions';
+import EditSession from './pages/EditSession';
 const App: React.FC = () => {
   return (
     <Router>
@@ -44,6 +45,7 @@ const App: React.FC = () => {
 
 <Route path="/results/:id" element={<ResultsByCategoryPage />} />        
         <Route path="/results-table/:id" element={<ResultsByCategoryPage />} />
+        <Route path="/session/:id/edit" element={<EditSession />} />
         <Route path="/sessions" element={<Sessions />} />
       </Routes>
     </Router>

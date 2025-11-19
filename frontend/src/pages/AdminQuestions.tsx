@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, Save, Edit2 } from 'lucide-react';
+import { useBeforeUnload } from 'react-router-dom';
+import { ArrowLeft, Plus, Trash2, Save, Edit2, ChevronUp, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 
 interface StandardQuestions {
@@ -19,6 +20,7 @@ interface Process {
 }
 
 const AdminQuestions = () => {
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeTab, setActiveTab] = useState<'questions' | 'processes'>('questions');
   const [activeCategory, setActiveCategory] = useState<keyof StandardQuestions>('Governance');
   
@@ -66,6 +68,97 @@ const AdminQuestions = () => {
       loadModel();
     }
   }, [sourceModel]);
+
+  // ⚠️ BLOCCA CHIUSURA FINESTRA/TAB CON MODIFICHE NON SALVATE
+  useBeforeUnload((e) => {
+    if (hasUnsavedChanges) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  // ⚠️ BLOCCA NAVIGAZIONE BROWSER (frecce avanti/indietro)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = ''; // Chrome richiede questo
+      }
+    };
+
+    const handlePopState = () => {
+      if (hasUnsavedChanges) {
+        const confirmLeave = window.confirm(
+          'HAI MODIFICHE NON SALVATE! Se esci ora perderai tutte le modifiche. Vuoi davvero uscire?'
+        );
+        
+        if (!confirmLeave) {
+          // Rimane sulla pagina - ripristina history
+          window.history.pushState(null, '', window.location.href);
+        } else {
+          // Utente vuole uscire - rimuovo listener e resetto flag per permettere navigazione
+          window.removeEventListener('popstate', handlePopState);
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+          setHasUnsavedChanges(false);
+          setTimeout(() => window.history.back(), 0);
+        }
+      }
+    };
+
+    if (hasUnsavedChanges) {
+      // Aggiungi entry per intercettare back
+      window.history.pushState(null, '', window.location.href);
+      window.addEventListener('popstate', handlePopState);
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
+
+  // ⚠️ BLOCCA CLICK SU LINK/BOTTONI CON MODIFICHE NON SALVATE
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a, button[type="button"]');
+      
+      if (link && hasUnsavedChanges) {
+        // Escludo il bottone salva
+        if (link.textContent?.includes('Salva')) return;
+        
+        const confirmLeave = window.confirm(
+          '⚠️ HAI MODIFICHE NON SALVATE!\n\n' +
+          'Se esci ora perderai tutte le modifiche.\n\n' +
+          'Vuoi davvero uscire?'
+        );
+        
+        if (!confirmLeave) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick, true);
+    return () => document.removeEventListener('click', handleClick, true);
+  }, [hasUnsavedChanges]);
+
+  // Warning quando si tenta di lasciare la pagina con modifiche non salvate
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+
 
   const loadAvailableModels = async () => {
     try {
@@ -116,6 +209,7 @@ const AdminQuestions = () => {
       alert('Errore nel caricamento del modello');
     } finally {
       setLoading(false);
+      setHasUnsavedChanges(false);
     }
   };
 
@@ -123,6 +217,7 @@ const AdminQuestions = () => {
   const addStandardQuestion = (category: keyof StandardQuestions) => {
     const question = prompt('Inserisci il testo della domanda:');
     if (question) {
+      setHasUnsavedChanges(true);
       setStandardQuestions({
         ...standardQuestions,
         [category]: [...standardQuestions[category], question]
@@ -134,6 +229,7 @@ const AdminQuestions = () => {
     const oldQuestion = standardQuestions[category][index];
     const newQuestion = prompt('Modifica il testo della domanda:', oldQuestion);
     if (newQuestion && newQuestion !== oldQuestion) {
+      setHasUnsavedChanges(true);
       const updated = [...standardQuestions[category]];
       updated[index] = newQuestion;
       setStandardQuestions({
@@ -145,6 +241,7 @@ const AdminQuestions = () => {
 
   const removeStandardQuestion = (category: keyof StandardQuestions, index: number) => {
     if (confirm('Sei sicuro di voler eliminare questa domanda?')) {
+      setHasUnsavedChanges(true);
       setStandardQuestions({
         ...standardQuestions,
         [category]: standardQuestions[category].filter((_, i) => i !== index)
@@ -157,11 +254,13 @@ const AdminQuestions = () => {
     const name = prompt('Nome del nuovo processo:');
     if (name) {
       setProcesses([...processes, { process: name, activities: [] }]);
+      setHasUnsavedChanges(true);
     }
   };
 
   const removeProcess = (index: number) => {
     if (confirm('Sei sicuro di voler eliminare questo processo?')) {
+      setHasUnsavedChanges(true);
       setProcesses(processes.filter((_, i) => i !== index));
       if (selectedProcess === index) {
         setSelectedProcess(null);
@@ -170,6 +269,7 @@ const AdminQuestions = () => {
   };
 
   const updateProcessName = (index: number, name: string) => {
+    setHasUnsavedChanges(true);
     const updated = [...processes];
     updated[index].process = name;
     setProcesses(updated);
@@ -182,6 +282,7 @@ const AdminQuestions = () => {
       const updated = [...processes];
       updated[processIndex].activities.push({ name });
       setProcesses(updated);
+      setHasUnsavedChanges(true);
     }
   };
 
@@ -190,13 +291,84 @@ const AdminQuestions = () => {
       const updated = [...processes];
       updated[processIndex].activities = updated[processIndex].activities.filter((_, i) => i !== activityIndex);
       setProcesses(updated);
+      setHasUnsavedChanges(true);
     }
   };
 
   const updateActivityName = (processIndex: number, activityIndex: number, name: string) => {
+    setHasUnsavedChanges(true);
     const updated = [...processes];
     updated[processIndex].activities[activityIndex].name = name;
     setProcesses(updated);
+  };
+
+  const moveActivityUp = (processIndex: number, activityIndex: number) => {
+    if (activityIndex === 0) return;
+    const updated = [...processes];
+    const activities = updated[processIndex].activities;
+    [activities[activityIndex - 1], activities[activityIndex]] = [activities[activityIndex], activities[activityIndex - 1]];
+    setProcesses(updated);
+    setHasUnsavedChanges(true);
+  };
+
+  const moveActivityDown = (processIndex: number, activityIndex: number) => {
+    const updated = [...processes];
+    const activities = updated[processIndex].activities;
+    if (activityIndex >= activities.length - 1) return;
+    [activities[activityIndex], activities[activityIndex + 1]] = [activities[activityIndex + 1], activities[activityIndex]];
+    setProcesses(updated);
+    setHasUnsavedChanges(true);
+  };
+
+  const moveProcessUp = (index: number) => {
+    if (index === 0) return;
+    const updated = [...processes];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setProcesses(updated);
+    setHasUnsavedChanges(true);
+    // Aggiusta selectedProcess se necessario
+    if (selectedProcess === index) {
+      setSelectedProcess(index - 1);
+    } else if (selectedProcess === index - 1) {
+      setSelectedProcess(index);
+    }
+  };
+
+  const moveProcessDown = (index: number) => {
+    if (index >= processes.length - 1) return;
+    const updated = [...processes];
+    [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
+    setProcesses(updated);
+    setHasUnsavedChanges(true);
+    // Aggiusta selectedProcess se necessario
+    if (selectedProcess === index) {
+      setSelectedProcess(index + 1);
+    } else if (selectedProcess === index + 1) {
+      setSelectedProcess(index);
+    }
+  };
+
+  const moveQuestionUp = (category: keyof StandardQuestions, index: number) => {
+    if (index === 0) return;
+    const updated = [...standardQuestions[category]];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setStandardQuestions({
+      ...standardQuestions,
+      [category]: updated
+    });
+    setHasUnsavedChanges(true);
+  };
+
+  const moveQuestionDown = (category: keyof StandardQuestions, index: number) => {
+    const questions = standardQuestions[category];
+    if (index >= questions.length - 1) return;
+    const updated = [...questions];
+    [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
+    setStandardQuestions({
+      ...standardQuestions,
+      [category]: updated
+    });
+    setHasUnsavedChanges(true);
   };
 
   // Salvataggio - genera JSON completo
@@ -228,6 +400,7 @@ const AdminQuestions = () => {
       });
 
       alert(response.data.message);
+      setHasUnsavedChanges(false);
       loadAvailableModels();
     } catch (error: any) {
       console.error('Errore salvataggio:', error);
@@ -252,12 +425,22 @@ const AdminQuestions = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  if (hasUnsavedChanges) {
+                    if (confirm('Hai modifiche non salvate. Sei sicuro di voler uscire?')) {
+                      window.history.back();
+                    }
+                  } else {
+                    window.history.back();
+                  }
+                }}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">Editor Assessment</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Editor Assessment {hasUnsavedChanges && <span className="text-red-500">*</span>}
+              </h1>
             </div>
             <div className="flex gap-3 items-center">
               <select
@@ -354,6 +537,20 @@ const AdminQuestions = () => {
                     <span className="flex-1 text-gray-700">{question}</span>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
+                        onClick={() => moveQuestionUp(activeCategory, index)}
+                        disabled={index === 0}
+                        className="p-2 hover:bg-gray-200 rounded disabled:opacity-30"
+                      >
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => moveQuestionDown(activeCategory, index)}
+                        disabled={index === standardQuestions[activeCategory].length - 1}
+                        className="p-2 hover:bg-gray-200 rounded disabled:opacity-30"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => editStandardQuestion(activeCategory, index)}
                         className="p-2 text-blue-600 hover:bg-blue-100 rounded"
                       >
@@ -397,15 +594,37 @@ const AdminQuestions = () => {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium truncate">{process.process}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeProcess(index);
-                        }}
-                        className="p-1 hover:bg-red-100 rounded"
-                      >
-                        <Trash2 className="w-3 h-3 text-red-600" />
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            moveProcessUp(index);
+                          }}
+                          disabled={index === 0}
+                          className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
+                        >
+                          <ChevronUp className="w-3 h-3 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            moveProcessDown(index);
+                          }}
+                          disabled={index === processes.length - 1}
+                          className="p-1 hover:bg-gray-200 rounded disabled:opacity-30"
+                        >
+                          <ChevronDown className="w-3 h-3 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeProcess(index);
+                          }}
+                          className="p-1 hover:bg-red-100 rounded"
+                        >
+                          <Trash2 className="w-3 h-3 text-red-600" />
+                        </button>
+                      </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
                       {process.activities.length} attività
@@ -456,6 +675,20 @@ const AdminQuestions = () => {
                             }
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                           />
+                          <button
+                            onClick={() => moveActivityUp(selectedProcess, actIndex)}
+                            disabled={actIndex === 0}
+                            className="p-2 hover:bg-gray-200 rounded disabled:opacity-30"
+                          >
+                            <ChevronUp className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            onClick={() => moveActivityDown(selectedProcess, actIndex)}
+                            disabled={actIndex === processes[selectedProcess].activities.length - 1}
+                            className="p-2 hover:bg-gray-200 rounded disabled:opacity-30"
+                          >
+                            <ChevronDown className="w-4 h-4 text-gray-600" />
+                                      </button>
                           <button
                             onClick={() => removeActivity(selectedProcess, actIndex)}
                             className="p-2 hover:bg-red-100 rounded"

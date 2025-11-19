@@ -8,6 +8,7 @@ interface CompanyData {
   dimensione: string;
   referente: string;
   email: string;
+  effettuato_da: string;
   user_id?: string;
   company_id?: number;
   model_name?: string;
@@ -22,6 +23,7 @@ const CompanyForm = () => {
     dimensione: '',
     referente: '',
     email: '',
+    effettuato_da: '',
     user_id: '',
     company_id: undefined
   });
@@ -30,6 +32,8 @@ const CompanyForm = () => {
   const [error, setError] = useState('');
   const [assessmentMode, setAssessmentMode] = useState<'manual' | 'ai'>('manual');
   const [models, setModels] = useState<Array<{name: string; filename: string; is_default: boolean}>>([]);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>('');
 
   useEffect(() => {
     axios.get('/api/admin/list-models')
@@ -43,6 +47,18 @@ const CompanyForm = () => {
       ...prev,
       [name]: name === 'company_id' ? (value ? Number(value) : undefined) : value
     }));
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,12 +79,28 @@ const CompanyForm = () => {
         dimensione: formData.dimensione,
         referente: formData.referente,
         email: formData.email,
+        effettuato_da: formData.effettuato_da,
         user_id: formData.user_id || undefined,
         company_id: formData.company_id || undefined,
         model_name: formData.model_name || 'i40_assessment_fto'
       });
       
       const sessionId = response.data.id;
+      
+      // Carica logo se presente
+      if (logoFile) {
+        try {
+          const logoFormData = new FormData();
+          logoFormData.append('file', logoFile);
+          await axios.post(`/api/assessment/session/${sessionId}/upload-logo`, logoFormData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+        } catch (logoError) {
+          console.error('Errore caricamento logo:', logoError);
+          // Non bloccare il flusso se il logo fallisce
+        }
+      }
+      
       if (assessmentMode === 'ai') {
         navigate(`/ai-interview/${sessionId}`);
       } else {
@@ -96,7 +128,7 @@ const CompanyForm = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="absolute inset-0 overflow-hidden"></div>
 
-      <div className="relative min-h-screen flex items-center justify-center p-8">
+      <div className="relative min-h-screen flex items-center justify-center p-4 md:p-6 lg:p-8">
         <div className="w-full max-w-2xl">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
@@ -115,14 +147,14 @@ const CompanyForm = () => {
                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-4xl">🏢</span>
                 </div>
-                <h2 className="text-3xl font-bold mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2">
                   Dati Azienda
                 </h2>
                 <p className="text-white/90">Inserisci le informazioni della tua azienda per iniziare</p>
               </div>
             </div>
 
-            <div className="p-8">
+            <div className="p-4 md:p-6 lg:p-8">
               {error && (
                 <div className="mb-8 p-4 bg-red-100 border border-red-300 text-red-800 rounded-xl flex items-center">
                   <span className="text-2xl mr-3">⚠️</span>
@@ -134,7 +166,7 @@ const CompanyForm = () => {
               )}
 
               {/* Scelta Modalità */}
-              <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 border-2 border-purple-200">
+              <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 md:p-6 lg:p-8 border-2 border-purple-200">
                 <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
                   🎯 Scegli come compilare l'Assessment
                 </h3>
@@ -203,6 +235,39 @@ const CompanyForm = () => {
                           <span className="text-gray-400">🏢</span>
                         </div>
                       </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-3">
+                        Logo Aziendale (opzionale)
+                      </label>
+                      <div className="space-y-3">
+                        {logoPreview && (
+                          <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                            <img 
+                              src={logoPreview} 
+                              alt="Logo preview" 
+                              className="h-20 w-20 object-contain"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => { setLogoFile(null); setLogoPreview(''); }}
+                              className="px-3 py-1 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50"
+                            >
+                              Rimuovi
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoChange}
+                          className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        />
+                        <p className="text-sm text-gray-500">
+                          Formati supportati: PNG, JPG, JPEG, GIF, SVG (max 5MB)
+                        </p>
+                      </div>
+                    </div>
                     </div>
 
                     <div>
@@ -292,6 +357,26 @@ const CompanyForm = () => {
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
                           <span className="text-gray-400">📧</span>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Effettuato da */}
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-3">
+                      Effettuato da *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="effettuato_da"
+                        value={formData.effettuato_da}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Nome di chi esegue l'assessment"
+                        required
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                        <span className="text-gray-400">✍️</span>
                       </div>
                     </div>
                   </div>

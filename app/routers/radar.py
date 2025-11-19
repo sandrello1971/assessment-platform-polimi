@@ -749,8 +749,7 @@ Rispondi in italiano, tono professionale ma accessibile."""
                     {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=4000,
-                temperature=0.2
+                max_completion_tokens=4000,
             )
             
             # Salva le raccomandazioni nel database
@@ -2148,8 +2147,7 @@ Rispondi in italiano, tono professionale ma accessibile."""
                     {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=4000,
-                temperature=0.2
+                max_completion_tokens=4000,
             )
             
             # Salva le raccomandazioni nel database
@@ -2203,7 +2201,6 @@ def reformat_conclusions(session_id: UUID, data: dict, db: Session = Depends(get
                 {"role": "system", "content": "Sei un correttore di bozze professionale. Il tuo compito è SOLO correggere errori di grammatica, punteggiatura, ortografia e sintassi. REGOLE FONDAMENTALI: 1) NON riassumere MAI il testo 2) NON eliminare frasi o paragrafi 3) NON cambiare il significato 4) Mantieni TUTTA la lunghezza originale 5) Mantieni la formattazione markdown (###, **, ecc). Correggi solo gli errori mantenendo tutto il resto identico."},
                 {"role": "user", "content": f"Correggi SOLO gli errori grammaticali e sintattici in questo testo, mantenendo tutto il contenuto originale:\n\n{data['text']}"}
             ],
-            temperature=0.3
         )
         formatted_text = response.choices[0].message.content
         return {"formatted_text": formatted_text, "status": "success"}
@@ -2222,3 +2219,112 @@ def save_conclusions(session_id: UUID, data: dict, db: Session = Depends(get_db)
     session.raccomandazioni = data['text']
     db.commit()
     return {"status": "success", "message": "Conclusioni salvate"}
+
+
+# ============================================================================
+# ENDPOINT RACCOMANDAZIONI PARETO AI
+# ============================================================================
+
+from pydantic import BaseModel
+
+class ParetoRecommendationRequest(BaseModel):
+    session_id: str
+    prompt: str
+
+@router.post("/assessment/generate-pareto-recommendations")
+async def generate_pareto_recommendations(
+    request: ParetoRecommendationRequest,
+    db: Session = Depends(database.get_db)
+):
+    """
+    Genera raccomandazioni AI basate sull'analisi di Pareto e le salva nel DB
+    """
+    try:
+        # Prima controlla se esistono già raccomandazioni salvate
+        from uuid import UUID as PyUUID
+        session_uuid = PyUUID(request.session_id)
+        session = db.query(models.AssessmentSession).filter(
+            models.AssessmentSession.id == session_uuid
+        ).first()
+        
+        if session and session.pareto_recommendations:
+            print(f"✅ Restituisco raccomandazioni Pareto salvate per sessione {request.session_id}")
+            return {
+                "success": True,
+                "recommendations": session.pareto_recommendations,
+                "model_used": "cached",
+                "from_cache": True
+            }
+        
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if not openai_key:
+            raise HTTPException(status_code=500, detail="OpenAI API key non configurata")
+        
+        # Usa GPT-5 come modello migliore attuale
+        openai_model = os.getenv("OPENAI_MODEL", "gpt-5")
+        
+        print(f"🤖 Generazione raccomandazioni Pareto per sessione {request.session_id}")
+        print(f"📊 Modello utilizzato: {openai_model}")
+        
+        response = openai.chat.completions.create(
+            model=openai_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": """Sei un consulente esperto di trasformazione digitale e Industry 4.0. 
+Analizza i dati dell'assessment e fornisci raccomandazioni strategiche precise e actionable.
+Parla sempre in terza persona (es. "L'azienda dovrebbe...", "Si raccomanda di...").
+Formatta la risposta in markdown con sezioni chiare."""
+                },
+                {
+                    "role": "user",
+                    "content": request.prompt
+                }
+            ],
+            max_completion_tokens=2000
+        )
+        
+        recommendations = response.choices[0].message.content
+        
+        # Salva le raccomandazioni nel database usando engine diretto
+        if session:
+            print(f"📝 Sessione trovata: {session.id}")
+            try:
+                from sqlalchemy import text
+                # Usa una connessione diretta al database e chiudi prima di verificare
+                with database.engine.connect() as conn:
+                    result = conn.execute(
+                        text("UPDATE assessment_session SET pareto_recommendations = :recs WHERE id = :id"),
+                        {"recs": recommendations, "id": str(session_uuid)}
+                    )
+                    conn.commit()
+                    print(f"💾 UPDATE eseguito: {result.rowcount} righe modificate")
+                
+                # Verifica con una NUOVA connessione dopo il commit
+                with database.engine.connect() as verify_conn:
+                    verify_result = verify_conn.execute(
+                        text("SELECT pareto_recommendations FROM assessment_session WHERE id = :id"),
+                        {"id": str(session_uuid)}
+                    )
+                    verify_row = verify_result.fetchone()
+                    if verify_row and verify_row[0]:
+                        print(f"✅ VERIFICA OK: Raccomandazioni salvate ({len(verify_row[0])} caratteri)")
+                    else:
+                        print(f"❌ VERIFICA FALLITA: Raccomandazioni NON salvate!")
+            except Exception as save_error:
+                print(f"❌ ERRORE SALVATAGGIO: {save_error}")
+        else:
+            print(f"⚠️ ATTENZIONE: Sessione non trovata per ID {request.session_id}")
+        
+        print(f"✅ Raccomandazioni generate con successo")
+        
+        return {
+            "success": True,
+            "recommendations": recommendations,
+            "model_used": openai_model,
+            "from_cache": False
+        }
+        
+    except Exception as e:
+        print(f"❌ Errore generazione raccomandazioni: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Errore generazione: {str(e)}")

@@ -35,6 +35,19 @@ const TestTableFormByCategory = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{
+    visible: boolean;
+    x: number;
+    y: number;
+    process: string;
+    activity: string;
+    category: string;
+    dimension: string;
+    score: number;
+    rowIndex: number;
+    colIndex: number;
+  } | null>(null);
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -111,6 +124,50 @@ const TestTableFormByCategory = () => {
     setAnswers(updated);
   };
 
+  // Chiudi context menu
+  useEffect(() => {
+    const handleClick = () => setContextMenu(null);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
+  // Copia in colonna
+  const copyToColumn = (process: string, _activity: string, category: string, dimension: string, score: number, startRowIndex: number) => {
+    const updated = new Map(answers);
+    const allActivities = processesData.find(p => p.process === process)?.activities || [];
+    allActivities.forEach((act, idx) => {
+      if (idx >= startRowIndex) {
+        const key = createKey(process, act.name, category, dimension);
+        const existing = answers.get(key) || { process, activity: act.name, category, dimension, score: 0, note: '', is_not_applicable: false };
+        updated.set(key, { ...existing, score });
+      }
+    });
+    setAnswers(updated);
+    setContextMenu(null);
+  };
+
+  // Copia in riga
+  const copyToRow = (process: string, activity: string, category: string, _dimension: string, score: number, startColIndex: number) => {
+    const updated = new Map(answers);
+    const currentProcess = processesData.find(p => p.process === process);
+    const currentActivity = currentProcess?.activities.find(a => a.name === activity);
+    if (currentActivity && currentActivity.categories[category]) {
+      const dimensions = Object.keys(currentActivity.categories[category]);
+      dimensions.forEach((dim, idx) => {
+        if (idx >= startColIndex) {
+          const key = createKey(process, activity, category, dim);
+          const existing = answers.get(key) || { process, activity, category, dimension: dim, score: 0, note: '', is_not_applicable: false };
+          updated.set(key, { ...existing, score });
+        }
+      });
+    }
+    setAnswers(updated);
+    setContextMenu(null);
+  };
+
+  // Handler context menu
+
+
   // Funzione per calcolare la media di una riga
   const calculateRowAverage = (process: string, activityName: string, category: string, dimensions: string[]) => {
     let total = 0;
@@ -176,12 +233,12 @@ const TestTableFormByCategory = () => {
       <button
         onClick={async () => { await autoSave(); navigate('/dashboard'); }}
         disabled={saving}
-        className="fixed top-4 right-4 z-50 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="fixed top-2 right-2 md:top-4 md:right-4 z-50 px-3 py-2 md:px-4 md:py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-lg font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? "💾 Salvataggio..." : "← Dashboard"}
       </button>
 
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Assessment Digitale 4.0 - {currentCategory}</h1>
@@ -189,7 +246,7 @@ const TestTableFormByCategory = () => {
             <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
               <div className="bg-blue-500 h-3 rounded-full transition-all duration-500" style={{ width: `${progressPercentage}%` }} />
             </div>
-            <p className="text-gray-500 text-sm text-right">{Math.round(progressPercentage)}% completato</p>
+            <p className="text-gray-500 text-xs md:text-sm text-right">{Math.round(progressPercentage)}% completato</p>
           </div>
 
           {processesData.map((process, procIdx) => {
@@ -207,12 +264,12 @@ const TestTableFormByCategory = () => {
             const processDimensionsArray = Array.from(processDimensions);
 
             return (
-              <div key={procIdx} className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
+              <div key={procIdx} className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8 border border-gray-200 mb-8">
                 <div className="flex justify-between items-center mb-6 pb-3 border-b-2 border-blue-500">
                   <button
                     onClick={() => setCurrentCategoryIndex(Math.max(0, currentCategoryIndex - 1))}
                     disabled={currentCategoryIndex === 0}
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold transition"
+                    className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold transition"
                   >
                     ← {currentCategoryIndex > 0 ? CATEGORIES[currentCategoryIndex - 1] : ''}
                   </button>
@@ -220,20 +277,20 @@ const TestTableFormByCategory = () => {
                   <button
                     onClick={() => setCurrentCategoryIndex(Math.min(CATEGORIES.length - 1, currentCategoryIndex + 1))}
                     disabled={currentCategoryIndex === CATEGORIES.length - 1}
-                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold transition"
+                    className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold transition"
                   >
                     {currentCategoryIndex < CATEGORIES.length - 1 ? CATEGORIES[currentCategoryIndex + 1] : ''} →
                   </button>
                 </div>
                 
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse text-sm">
+                <div className="overflow-x-auto mobile-table-wrapper">
+                  <table className="w-full border-collapse text-xs md:text-sm lg:text-base">
                     <thead>
                       <tr className="bg-blue-500">
                         <th className="border border-gray-300 px-3 py-2 text-left text-white font-semibold min-w-[150px]">Attività</th>
                         {processDimensionsArray.map((dim) => (
                           <th key={dim} className="border border-gray-300 px-2 py-2 text-center text-white font-semibold min-w-[100px]">
-                            <div className="text-xs leading-tight">{dim.substring(0, 80)}</div>
+                            <div className="text-xs md:text-sm leading-tight">{dim.substring(0, 80)}</div>
                           </th>
                         ))}
                         <th className="border border-gray-300 px-3 py-2 text-center text-white font-semibold min-w-[80px]">Media</th>
@@ -256,9 +313,23 @@ const TestTableFormByCategory = () => {
                                 return <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-gray-100"><span className="text-gray-400 text-xs">-</span></td>;
                               }
                               return (
-                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white">
-                                  <div className="flex flex-col items-center gap-2">
+                                <td key={dim} className="border border-gray-300 px-2 py-2 text-center bg-white" style={{ userSelect: "none" }} onContextMenu={(e) => e.preventDefault()} data-cell-process={row.process} data-cell-activity={row.activityName} data-cell-category={currentCategory} data-cell-dimension={dim} data-cell-score={answer?.score ?? 0} data-cell-rowidx={actIdx} data-cell-colidx={processDimensionsArray.indexOf(dim)}>
+                                  <div className="flex flex-col items-center gap-2" >
                                     <input 
+                                      onContextMenu={(e) => {
+                                        e.preventDefault();
+                                        const td = e.currentTarget.closest("td[data-cell-process]");
+                                        if (td) {
+                                          const process = td.getAttribute("data-cell-process") || "";
+                                          const activity = td.getAttribute("data-cell-activity") || "";
+                                          const category = td.getAttribute("data-cell-category") || "";
+                                          const dimension = td.getAttribute("data-cell-dimension") || "";
+                                          const score = parseInt(td.getAttribute("data-cell-score") || "0");
+                                          const rowIndex = parseInt(td.getAttribute("data-cell-rowidx") || "0");
+                                          const colIndex = parseInt(td.getAttribute("data-cell-colidx") || "0");
+                                          setContextMenu({ visible: true, x: e.clientX, y: e.clientY, process, activity, category, dimension, score, rowIndex, colIndex });
+                                        }
+                                      }}
                                       type="number" 
                                       min={0} 
                                       max={5}
@@ -325,7 +396,7 @@ const TestTableFormByCategory = () => {
                               <textarea placeholder="Note..." rows={2}
                                 value={answers.get(createKey(row.process, row.activityName, currentCategory, processDimensionsArray[0]))?.note || ''}
                                 onChange={(e) => handleNoteChange(row.process, row.activityName, currentCategory, processDimensionsArray[0], e.target.value)}
-                                className="w-full min-w-[200px] px-3 py-2 bg-gray-50 border border-gray-300 rounded text-gray-800 text-sm focus:ring-2 focus:ring-blue-400 resize-none" />
+                                className="w-full min-w-[200px] px-3 py-2 bg-gray-50 border border-gray-300 rounded text-gray-800 text-sm md:text-base focus:ring-2 focus:ring-blue-400 resize-none" />
                             </td>
                           </tr>
                         );
@@ -336,6 +407,42 @@ const TestTableFormByCategory = () => {
               </div>
             );
           })}
+
+
+        {/* Context Menu */}
+        {contextMenu && (
+          <div
+            style={{
+              position: "fixed",
+              top: contextMenu.y,
+              left: contextMenu.x,
+              backgroundColor: "white",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              zIndex: 9999,
+              minWidth: "200px"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              onClick={() => copyToColumn(contextMenu.process, contextMenu.activity, contextMenu.category, contextMenu.dimension, contextMenu.score, contextMenu.rowIndex)}
+              style={{ padding: "12px 16px", cursor: "pointer", borderBottom: "1px solid #eee" }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "white"}
+            >
+              📋 Copia valore nella colonna
+            </div>
+            <div
+              onClick={() => copyToRow(contextMenu.process, contextMenu.activity, contextMenu.category, contextMenu.dimension, contextMenu.score, contextMenu.colIndex)}
+              style={{ padding: "12px 16px", cursor: "pointer" }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "white"}
+            >
+              📋 Copia valore nella riga
+            </div>
+          </div>
+        )}
 
           <div className="flex justify-between items-center">
             <button onClick={() => setCurrentCategoryIndex(Math.max(0, currentCategoryIndex - 1))} disabled={currentCategoryIndex === 0}

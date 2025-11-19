@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend, ResponsiveContainer } from 'recharts';
+import ParetoCharts from '../components/ParetoCharts';
+import ParetoRecommendations from '../components/ParetoRecommendations';
 
 const CATEGORIES_ORDER = ["Governance", "Monitoring & Control", "Technology", "Organization"];
 
@@ -205,10 +207,10 @@ const ResultsByCategoryPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-6">Risultati Assessment Digitale 4.0</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-6">Risultati Assessment Digitale 4.0</h1>
           <div className="flex justify-between items-center">
             <div className="bg-blue-500 text-white px-6 py-3 rounded-lg">
               <span className="text-sm font-semibold">FINAL RATE:</span>
@@ -246,10 +248,10 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
 
         {/* Nuova Tabella Strengths & Weaknesses */}
         <div className="mt-12 space-y-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">Analisi Radar</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">Radar</h2>
           
 
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Processi vs Dominii</h3>
+            <h3 className="text-xl md:text-2xl font-bold mb-6">Global Radar - Processi vs Dominii</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={CATEGORIES_ORDER.map(cat => {
                 const catData: any = { category: cat.replace('Monitoring & Control', 'M&C') };
@@ -318,9 +320,9 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
           {/* Global Radar - Dominii vs Processi */}
           <div style={{display: showProcessRadars ? 'block' : 'none'}}>
           {/* Radar per Processo */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Radar per Processo</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8">
+            <h3 className="text-xl md:text-2xl font-bold mb-6">Radar per Processo</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
               {Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(process => {
                 const data = CATEGORIES_ORDER.map(cat => {
                   const activities = organized[cat]?.[process] || {};
@@ -355,9 +357,9 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
 
           </div>
           {/* Radar per Categoria */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
+          <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8">
+            <h3 className="text-xl md:text-2xl font-bold mb-6">Global Radar - Dominii vs Processi</h3>
             <ResponsiveContainer width="100%" height={500}>
               <RadarChart data={Object.keys(organized[CATEGORIES_ORDER[0]] || {}).map(proc => {
                 const procData: any = { process: proc };
@@ -421,8 +423,8 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
             </button>
           </div>
           <div style={{display: showCategoryRadars ? 'block' : 'none'}}>
-            <h3 className="text-2xl font-bold mb-6">Radar per Categoria</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <h3 className="text-xl md:text-2xl font-bold mb-6">Radar per Categoria</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
               {CATEGORIES_ORDER.map(category => {
                 const processes = organized[category] || {};
                 const data = Object.keys(processes).map(proc => {
@@ -458,18 +460,19 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
 
           {/* Global Radar - Processi vs Domini */}
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8 mt-12">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">GAP ANALYSIS</h2>
 
         <div className="mb-12">
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-            <h2 className="text-3xl font-bold mb-6 text-gray-800">STRENGTHS & WEAKNESSES BY PROCESS</h2>
+          <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 lg:p-8 border border-gray-200">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800">STRENGTHS & WEAKNESSES BY PROCESS</h2>
             
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mobile-table-wrapper">
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="bg-blue-600 text-white">
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Process Area</th>
-                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Dimension</th>
+                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Domain</th>
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold bg-green-100 text-green-900">Strengths (≥ 3.0)</th>
                     <th className="border border-gray-300 px-4 py-3 text-left font-semibold bg-yellow-100 text-yellow-900">Weaknesses (&lt; 2.0)</th>
                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold bg-amber-100 text-gray-900">RATING</th>
@@ -580,7 +583,7 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
                             </td>
                             {firstRow ? (
                               <td rowSpan={5} className="border border-gray-300 px-4 py-3 text-center bg-amber-50 align-middle">
-                                <span className="text-2xl font-bold text-gray-800">{processRating !== null ? processRating.toFixed(2) : 'N/A'}</span>
+                                <span className="text-xl md:text-2xl font-bold text-gray-800">{processRating !== null ? processRating.toFixed(2) : 'N/A'}</span>
                               </td>
                             ) : null}
                           </tr>
@@ -663,9 +666,13 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
             </div>
           </div>
         <div className="mb-6 text-center">
-          <button onClick={() => setShowDetails(!showDetails)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg">
-            {showDetails ? '▲ Nascondi Tabelle Dettagliate' : '▼ Mostra Tabelle Dettagliate'}
-          </button>
+          <button onClick={() => setShowDetails(!showDetails)} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg">{showDetails ? '▲ Nascondi Tabelle Dettagliate' : '▼ Mostra Tabelle Dettagliate'}</button>
+        </div>
+
+        {/* Pareto Charts */}
+        <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mt-8">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">PARETO ANALYSIS</h3>
+          <ParetoCharts results={results} />
         </div>
 
         </div>
@@ -1133,6 +1140,9 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
 
         </div>
         {/* Radar Charts */}
+        {/* Raccomandazioni AI basate su Pareto */}
+        <ParetoRecommendations results={results} sessionId={id || ''} />
+
 
                 {/* Conclusioni AI */}
         <div className="mt-12 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl shadow-lg p-8 border-2 border-purple-200">

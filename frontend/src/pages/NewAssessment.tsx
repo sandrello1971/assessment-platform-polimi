@@ -60,7 +60,7 @@ const NewAssessment: React.FC = () => {
         <div className="absolute top-1/3 left-1/4 w-60 h-60 bg-emerald-500 rounded-full mix-blend-multiply filter blur-xl opacity-15 animate-pulse animation-delay-4000"></div>
       </div>
 
-      <div className="relative min-h-screen flex items-center justify-center p-8">
+      <div className="relative min-h-screen flex items-center justify-center p-4 md:p-6 lg:p-8">
         <div className="w-full max-w-xl">
           {/* Header */}
           <div className="text-center mb-12">
@@ -88,7 +88,7 @@ const NewAssessment: React.FC = () => {
                 <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-4xl">⚡</span>
                 </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-2">
                   Modalità Rapida
                 </h2>
                 <p className="text-white/80">Salta i dati azienda e inizia subito l'assessment</p>
@@ -96,7 +96,7 @@ const NewAssessment: React.FC = () => {
             </div>
 
             {/* Form Content */}
-            <div className="p-8">
+            <div className="p-4 md:p-6 lg:p-8">
               {error && (
                 <div className="mb-8 p-4 bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-200 rounded-2xl flex items-center">
                   <span className="text-2xl mr-3">⚠️</span>

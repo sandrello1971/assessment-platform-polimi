@@ -5,12 +5,14 @@ import axios from 'axios';
 interface SessionEntry {
   id: string;
   creato_il: string;
+  data_chiusura?: string;
   user_id?: string;
   company_id?: number;
   azienda_nome: string;
   settore?: string;
   dimensione?: string;
   referente?: string;
+  effettuato_da?: string;
 }
 
 // ✅ INTERFACCIA CORRETTA - Basata sul modello database reale
@@ -205,7 +207,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-12">
           <div className="group relative overflow-y-auto bg-white rounded-3xl p-6 text-gray-800 shadow-2xl border border-gray-200 transform hover:scale-105 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="relative z-10">
@@ -271,14 +273,14 @@ const Dashboard = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20"></div>
             <div className="absolute top-0 left-0 w-40 h-40 bg-white/5 rounded-full -ml-20 -mt-20"></div>
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                 📋 Sessioni Assessment
               </h2>
               <p className="text-gray-700 mt-2">Gestisci tutti i tuoi assessment aziendali</p>
             </div>
           </div>
 
-          <div className="p-8">
+          <div className="p-4 md:p-6 lg:p-8">
             {loading ? (
               <div className="text-center py-16">
                 <div className="relative">
@@ -321,10 +323,10 @@ const Dashboard = () => {
                   >
                     <div className="p-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-center">
                           {/* Company Info */}
                           <div className="md:col-span-2">
-                            <h3 className="text-lg font-bold text-gray-800 mb-1">{session.azienda_nome}</h3>
+                            <h3 className="text-lg font-bold text-gray-800 mb-1"><button onClick={() => navigate(`/session/${session.id}/edit`)} className="hover:text-blue-600 hover:underline transition-colors" title="Clicca per modificare i dati">{session.azienda_nome}</button></h3>
                             <div className="flex items-center space-x-4 text-sm text-gray-700">
                               <span className="flex items-center">
                                 <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
@@ -337,18 +339,26 @@ const Dashboard = () => {
                             </div>
                           </div>
 
-                          {/* Contact */}
+                          {/* Contact Info */}
                           <div>
-                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Referente</p>
-                            <p className="text-gray-800 font-medium">{session.referente || 'Non specificato'}</p>
+                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Effettuato da</p>
+                            <p className="text-gray-800 font-medium">{session.effettuato_da || 'Non specificato'}</p>
                           </div>
 
-                          {/* Date */}
+                          {/* Dates */}
                           <div>
-                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Data</p>
+                            <p className="text-gray-700 text-sm uppercase tracking-wider mb-1">Data Creazione</p>
                             <p className="text-gray-800 font-medium">
                               {session.creato_il ? new Date(session.creato_il).toLocaleDateString('it-IT') : 'N/A'}
                             </p>
+                            {session.data_chiusura && (
+                              <>
+                                <p className="text-gray-700 text-xs uppercase tracking-wider mt-2 mb-1">Chiusa il</p>
+                                <p className="text-emerald-600 font-medium text-sm">
+                                  {new Date(session.data_chiusura).toLocaleDateString('it-IT')}
+                                </p>
+                              </>
+                            )}
                           </div>
 
                           {/* Status Badge */}

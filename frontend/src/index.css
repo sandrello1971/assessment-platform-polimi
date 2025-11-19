@@ -91,3 +91,135 @@ input[type="range"].slider::-moz-range-thumb:hover {
 .duration-300 {
   transition-duration: 300ms;
 }
+
+/* 📱 MOBILE-FRIENDLY UTILITIES */
+
+/* Touch targets minimi 44x44px per Apple HIG */
+@media (max-width: 768px) {
+  button, 
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Font leggibili su mobile */
+  body {
+    font-size: 16px; /* Previene zoom automatico iOS */
+  }
+  
+  /* Tabelle scroll orizzontale */
+  .mobile-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Padding ridotto su mobile */
+  .mobile-padding {
+    padding: 1rem !important;
+  }
+  
+  /* Testo più grande su mobile */
+  .mobile-text-base {
+    font-size: 1rem !important;
+  }
+  
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-padding {
+    padding: 1.5rem !important;
+  }
+}
+
+/* 📱 OTTIMIZZAZIONE TABLET/iPAD */
+
+/* iPad standard e Pro - Portrait e Landscape */
+@media (min-width: 768px) and (max-width: 1366px) {
+  
+  /* Touch targets ottimali per tablet */
+  button,
+  input[type="checkbox"],
+  input[type="radio"],
+  select,
+  a.button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  /* Font size leggibili su tablet */
+  body {
+    font-size: 17px; /* Ottimale per iPad */
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  
+  /* Tabelle responsive per tablet */
+  table {
+    font-size: 0.95rem;
+  }
+  
+  table th,
+  table td {
+    padding: 0.875rem !important;
+  }
+  
+  /* Input e textarea più grandi */
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 17px !important; /* Previene zoom iOS */
+    padding: 0.875rem !important;
+  }
+  
+  /* Container con max-width ottimizzato */
+  .max-w-7xl {
+    max-width: 90% !important;
+  }
+  
+  /* Spacing ottimizzato */
+  .p-8 { padding: 2rem !important; }
+  .px-8 { padding-left: 2rem !important; padding-right: 2rem !important; }
+  .py-8 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  
+  /* Scroll orizzontale touch-friendly */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* iPad landscape specifico */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+  .container {
+    max-width: 95% !important;
+  }
+  
+  /* Tabelle a larghezza piena in landscape */
+  table {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+
+/* iPad portrait specifico */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  /* Colonne più strette in portrait */
+  .grid {
+    gap: 1rem !important;
+  }
+  
+  /* Bottoni fixed più in alto per non coprire contenuto */
+  .fixed {
+    top: 1rem !important;
+  }
+}

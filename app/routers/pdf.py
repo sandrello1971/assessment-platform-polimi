@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
-from app.models import AssessmentSession, AssessmentResult
+from app.models import AssessmentSession, AssessmentResult, LocalUser
 from app.services.pdf_generator import PDFReportGenerator
 import io
 from typing import Dict, List
@@ -40,13 +40,26 @@ async def generate_pdf_report(session_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Nessun risultato trovato per questa sessione")
     
     # Prepara dati sessione per PDF
+    # Recupera nome utente che ha creato l'assessment
+    user_name = "N/A"
+    if session.user_id:
+        user = db.query(LocalUser).filter(LocalUser.id == session.user_id).first()
+        if user:
+            user_name = user.email
+    
     session_data = {
         "azienda_nome": session.azienda_nome or "Azienda Non Specificata",
         "settore": session.settore,
         "dimensione": session.dimensione,
         "referente": session.referente,
         "email": session.email,
-        "creato_il": session.creato_il
+        "effettuato_da": session.effettuato_da,
+        "creato_il": session.creato_il,
+        "logo_path": session.logo_path,
+        "model_name": session.model_name or "i40_assessment_fto",
+        "data_chiusura": session.data_chiusura,
+        "user_name": user_name,
+        "pareto_recommendations": session.pareto_recommendations
     }
     
     # Prepara dati risultati per PDF  
@@ -95,6 +108,9 @@ async def generate_pdf_report(session_id: str, db: Session = Depends(get_db)):
         )
         
     except Exception as e:
+        import traceback
+        with open("/tmp/pdf_error.log", "w") as f:
+            f.write(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Errore nella generazione del PDF: {str(e)}")
 
 
