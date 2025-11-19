@@ -25,12 +25,16 @@ class AssessmentSession(Base):
     settore = Column(Text, nullable=True)
     dimensione = Column(Text, nullable=True)
     referente = Column(Text, nullable=True)
+    effettuato_da = Column(Text, nullable=True)  # Chi esegue l'assessment
     email = Column(Text, nullable=True)
     model_name = Column(Text, nullable=True, default='i40_assessment_fto')  # Nome del modello JSON usato
     risposte_json = Column(Text, nullable=True)
     punteggi_json = Column(Text, nullable=True)
     raccomandazioni = Column(Text, nullable=True)
-    creato_il = Column(DateTime, nullable=True)
+    pareto_recommendations = Column(Text, nullable=True)  # Raccomandazioni basate su Pareto
+    creato_il = Column(DateTime, default=datetime.now, nullable=False)
+    data_chiusura = Column(DateTime, nullable=True)  # Data di completamento assessment
+    logo_path = Column(Text, nullable=True)  # Percorso file logo azienda
 
     results = relationship("AssessmentResult", backref="session")
 
@@ -43,6 +47,6 @@ class AssessmentResult(Base):
     activity = Column(String, nullable=False)
     category = Column(String, nullable=False)
     dimension = Column(String, nullable=False)
-    score = Column(Integer, nullable=False)  # Ora accetta 0-5
+    score = Column(Integer, nullable=False, default=0)  # Default 0, accetta 0-5
     note = Column(Text, nullable=True)
     is_not_applicable = Column(Boolean, default=False, nullable=False)  # ✅ NUOVO CAMPO

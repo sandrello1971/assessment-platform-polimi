@@ -22,7 +22,7 @@ class AssessmentResultCreate(BaseModel):
     activity: str
     category: str
     dimension: str
-    score: int
+    score: int = 0
     note: Optional[str] = None
     is_not_applicable: Optional[bool] = False  # ✅ NUOVO CAMPO
     
@@ -54,6 +54,7 @@ class AssessmentSessionCreate(BaseModel):
     dimensione: Optional[str] = None
     referente: Optional[str] = None
     email: Optional[str] = None
+    effettuato_da: Optional[str] = None
     model_name: Optional[str] = 'i40_assessment_fto'
     risposte_json: Optional[str] = None
     punteggi_json: Optional[str] = None
@@ -61,6 +62,7 @@ class AssessmentSessionCreate(BaseModel):
 
 class AssessmentSessionOut(AssessmentSessionCreate):
     id: UUID
+    data_chiusura: Optional[datetime] = None
     creato_il: Optional[datetime] = None
 
     class Config:

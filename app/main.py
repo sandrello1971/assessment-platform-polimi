@@ -8,6 +8,7 @@ from app.routers import pdf
 from app.database import get_db
 from app import schemas, models
 from app.routers import radar, admin, auth_routes
+from app.routers import assessment_update
 
 # ✅ Init FastAPI app
 app = FastAPI()
@@ -24,6 +25,50 @@ app.add_middleware(
 # ✅ Router con prefisso /api
 api_router = APIRouter(prefix="/api")
 
+
+# Funzione per pre-popolare le risposte
+def prepopulate_assessment_responses(session_id: UUID, model_name: str, db: Session):
+    """Pre-crea tutte le risposte con score=0 quando viene creato un assessment"""
+    import json
+    from pathlib import Path
+    
+    model_path = Path(f"frontend/public/{model_name}.json")
+    if not model_path.exists():
+        print(f"⚠️ Modello {model_name} non trovato")
+        return
+    
+    try:
+        with open(model_path, 'r', encoding='utf-8') as f:
+            model_data = json.load(f)
+    except Exception as e:
+        print(f"⚠️ Errore caricamento modello: {e}")
+        return
+    
+    responses_to_create = []
+    
+    for process_data in model_data:
+        process_name = process_data.get('process', '')
+        for activity in process_data.get('activities', []):
+            activity_name = activity.get('name', '')
+            for category_name, dimensions in activity.get('categories', {}).items():
+                for dimension_name in dimensions.keys():
+                    response = models.AssessmentResult(
+                        session_id=session_id,
+                        process=process_name,
+                        activity=activity_name,
+                        category=category_name,
+                        dimension=dimension_name,
+                        score=0,
+                        note='',
+                        is_not_applicable=False
+                    )
+                    responses_to_create.append(response)
+    
+    if responses_to_create:
+        db.bulk_save_objects(responses_to_create)
+        db.commit()
+        print(f"✅ Pre-popolate {len(responses_to_create)} risposte")
+
 # 📥 Crea sessione di assessment
 @api_router.post("/assessment/session", response_model=schemas.AssessmentSessionOut)
 def create_session(data: schemas.AssessmentSessionCreate, db: Session = Depends(get_db)):
@@ -31,6 +76,10 @@ def create_session(data: schemas.AssessmentSessionCreate, db: Session = Depends(
     db.add(obj)
     db.commit()
     db.refresh(obj)
+    
+    # Pre-popola risposte
+    model_name = data.model_name or "i40_assessment_fto"
+    prepopulate_assessment_responses(obj.id, model_name, db)
     return obj
 
 # 📋 Lista sessioni
@@ -229,6 +278,7 @@ app.include_router(radar.router, prefix="/api")
 app.include_router(pdf.router, prefix="/api", tags=["pdf"])
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+app.include_router(assessment_update.router, prefix="/api", tags=["assessment"])
 
 @app.put("/api/assessment/{session_id}/save-ai-conclusions")
 async def save_ai_conclusions(session_id: str, conclusions: dict, db: Session = Depends(get_db)):

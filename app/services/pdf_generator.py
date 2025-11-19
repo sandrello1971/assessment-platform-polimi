@@ -604,6 +604,7 @@ class PDFReportGenerator:
 
             y_pos -= 1.5 * cm
 
+            table_start_y = y_pos  # Salva posizione iniziale tabella
             # TABELLA: Dimension | Strengths | Weaknesses
             col_widths = [4.5 * cm, 5.5 * cm, 5.5 * cm]
             table_width = sum(col_widths)
@@ -820,7 +821,10 @@ class PDFReportGenerator:
 
             y_pos -= 1 * cm
             
-            # Controlla se le NOTE ci stanno nella pagina corrente
+            # LOGICA INTELLIGENTE: Calcola se tabella + note superano 70% pagina
+            table_height = table_start_y - y_pos  # Quanto spazio ha occupato la tabella
+            
+            # Calcola altezza note
             temp_notes_h = 0
             if all_notes:
                 temp_u = {}
@@ -829,10 +833,17 @@ class PDFReportGenerator:
                     if k not in temp_u:
                         temp_u[k] = tn
                 temp_lines = sum(max(1, len(n.get("note", "")) // 55 + 1) for n in temp_u.values())
-                temp_notes_h = temp_lines * 0.55 * cm + 3.5 * cm
+                temp_notes_h = temp_lines * 0.55 * cm + 1.0 * cm
             
-            if temp_notes_h > 0 and y_pos - temp_notes_h < self.margin_bottom + 8 * cm:
-                # Note non ci stanno, nuova pagina
+            # Dimensione totale = tabella + spazio (1cm) + note
+            total_content_height = table_height + 1 * cm + temp_notes_h
+            
+            # Altezza utilizzabile della pagina (escludendo margini)
+            usable_page_height = self.page_height - self.margin_top - self.margin_bottom - 2 * cm
+            
+            # Se le note non ci stanno nella pagina corrente, vai a pagina nuova
+            if temp_notes_h > 0 and (y_pos - temp_notes_h < self.margin_bottom + 2 * cm):
+                # Supera il 70%, nuova pagina per le note
                 self._add_page_number(c, page_num)
                 page_num += 1
                 c.showPage()
@@ -846,7 +857,6 @@ class PDFReportGenerator:
                 c.setFillColor(rating_color)
                 c.drawString(self.margin_left + title_width + 1 * cm, y_pos, f"{proc_rating:.2f}")
                 y_pos -= 1.5 * cm
-
             
             # BOX NOTE
             c.setFont('Helvetica-Bold', 12)
@@ -882,7 +892,7 @@ class PDFReportGenerator:
                         remaining = remaining[split_pos:].lstrip()
                     total_lines += lines_for_this_note
                 available_space = y_pos - self.margin_bottom - 1 * cm
-                note_box_height = min(total_lines * 0.55 * cm + 2.5 * cm, available_space)
+                note_box_height = total_lines * 0.55 * cm + 1.0 * cm
             else:
                 note_box_height = 1 * cm
 
@@ -915,11 +925,11 @@ class PDFReportGenerator:
                 
                 # Ricalcola spazio disponibile
                 available_space = y_pos - self.margin_bottom - 1 * cm
-                note_box_height = min(note_box_height, available_space)
+                # note_box_height già calcolato, non troncare
             
             c.setStrokeColor(colors.HexColor('#CCCCCC'))
             c.setLineWidth(1)
-            c.rect(self.margin_left, y_pos - note_box_height, table_width, note_box_height, fill=0, stroke=1)
+            # c.rect(self.margin_left, y_pos - note_box_height, table_width, note_box_height, fill=0, stroke=1)
 
             note_y = y_pos - 0.5 * cm
             box_bottom = y_pos - note_box_height + 0.4 * cm  # piccolo margine interno
@@ -991,6 +1001,13 @@ class PDFReportGenerator:
                             c.drawString(self.margin_left + 0.7 * cm, note_y - 0.15 * cm, line)
 
                     note_y -= 0.55 * cm
+            
+            # Disegna il box note con altezza reale
+            if notes_list:
+                actual_notes_height = (y_pos - 0.3 * cm) - note_y + 0.2 * cm
+                c.setStrokeColor(colors.HexColor("#CCCCCC"))
+                c.setLineWidth(1)
+                c.rect(self.margin_left, y_pos - 0.3 * cm - actual_notes_height, table_width, actual_notes_height, fill=0, stroke=1)
 
             # Numero di pagina per questa pagina di processo
             self._add_page_number(c, page_num)
