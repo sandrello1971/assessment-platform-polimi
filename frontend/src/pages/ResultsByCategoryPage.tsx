@@ -514,6 +514,8 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
                       if (avgMon !== null) dimensionTotals['Monitoring & Control'].push(avgMon);
                       if (avgTech !== null) dimensionTotals['Technology'].push(avgTech);
                       if (avgOrg !== null) dimensionTotals['Organization'].push(avgOrg);
+                      const noteActivities = processActivities.filter(a => a.note && a.note.trim() !== '');
+                      const totalRows = dimensions.length + (noteActivities.length > 0 ? 1 : 0);
                       
                       dimensions.forEach((dimension) => {
                         const strengths = processActivities.filter(a => {
@@ -538,7 +540,7 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
                         rows.push(
                           <tr key={`${process}-${dimension}`} className="hover:bg-gray-50">
                             {firstRow && (
-                              <td rowSpan={5} className="border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-gray-50 align-top">
+                              <td rowSpan={totalRows} className="border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-gray-50 align-top">
                                 {process}
                               </td>
                             )}
@@ -582,7 +584,7 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
                               ) : <span className="text-gray-400">-</span>}
                             </td>
                             {firstRow ? (
-                              <td rowSpan={5} className="border border-gray-300 px-4 py-3 text-center bg-amber-50 align-middle">
+                              <td rowSpan={totalRows} className="border border-gray-300 px-4 py-3 text-center bg-amber-50 align-middle">
                                 <span className="text-xl md:text-2xl font-bold text-gray-800">{processRating !== null ? processRating.toFixed(2) : 'N/A'}</span>
                               </td>
                             ) : null}
@@ -593,10 +595,9 @@ onClick={() => window.open(`/api/assessment/${id}/pdf`, '_blank')}
                       
                       
                       // Riga Note
-                      const noteActivities = processActivities.filter(a => a.note && a.note.trim() !== '');
                       if (noteActivities.length > 0) {
                         rows.push(
-                          <tr key={`${process}-notes`} className="bg-gray-50">
+<tr key={`${process}-notes`} className="bg-gray-50">
                             <td className="border border-gray-300 px-4 py-2 font-semibold text-gray-700">Note</td>
                             <td colSpan={2} className="border border-gray-300 px-4 py-2">
                               <div className="space-y-2">

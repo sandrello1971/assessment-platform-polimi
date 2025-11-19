@@ -327,7 +327,10 @@ const TestTableFormByCategory = () => {
                                         const act = allActivities.find(a => a.name === activity);
                                         const dims = act?.categories[category] ? Object.keys(act.categories[category]) : [];
                                         const colIdx = dims.indexOf(dimension);
-                                        setFloatingMenu({ visible: true, x: 95, y: 5, process, activity, category, dimension, score: answer?.score ?? 0, rowIndex: actIdx, colIndex: colIdx });
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        const xPos = rect.left + (rect.width / 2) - 40;
+                                        const yPos = rect.bottom + 5;
+                                        setFloatingMenu({ visible: true, x: xPos, y: yPos, process, activity, category, dimension, score: answer?.score ?? 0, rowIndex: actIdx, colIndex: colIdx });
                                       }}
                                       onBlur={(e) => { 
                                         const rt = e.relatedTarget as HTMLElement; 
@@ -396,7 +399,7 @@ document.querySelectorAll(`input[data-dimension="${currentDim}"]:not([disabled])
                                     </label>
                                   </div>
                                   {floatingMenu && floatingMenu.dimension === dim && floatingMenu.activity === row.activityName && (
-                                    <div style={{ position: "absolute", top: floatingMenu.y, left: floatingMenu.x, backgroundColor: "white", border: "2px solid #3b82f6", borderRadius: "12px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", zIndex: 9999, padding: "8px", display: "flex", gap: "8px" }}>
+                                    <div style={{ position: "fixed", top: floatingMenu.y, left: floatingMenu.x, backgroundColor: "white", border: "2px solid #3b82f6", borderRadius: "12px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", zIndex: 9999, padding: "8px", display: "flex", gap: "8px" }}>
                                       <button data-floating-button onMouseDown={(e) => e.preventDefault()} onClick={() => { const cs = floatingMenu.score; const pd = processesData.find(p => p.process === floatingMenu.process); if (pd) { const act = pd.activities.find(a => a.name === floatingMenu.activity); if (act?.categories[floatingMenu.category]) { const dims = Object.keys(act.categories[floatingMenu.category]); handleScoreChange(floatingMenu.process, floatingMenu.activity, floatingMenu.category, floatingMenu.dimension, cs); copyToRow(floatingMenu.process, floatingMenu.activity, floatingMenu.category, cs, floatingMenu.colIndex, dims); } } }} style={{ padding: "8px 12px", backgroundColor: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "16px", fontWeight: "bold" }}>→</button>
                                       <button data-floating-button onMouseDown={(e) => e.preventDefault()} onClick={() => { const cs = floatingMenu.score; handleScoreChange(floatingMenu.process, floatingMenu.activity, floatingMenu.category, floatingMenu.dimension, cs); copyToColumn(floatingMenu.process, floatingMenu.category, floatingMenu.dimension, cs, floatingMenu.rowIndex); }} style={{ padding: "8px 12px", backgroundColor: "#10b981", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "16px", fontWeight: "bold" }}>↓</button>
                                     </div>

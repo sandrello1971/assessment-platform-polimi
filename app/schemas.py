@@ -59,6 +59,7 @@ class AssessmentSessionCreate(BaseModel):
     risposte_json: Optional[str] = None
     punteggi_json: Optional[str] = None
     raccomandazioni: Optional[str] = None
+    logo_path: Optional[str] = None
 
 class AssessmentSessionOut(AssessmentSessionCreate):
     id: UUID

@@ -319,8 +319,8 @@ const TestTableFormByCategory = () => {
                                         const rect = e.currentTarget.getBoundingClientRect();
                                         setFloatingMenu({
                                           visible: true,
-                                          x: rect.right + 10,
-                                          y: rect.top,
+                                          x: rect.left + (rect.width / 2) - 40,
+                                          y: rect.top - 50,
                                           process: row.process,
                                           activity: row.activityName,
                                           category: currentCategory,

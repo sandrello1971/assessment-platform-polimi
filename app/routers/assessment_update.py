@@ -121,8 +121,8 @@ async def upload_logo(
             if old_path.exists():
                 old_path.unlink()
         
-        # Aggiorna database
-        session.logo_path = str(file_path)
+        # Aggiorna database con path relativo
+        session.logo_path = f"/uploads/logos/{unique_filename}"
         db.commit()
         
         return {

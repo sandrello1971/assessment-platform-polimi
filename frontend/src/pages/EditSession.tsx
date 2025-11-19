@@ -58,7 +58,9 @@ const EditSession = () => {
       });
       
       if (session.logo_path) {
-        setLogoPreview(`/api${session.logo_path}`);
+        console.log('Logo path dal DB:', session.logo_path);
+        setLogoPreview(session.logo_path);
+        console.log('LogoPreview impostato a:', session.logo_path);
       }
     } catch (err: any) {
       setError('Errore nel caricamento della sessione');
