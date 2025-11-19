@@ -33,44 +33,59 @@ const ParetoRecommendations = ({ results, sessionId }: ParetoRecommendationsProp
     const domains = ['Governance', 'Monitoring & Control', 'Technology', 'Organization'];
 
     // Pareto per Processo
-    const processData = processes.map(process => {
+    // STEP 1: Calcola gap normalizzati
+    const processDataTemp = processes.map(process => {
       const processResults = validResults.filter(r => r.process === process);
-      let totalProcessGapPercent = 0;
+      let totalProcessGapNormalized = 0;
       const domainGaps: Record<string, number> = {};
-
+      
       domains.forEach(domain => {
         const domainResults = processResults.filter(r => r.category === domain);
         if (domainResults.length > 0) {
           const avgScore = domainResults.reduce((sum, r) => sum + r.score, 0) / domainResults.length;
           const gap = 5 - avgScore;
-          const touchpoints = domainResults.length;
-          const gapPercent = (gap * touchpoints) / (totalGap * totalTouchpoints) * 100;
-          domainGaps[domain] = gapPercent;
-          totalProcessGapPercent += gapPercent;
+          const gapNormalized = gap / processes.length;
+          domainGaps[domain] = gapNormalized;
+          totalProcessGapNormalized += gapNormalized;
         }
       });
-
-      return { process, gapPercent: totalProcessGapPercent, domainGaps };
-    }).sort((a, b) => b.gapPercent - a.gapPercent);
+      
+      return { process, gapNormalized: totalProcessGapNormalized, domainGaps };
+    });
+    
+    // STEP 2: Calcola totale e converti in percentuali
+    const totalAllProcessGaps = processDataTemp.reduce((sum, p) => sum + p.gapNormalized, 0);
+    const processData = processDataTemp.map(p => ({
+      process: p.process,
+      gapPercent: totalAllProcessGaps > 0 ? (p.gapNormalized / totalAllProcessGaps) * 100 : 0,
+      domainGaps: p.domainGaps
+    })).sort((a, b) => b.gapPercent - a.gapPercent);
 
     // Pareto per Dominio
-    const domainData = domains.map(domain => {
+    // STEP 1: Calcola gap normalizzati
+    const domainDataTemp = domains.map(domain => {
       const domainResults = validResults.filter(r => r.category === domain);
-      let totalDomainGapPercent = 0;
-
+      let totalDomainGapNormalized = 0;
+      
       processes.forEach(process => {
         const processResults = domainResults.filter(r => r.process === process);
         if (processResults.length > 0) {
           const avgScore = processResults.reduce((sum, r) => sum + r.score, 0) / processResults.length;
           const gap = 5 - avgScore;
-          const touchpoints = processResults.length;
-          const gapPercent = (gap * touchpoints) / (totalGap * totalTouchpoints) * 100;
-          totalDomainGapPercent += gapPercent;
+          const gapNormalized = gap / domains.length;
+          totalDomainGapNormalized += gapNormalized;
         }
       });
-
-      return { domain, gapPercent: totalDomainGapPercent };
-    }).sort((a, b) => b.gapPercent - a.gapPercent);
+      
+      return { domain, gapNormalized: totalDomainGapNormalized };
+    });
+    
+    // STEP 2: Calcola totale e converti in percentuali
+    const totalAllDomainGaps = domainDataTemp.reduce((sum, d) => sum + d.gapNormalized, 0);
+    const domainData = domainDataTemp.map(d => ({
+      domain: d.domain,
+      gapPercent: totalAllDomainGaps > 0 ? (d.gapNormalized / totalAllDomainGaps) * 100 : 0
+    })).sort((a, b) => b.gapPercent - a.gapPercent);
 
     // Calcola cumulativo per trovare 80%
     let cumulative = 0;
