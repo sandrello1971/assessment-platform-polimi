@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
 import io
+import os
 from datetime import datetime
 from typing import Dict, List, Any
 import matplotlib
@@ -73,6 +74,15 @@ class PDFReportGenerator:
 
         # Pagine successive: Strengths & Weaknesses (una per processo)
         page_num = self._add_strengths_weaknesses(c, stats_data, results_data, page_num)
+        
+        # Pagine Pareto Analysis
+        page_num = self._add_pareto_charts(c, results_data, page_num)
+        
+        # Pagine Raccomandazioni AI (da pareto_recommendations)
+        pareto_recommendations = session_data.get("pareto_recommendations")
+        if pareto_recommendations:
+            page_num = self._add_recommendations_page(c, pareto_recommendations, page_num)
+        
 
         # Pagine conclusioni AI
         if ai_conclusions:
@@ -83,6 +93,7 @@ class PDFReportGenerator:
         return buffer.getvalue()
 
     def _draw_frontpage(self, c: canvas.Canvas, session_data: Dict):
+        # Disegna template di sfondo
         c.drawImage(
             self.frontpage_template,
             0,
@@ -92,15 +103,71 @@ class PDFReportGenerator:
             preserveAspectRatio=True,
             mask='auto'
         )
+        
+        # Logo aziendale (se presente) - tra "Digital Assessment" e nome azienda
+        logo_path = session_data.get('logo_path')
+        if logo_path and os.path.exists(logo_path):
+            try:
+                from PIL import Image
+                # Calcola dimensioni mantenendo aspect ratio - LOGO PIÙ GRANDE
+                img = Image.open(logo_path)
+                img_width, img_height = img.size
+                max_logo_width = 300  # Aumentato da 200 a 300
+                max_logo_height = 150  # Aumentato da 100 a 150
+                ratio = min(max_logo_width/img_width, max_logo_height/img_height)
+                logo_width = img_width * ratio
+                logo_height = img_height * ratio
+                
+                # Posiziona logo più in basso
+                logo_x = (self.page_width - logo_width) / 2
+                logo_y = self.page_height * 0.38  # Abbassato
+                
+                c.drawImage(
+                    logo_path,
+                    logo_x,
+                    logo_y,
+                    width=logo_width,
+                    height=logo_height,
+                    preserveAspectRatio=True,
+                    mask='auto'
+                )
+            except Exception as e:
+                print(f"Errore caricamento logo: {e}")
+        
+        # Nome azienda - centrato subito sotto il logo
         company_name = session_data.get('azienda_nome', 'Azienda')
         c.setFont('Helvetica-Bold', 36)
         c.setFillColor(colors.HexColor('#3DBFBF'))
         text_width = c.stringWidth(company_name, 'Helvetica-Bold', 36)
-        c.drawString((self.page_width - text_width) / 2, self.page_height * 0.35, company_name)
-        date_str = datetime.now().strftime('%d/%m/%Y')
-        c.setFont('Helvetica', 14)
-        text_width = c.stringWidth(date_str, 'Helvetica', 14)
-        c.drawString((self.page_width - text_width) / 2, self.page_height * 0.22, date_str)
+        c.drawString((self.page_width - text_width) / 2, self.page_height * 0.30, company_name)  # Subito sotto il logo
+        
+        # Tabella informazioni in basso (abbassata)
+        table_y = self.page_height * 0.12
+        table_data = [
+            ['Effettuato da:', session_data.get('effettuato_da', 'N/A')],
+            ['Referente aziendale:', session_data.get('referente', 'N/A')],
+            ['Modello utilizzato:', session_data.get('model_name', 'i40_assessment_fto')],
+            ['Data:', session_data.get('data_chiusura', datetime.now()).strftime('%d/%m/%Y') if session_data.get('data_chiusura') else datetime.now().strftime('%d/%m/%Y')]
+        ]
+        
+        from reportlab.platypus import Table, TableStyle
+        table = Table(table_data, colWidths=[150, 300])
+        table.setStyle(TableStyle([
+            ('FONT', (0, 0), (0, -1), 'Helvetica-Bold', 11),
+            ('FONT', (1, 0), (1, -1), 'Helvetica', 11),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#333333')),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 12),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 12),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        
+        table_width, table_height = table.wrapOn(c, self.page_width, self.page_height)
+        table_x = (self.page_width - table_width) / 2
+        table.drawOn(c, table_x, table_y)
 
     def _draw_report_page(self, c: canvas.Canvas):
         c.drawImage(
@@ -115,7 +182,16 @@ class PDFReportGenerator:
 
     def _add_radar_processes_vs_domains(self, c: canvas.Canvas, stats_data: Dict):
         """Radar con 4 assi (Domini) e 7 linee (Processi) - Governance in alto"""
-        y_pos = self.page_height - self.margin_top - 2 * cm
+        
+        # Titolo sezione RADAR - diminuito e abbassato
+        c.setFont('Helvetica-Bold', 36)
+        c.setFillColor(colors.HexColor('#3DBFBF'))
+        radar_title = "RADAR"
+        title_width = c.stringWidth(radar_title, 'Helvetica-Bold', 36)
+        c.drawString((self.page_width - title_width) / 2, self.page_height - 100, radar_title)
+        
+        # Sottotitolo - abbassato
+        y_pos = self.page_height - self.margin_top - 2 * cm - 30  # Abbassato di ~30pt
         c.setFont('Helvetica-Bold', 16)
         c.setFillColor(colors.HexColor('#2C3E50'))
         c.drawString(self.margin_left, y_pos, "Global Radar - Processi vs Domini")
@@ -206,15 +282,20 @@ class PDFReportGenerator:
         if not processes_radar:
             return
 
-        process_order = [
-            'MKTG',
-            'DESIGN & ENGINEERING',
-            'EXECUTION',
-            'QUALITY MANAGEMENT',
-            'CUSTOMER CARE',
-            'DIGITAL MKTG',
-            'ADMINISTRATION',
-        ]
+        # Estrai processi effettivi dai dati e usa ordine preferito se presenti
+        actual_processes = [p.get("process", "") for p in processes_radar]
+        preferred_order = ["MKTG", "DESIGN & ENGINEERING", "EXECUTION", "QUALITY MANAGEMENT", "CUSTOMER CARE", "DIGITAL MKTG", "ADMINISTRATION"]
+        process_order = [p for p in preferred_order if any(proc.upper() == p.upper() for proc in actual_processes)]
+        process_order.extend([proc for proc in actual_processes if not any(proc.upper() == p.upper() for p in process_order)])
+        #         process_order = [
+        #             'MKTG',
+        #             'DESIGN & ENGINEERING',
+        #             'EXECUTION',
+        #             'QUALITY MANAGEMENT',
+        #             'CUSTOMER CARE',
+        #             'DIGITAL MKTG',
+        #             'ADMINISTRATION',
+        #         ]
 
         # Riordina secondo l'ordine specificato
         ordered_processes = []
@@ -482,7 +563,15 @@ class PDFReportGenerator:
             # Nuova pagina per ogni processo
             self._draw_report_page(c)
 
-            y_pos = self.page_height - self.margin_top - 2 * cm
+            
+            # Titolo sezione GAP ANALYSIS - solo sulla prima pagina
+            if proc_name == process_order[0]:
+                c.setFont('Helvetica-Bold', 36)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
+                gap_title = "GAP ANALYSIS"
+                title_width = c.stringWidth(gap_title, 'Helvetica-Bold', 36)
+                c.drawString((self.page_width - title_width) / 2, self.page_height - 100, gap_title)
+            y_pos = self.page_height - self.margin_top - 2 * cm - 30
 
             # Calcola rating medio del processo (media delle medie delle categorie)
             cat_avgs = []
@@ -529,7 +618,7 @@ class PDFReportGenerator:
 
             c.setFont('Helvetica-Bold', 10)
             c.setFillColor(colors.HexColor('#2C3E50'))
-            headers = ['Dimension', 'Strengths (≥ 3.0)', 'Weaknesses (< 2.0)']
+            headers = ['Domain', 'Strengths (≥ 3.0)', 'Weaknesses (< 2.0)']
             for i, hdr in enumerate(headers):
                 c.drawString(col_x[i] + 0.2 * cm, y_pos - 0.55 * cm, hdr)
 
@@ -590,8 +679,30 @@ class PDFReportGenerator:
 
                 cat_avg = sum(cat_scores) / len(cat_scores) if cat_scores else 0
 
-                max_items = max(len(strengths), len(weaknesses), 1)
-                row_h = max(max_items * 0.4 * cm + 0.4 * cm, 1.2 * cm)
+                # Calcola numero di righe reali considerando word wrap
+                def count_wrapped_lines(items, max_chars=45):
+                    total_lines = 0
+                    for item in items[:8]:
+                        if len(item) > max_chars:
+                            words = item.split()
+                            current_line = "• "
+                            for word in words:
+                                if len(current_line + word) <= max_chars:
+                                    current_line += word + " "
+                                else:
+                                    total_lines += 1
+                                    current_line = "  " + word + " "
+                            if current_line.strip():
+                                total_lines += 1
+                        else:
+                            total_lines += 1
+                    return total_lines
+                
+                strength_lines = count_wrapped_lines(strengths) if strengths else 1
+                weakness_lines = count_wrapped_lines(weaknesses) if weaknesses else 1
+                max_lines = max(strength_lines, weakness_lines)
+                
+                row_h = max(max_lines * 0.35 * cm + 0.6 * cm, 1.2 * cm)
 
                 c.setFillColor(colors.HexColor('#FFF8DC'))
                 c.rect(col_x[0], y_pos - row_h, table_width, row_h, fill=1, stroke=0)
@@ -623,10 +734,24 @@ class PDFReportGenerator:
                 str_y = y_pos - 0.4 * cm
                 if strengths:
                     for s in strengths[:8]:
-                        if len(s) > 45:
-                            s = s[:42] + "..."
-                        c.drawString(col_x[1] + 0.2 * cm, str_y, f"• {s}")
-                        str_y -= 0.35 * cm
+                        # Word wrap invece di troncare
+                        max_chars = 45
+                        if len(s) > max_chars:
+                            words = s.split()
+                            current_line = "• "
+                            for word in words:
+                                if len(current_line + word) <= max_chars:
+                                    current_line += word + " "
+                                else:
+                                    c.drawString(col_x[1] + 0.2 * cm, str_y, current_line.strip())
+                                    str_y -= 0.35 * cm
+                                    current_line = "  " + word + " "
+                            if current_line.strip():
+                                c.drawString(col_x[1] + 0.2 * cm, str_y, current_line.strip())
+                                str_y -= 0.35 * cm
+                        else:
+                            c.drawString(col_x[1] + 0.2 * cm, str_y, f"• {s}")
+                            str_y -= 0.35 * cm
                 else:
                     c.setFillColor(colors.HexColor('#95A5A6'))
                     c.drawString(col_x[1] + 0.2 * cm, str_y, "-")
@@ -635,18 +760,94 @@ class PDFReportGenerator:
                 weak_y = y_pos - 0.4 * cm
                 if weaknesses:
                     for w in weaknesses[:8]:
-                        if len(w) > 45:
-                            w = w[:42] + "..."
-                        c.drawString(col_x[2] + 0.2 * cm, weak_y, f"• {w}")
-                        weak_y -= 0.35 * cm
+                        # Word wrap invece di troncare
+                        max_chars = 45
+                        if len(w) > max_chars:
+                            words = w.split()
+                            current_line = "• "
+                            for word in words:
+                                if len(current_line + word) <= max_chars:
+                                    current_line += word + " "
+                                else:
+                                    c.drawString(col_x[2] + 0.2 * cm, weak_y, current_line.strip())
+                                    weak_y -= 0.35 * cm
+                                    current_line = "  " + word + " "
+                            if current_line.strip():
+                                c.drawString(col_x[2] + 0.2 * cm, weak_y, current_line.strip())
+                                weak_y -= 0.35 * cm
+                        else:
+                            c.drawString(col_x[2] + 0.2 * cm, weak_y, f"• {w}")
+                            weak_y -= 0.35 * cm
                 else:
                     c.setFillColor(colors.HexColor('#95A5A6'))
                     c.drawString(col_x[2] + 0.2 * cm, weak_y, "-")
 
+
                 y_pos -= row_h
+                
+                
+                # Controlla se siamo all'ultima categoria
+                is_last_cat = (cat_name == cat_order[-1])
+                
+                # Controlla se c'è spazio per la prossima riga
+                if y_pos < self.margin_bottom + 4 * cm and not is_last_cat:
+                    # Non c'è spazio e NON siamo all'ultima categoria
+                    self._add_page_number(c, page_num)
+                    page_num += 1
+                    c.showPage()
+                    self._draw_report_page(c)
+                    
+                    y_pos = self.page_height - self.margin_top - 2 * cm - 30
+                    
+                    # Titolo processo + rating
+                    c.setFont("Helvetica-Bold", 18)
+                    c.setFillColor(colors.HexColor("#2C3E50"))
+                    c.drawString(self.margin_left, y_pos, proc_name)
+                    title_width = c.stringWidth(proc_name, "Helvetica-Bold", 18)
+                    c.setFont("Helvetica-Bold", 20)
+                    c.setFillColor(rating_color)
+                    c.drawString(self.margin_left + title_width + 1 * cm, y_pos, f"{proc_rating:.2f}")
+                    y_pos -= 1.5 * cm
+                    
+                    # Ridisegna header tabella
+                    c.setFillColor(colors.HexColor("#008B8B"))
+                    c.rect(col_x[0], y_pos - header_h, table_width, header_h, fill=1, stroke=0)
+                    c.setFont("Helvetica-Bold", 10)
+                    c.setFillColor(colors.HexColor("#2C3E50"))
+                    for i, hdr in enumerate(headers):
+                        c.drawString(col_x[i] + 0.2 * cm, y_pos - 0.55 * cm, hdr)
+                    y_pos -= header_h
 
             y_pos -= 1 * cm
+            
+            # Controlla se le NOTE ci stanno nella pagina corrente
+            temp_notes_h = 0
+            if all_notes:
+                temp_u = {}
+                for tn in all_notes:
+                    k = tn.get("activity", "")
+                    if k not in temp_u:
+                        temp_u[k] = tn
+                temp_lines = sum(max(1, len(n.get("note", "")) // 55 + 1) for n in temp_u.values())
+                temp_notes_h = temp_lines * 0.55 * cm + 3.5 * cm
+            
+            if temp_notes_h > 0 and y_pos - temp_notes_h < self.margin_bottom + 8 * cm:
+                # Note non ci stanno, nuova pagina
+                self._add_page_number(c, page_num)
+                page_num += 1
+                c.showPage()
+                self._draw_report_page(c)
+                y_pos = self.page_height - self.margin_top - 2 * cm
+                c.setFont("Helvetica-Bold", 18)
+                c.setFillColor(colors.HexColor("#2C3E50"))
+                c.drawString(self.margin_left, y_pos, proc_name)
+                title_width = c.stringWidth(proc_name, "Helvetica-Bold", 18)
+                c.setFont("Helvetica-Bold", 20)
+                c.setFillColor(rating_color)
+                c.drawString(self.margin_left + title_width + 1 * cm, y_pos, f"{proc_rating:.2f}")
+                y_pos -= 1.5 * cm
 
+            
             # BOX NOTE
             c.setFont('Helvetica-Bold', 12)
             c.setFillColor(colors.HexColor('#E74C3C'))
@@ -662,7 +863,7 @@ class PDFReportGenerator:
 
             notes_list = list(unique_notes.values())
 
-            # Calcolo altezza box note in base al contenuto (ma con un massimo)
+            # Calcolo altezza box note
             if notes_list:
                 total_lines = 0
                 max_chars_per_line = 55
@@ -680,13 +881,42 @@ class PDFReportGenerator:
                         lines_for_this_note += 1
                         remaining = remaining[split_pos:].lstrip()
                     total_lines += lines_for_this_note
-                # Limita altezza box note allo spazio disponibile
-                available_space = y_pos - self.margin_bottom - 2 * cm
-                note_box_height = min(total_lines * 0.55 * cm + 2.5 * cm, 15 * cm, available_space)
+                available_space = y_pos - self.margin_bottom - 1 * cm
+                note_box_height = min(total_lines * 0.55 * cm + 2.5 * cm, available_space)
             else:
                 note_box_height = 1 * cm
 
             # Disegna box note
+            # Controlla se le note ci stanno realmente
+            if y_pos - note_box_height < self.margin_bottom:
+                # Le note non ci stanno, nuova pagina dedicata
+                self._add_page_number(c, page_num)
+                page_num += 1
+                c.showPage()
+                self._draw_report_page(c)
+                
+                y_pos = self.page_height - self.margin_top - 2 * cm
+                
+                # Titolo processo + rating
+                c.setFont('Helvetica-Bold', 18)
+                c.setFillColor(colors.HexColor('#2C3E50'))
+                c.drawString(self.margin_left, y_pos, proc_name)
+                title_width = c.stringWidth(proc_name, 'Helvetica-Bold', 18)
+                c.setFont('Helvetica-Bold', 20)
+                c.setFillColor(rating_color)
+                c.drawString(self.margin_left + title_width + 1 * cm, y_pos, f"{proc_rating:.2f}")
+                y_pos -= 1.5 * cm
+                
+                # Titolo Note
+                c.setFont('Helvetica-Bold', 12)
+                c.setFillColor(colors.HexColor('#E74C3C'))
+                c.drawString(self.margin_left, y_pos, "Note")
+                y_pos -= 0.8 * cm
+                
+                # Ricalcola spazio disponibile
+                available_space = y_pos - self.margin_bottom - 1 * cm
+                note_box_height = min(note_box_height, available_space)
+            
             c.setStrokeColor(colors.HexColor('#CCCCCC'))
             c.setLineWidth(1)
             c.rect(self.margin_left, y_pos - note_box_height, table_width, note_box_height, fill=0, stroke=1)
@@ -721,16 +951,6 @@ class PDFReportGenerator:
                     # Altezza stimata del blocco per questa nota
                     block_height = 0.55 * cm + max(0, len(note_lines) - 1) * 0.35 * cm
 
-                    # Se non c'è spazio, scrivo un'ultima riga informativa e interrompo
-                    if note_y - block_height < box_bottom:
-                        c.setFont('Helvetica-Oblique', 6)
-                        c.setFillColor(colors.HexColor('#7F8C8D'))
-                        c.drawString(
-                            self.margin_left + 0.5 * cm,
-                            box_bottom,
-                            "… altre note non visualizzate per mancanza di spazio",
-                        )
-                        break
 
                     # Icona colorata
                     if score >= 3:
@@ -779,13 +999,314 @@ class PDFReportGenerator:
 
         return page_num
 
+    def _add_pareto_charts(self, c: canvas.Canvas, results_data: List[Dict], page_num: int) -> int:
+        """Genera due grafici Pareto in una singola pagina: per Processo e per Dominio"""
+        
+        # Filtra risultati validi
+        valid_results = [r for r in results_data if not r.get('is_not_applicable', False) and r.get('score') is not None]
+        
+        if not valid_results:
+            return page_num
+        
+        # Calcola statistiche totali
+        total_touchpoints = len(valid_results)
+        total_score = sum(r['score'] for r in valid_results) / total_touchpoints
+        total_gap = 5 - total_score
+        
+        # Estrai processi e domini
+        processes = list(set(r['process'] for r in valid_results))
+        domains = list(set(r['category'] for r in valid_results))
+        domain_order = ['Governance', 'Monitoring & Control', 'Technology', 'Organization']
+        ordered_domains = [d for d in domain_order if d in domains] + [d for d in domains if d not in domain_order]
+        
+        # === DATI PER PROCESSO ===
+        process_data = {}
+        for process in processes:
+            domain_gaps = {}
+            total_process_gap = 0
+            
+            for domain in ordered_domains:
+                domain_results = [r for r in valid_results if r['process'] == process and r['category'] == domain]
+                if domain_results:
+                    avg_score = sum(r['score'] for r in domain_results) / len(domain_results)
+                    gap = 5 - avg_score
+                    touchpoints = len(domain_results)
+                    gap_percent = (gap * touchpoints) / (total_gap * total_touchpoints) * 100
+                    domain_gaps[domain] = gap_percent
+                    total_process_gap += gap_percent
+                else:
+                    domain_gaps[domain] = 0
+            
+            process_data[process] = {'domain_gaps': domain_gaps, 'total': total_process_gap}
+        
+        sorted_processes = sorted(processes, key=lambda p: process_data[p]['total'], reverse=True)
+        
+        cumulative = []
+        cum_sum = 0
+        for proc in sorted_processes:
+            cum_sum += process_data[proc]['total']
+            cumulative.append(cum_sum)
+        
+        # === DATI PER DOMINIO ===
+        domain_data = {}
+        for domain in ordered_domains:
+            process_gaps = {}
+            total_domain_gap = 0
+            
+            for process in processes:
+                proc_results = [r for r in valid_results if r['category'] == domain and r['process'] == process]
+                if proc_results:
+                    avg_score = sum(r['score'] for r in proc_results) / len(proc_results)
+                    gap = 5 - avg_score
+                    touchpoints = len(proc_results)
+                    gap_percent = (gap * touchpoints) / (total_gap * total_touchpoints) * 100
+                    process_gaps[process] = gap_percent
+                    total_domain_gap += gap_percent
+                else:
+                    process_gaps[process] = 0
+            
+            domain_data[domain] = {'process_gaps': process_gaps, 'total': total_domain_gap}
+        
+        sorted_domains = sorted(ordered_domains, key=lambda d: domain_data[d]['total'], reverse=True)
+        
+        cumulative_domain = []
+        cum_sum_domain = 0
+        for dom in sorted_domains:
+            cum_sum_domain += domain_data[dom]['total']
+            cumulative_domain.append(cum_sum_domain)
+        
+        # === CREA FIGURA CON 2 SUBPLOT ===
+        import matplotlib.pyplot as plt
+        import numpy as np
+        
+        fig, (ax_proc, ax_dom) = plt.subplots(2, 1, figsize=(12, 10))
+        
+        domain_colors = {
+            'Governance': '#3B82F6',
+            'Monitoring & Control': '#10B981',
+            'Technology': '#F39C12',
+            'Organization': '#EF4444'
+        }
+        
+        # === GRAFICO 1: Pareto by Process ===
+        x_pos = np.arange(len(sorted_processes))
+        bar_width = 0.8
+        bottom = np.zeros(len(sorted_processes))
+        
+        for domain in ordered_domains:
+            values = [process_data[proc]['domain_gaps'].get(domain, 0) for proc in sorted_processes]
+            ax_proc.bar(x_pos, values, bar_width, bottom=bottom, 
+                       label=domain, color=domain_colors.get(domain, '#999999'), alpha=0.8)
+            bottom += values
+        
+        ax_proc.set_xlabel('Process', fontsize=10, fontweight='bold')
+        ax_proc.set_ylabel('Gap %', fontsize=10, fontweight='bold')
+        ax_proc.set_xticks(x_pos)
+        ax_proc.set_xticklabels(sorted_processes, rotation=45, ha='right', fontsize=8)
+        ax_proc.set_ylim([0, 110])
+        
+        ax_proc2 = ax_proc.twinx()
+        ax_proc2.plot(x_pos, cumulative, 'ro-', linewidth=2, markersize=6, label='Cumulative')
+        ax_proc2.axhline(y=80, color='#10B981', linestyle='--', linewidth=2, label='80%')
+        ax_proc2.set_ylabel('Cumulative %', fontsize=10, fontweight='bold', color='#EF4444')
+        ax_proc2.set_ylim([0, 110])
+        ax_proc2.tick_params(axis='y', labelcolor='#EF4444')
+        
+        lines1, labels1 = ax_proc.get_legend_handles_labels()
+        lines2, labels2 = ax_proc2.get_legend_handles_labels()
+        ax_proc.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=8, ncol=3)
+        ax_proc.set_title('Pareto by Process', fontsize=11, fontweight='bold')
+        
+        # === GRAFICO 2: Pareto by Domain ===
+        process_colors = {}
+        color_palette = ['#3B82F6', '#10B981', '#F39C12', '#EF4444', '#8B5CF6', '#EC4899']
+        for idx, proc in enumerate(processes):
+            process_colors[proc] = color_palette[idx % len(color_palette)]
+        
+        x_pos_d = np.arange(len(sorted_domains))
+        bottom_d = np.zeros(len(sorted_domains))
+        
+        for process in processes:
+            values_d = [domain_data[dom]['process_gaps'].get(process, 0) for dom in sorted_domains]
+            ax_dom.bar(x_pos_d, values_d, bar_width, bottom=bottom_d,
+                      label=process, color=process_colors.get(process, '#999999'), alpha=0.8)
+            bottom_d += values_d
+        
+        ax_dom.set_xlabel('Domain', fontsize=10, fontweight='bold')
+        ax_dom.set_ylabel('Gap %', fontsize=10, fontweight='bold')
+        ax_dom.set_xticks(x_pos_d)
+        ax_dom.set_xticklabels(sorted_domains, rotation=45, ha='right', fontsize=8)
+        ax_dom.set_ylim([0, 110])
+        
+        ax_dom2 = ax_dom.twinx()
+        ax_dom2.plot(x_pos_d, cumulative_domain, 'ro-', linewidth=2, markersize=6, label='Cumulative')
+        ax_dom2.axhline(y=80, color='#10B981', linestyle='--', linewidth=2, label='80%')
+        ax_dom2.set_ylabel('Cumulative %', fontsize=10, fontweight='bold', color='#EF4444')
+        ax_dom2.set_ylim([0, 110])
+        ax_dom2.tick_params(axis='y', labelcolor='#EF4444')
+        
+        lines1_d, labels1_d = ax_dom.get_legend_handles_labels()
+        lines2_d, labels2_d = ax_dom2.get_legend_handles_labels()
+        ax_dom.legend(lines1_d + lines2_d, labels1_d + labels2_d, loc='upper left', fontsize=8, ncol=3)
+        ax_dom.set_title('Pareto by Domain', fontsize=11, fontweight='bold')
+        
+        plt.tight_layout()
+        
+        # Salva figura
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+            plt.savefig(tmp.name, format='png', dpi=150, bbox_inches='tight')
+            temp_path = tmp.name
+        plt.close()
+        
+        # Aggiungi al PDF
+        self._draw_report_page(c)
+        c.setFont('Helvetica-Bold', 36)
+        c.setFillColor(colors.HexColor('#3DBFBF'))
+        title = "PARETO ANALYSIS"
+        title_width = c.stringWidth(title, 'Helvetica-Bold', 36)
+        c.drawString((self.page_width - title_width) / 2, self.page_height - 100, title)
+        
+        from PIL import Image
+        img = Image.open(temp_path)
+        img_width, img_height = img.size
+        max_width = self.page_width - 2 * self.margin_left
+        max_height = self.page_height - 200
+        ratio = min(max_width / img_width, max_height / img_height)
+        scaled_width = img_width * ratio
+        scaled_height = img_height * ratio
+        
+        x_pos_img = self.margin_left
+        y_pos_img = self.page_height - 140 - scaled_height
+        
+        c.drawImage(temp_path, x_pos_img, y_pos_img, width=scaled_width, height=scaled_height)
+        os.unlink(temp_path)
+        
+        self._add_page_number(c, page_num)
+        c.showPage()
+        page_num += 1
+        
+        return page_num
+
+    def _add_recommendations_page(self, c: canvas.Canvas, recommendations: str, page_num: int) -> int:
+        """Aggiunge pagina con raccomandazioni AI basate su Pareto"""
+        
+        if not recommendations:
+            return page_num
+        # Rimuovi titolo indesiderato
+        import re
+        recommendations = re.sub(r"^#\s*Analisi e Raccomandazioni Strategiche.*?\n+", "", recommendations, flags=re.IGNORECASE|re.MULTILINE)
+        recommendations = re.sub(r"^#\s*Analisi e Raccomandazioni Strategiche.*?$", "", recommendations, flags=re.IGNORECASE|re.MULTILINE)
+        
+        self._draw_report_page(c)
+        
+        # Titolo sezione
+        c.setFont('Helvetica-Bold', 36)
+        c.setFillColor(colors.HexColor('#3DBFBF'))
+        title = "RACCOMANDAZIONI"
+        title_width = c.stringWidth(title, 'Helvetica-Bold', 36)
+        c.drawString((self.page_width - title_width) / 2, self.page_height - 100, title)
+        
+        # Sottotitolo
+        c.setFont('Helvetica-Bold', 16)
+        c.setFillColor(colors.HexColor('#3DBFBF'))
+        c.drawString(self.margin_left, self.page_height - 150, "Strategic Recommendations Based on Pareto Analysis")
+        
+        # Content con markdown-style formatting
+        y_pos = self.page_height - 200
+        
+        # Processa il testo markdown
+        lines = recommendations.split('\n')
+        
+        for line in lines:
+            if y_pos < 100:  # Nuova pagina se necessario
+                self._add_page_number(c, page_num)
+                c.showPage()
+                page_num += 1
+                self._draw_report_page(c)
+                y_pos = self.page_height - 180  # Margine più alto per pagine successive
+            
+            line = line.strip()
+            if not line:
+                y_pos -= 10
+                continue
+            
+            # Headers
+            if line.startswith('###'):
+                c.setFont('Helvetica-Bold', 12)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
+                text = line.replace('###', '').strip()
+                c.drawString(self.margin_left, y_pos, text)
+                y_pos -= 20
+            elif line.startswith('##'):
+                c.setFont('Helvetica-Bold', 14)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
+                text = line.replace('##', '').strip()
+                c.drawString(self.margin_left, y_pos, text)
+                y_pos -= 25
+            elif line.startswith('#'):
+                c.setFont('Helvetica-Bold', 16)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
+                text = line.replace('#', '').strip()
+                c.drawString(self.margin_left, y_pos, text)
+                y_pos -= 30
+            # Bullet points
+            elif line.startswith('- ') or line.startswith('* '):
+                c.setFont('Helvetica', 10)
+                c.setFillColor(colors.HexColor('#333333'))
+                text = '• ' + line[2:].strip()
+                # Word wrap
+                max_width = self.page_width - 2 * self.margin_left - 20
+                words = text.split()
+                current_line = ''
+                for word in words:
+                    test_line = current_line + ' ' + word if current_line else word
+                    if c.stringWidth(test_line, 'Helvetica', 10) <= max_width:
+                        current_line = test_line
+                    else:
+                        c.drawString(self.margin_left + 10, y_pos, current_line)
+                        y_pos -= 15
+                        current_line = word
+                if current_line:
+                    c.drawString(self.margin_left + 10, y_pos, current_line)
+                    y_pos -= 15
+            # Normal text
+            else:
+                # Gestione grassetto **testo**
+                has_bold = '**' in line
+                if has_bold:
+                    line = line.replace('**', '')
+                c.setFont('Helvetica-Bold' if has_bold else 'Helvetica', 10)
+                c.setFillColor(colors.HexColor('#333333'))
+                # Word wrap
+                max_width = self.page_width - 2 * self.margin_left
+                words = line.split()
+                current_line = ''
+                for word in words:
+                    test_line = current_line + ' ' + word if current_line else word
+                    if c.stringWidth(test_line, 'Helvetica', 10) <= max_width:
+                        current_line = test_line
+                    else:
+                        c.drawString(self.margin_left, y_pos, current_line)
+                        y_pos -= 15
+                        current_line = word
+                if current_line:
+                    c.drawString(self.margin_left, y_pos, current_line)
+                    y_pos -= 15
+        
+        self._add_page_number(c, page_num)
+        c.showPage()
+        page_num += 1
+        
+        return page_num
+
     def _add_ai_pages(self, c: canvas.Canvas, ai_conclusions: str, page_num: int) -> int:
         """Pagine conclusioni AI con numerazione corretta"""
         self._draw_ai_page(c)
         y_pos = self.page_height - 9 * cm  # Sotto il titolo/grafica del template
 
         lines = ai_conclusions.split('\n')
-        line_height = 10
+        line_height = 15
 
         import re
 
@@ -801,30 +1322,30 @@ class PDFReportGenerator:
             line = line.strip()
             line = re.sub(r'\*\*([^*]+)\*\*', r'\1', line)  # rimuove markdown bold
             if not line:
-                y_pos -= line_height * 0.5
+                y_pos -= line_height * 0.67
                 continue
 
             if line.startswith('###'):
-                c.setFont('Helvetica-Bold', 11)
-                c.setFillColor(colors.HexColor('#2C3E50'))
-                line = line.replace('###', '').strip()
-                y_pos -= 0.2 * cm
-            elif line.startswith('##'):
                 c.setFont('Helvetica-Bold', 12)
-                c.setFillColor(colors.HexColor('#2C3E50'))
+                c.setFillColor(colors.HexColor('#3DBFBF'))
+                line = line.replace('###', '').strip()
+                y_pos -= 20
+            elif line.startswith('##'):
+                c.setFont('Helvetica-Bold', 14)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
                 line = line.replace('##', '').strip()
-                y_pos -= 0.3 * cm
+                y_pos -= 25
             elif line.startswith('#'):
-                c.setFont('Helvetica-Bold', 13)
-                c.setFillColor(colors.HexColor('#2C3E50'))
+                c.setFont('Helvetica-Bold', 16)
+                c.setFillColor(colors.HexColor('#3DBFBF'))
                 line = line.replace('#', '').strip()
-                y_pos -= 0.4 * cm
+                y_pos -= 30
             elif line.startswith('-'):
-                c.setFont('Helvetica', 8)
+                c.setFont('Helvetica', 10)
                 c.setFillColor(colors.HexColor('#333333'))
                 line = '• ' + line[1:].strip()
             else:
-                c.setFont('Helvetica', 8)
+                c.setFont('Helvetica', 10)
                 c.setFillColor(colors.HexColor('#333333'))
 
             words = line.split()
